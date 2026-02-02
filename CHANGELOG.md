@@ -15,3 +15,8 @@ All notable changes to this project will be documented in this file. We will log
 ### Added
 - README skeleton covering purpose, tech stack, scripts, goals, and contribution notes.
 - Documentation outlines created: `docs/design-decisions.md` and `docs/token-model.md`.
+
+## [0.3.0] - 2026-02-02
+### Added
+- Initial app shell in `src/main.ts` with structure for header, controls, preview placeholder, and export actions.
+- Starter layout and theming styles in `src/style.css` for readability and responsive split layout.
