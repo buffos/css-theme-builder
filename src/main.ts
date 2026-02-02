@@ -1,5 +1,7 @@
 import './style.css';
 import { createPreview } from './app/preview';
+import { getConfig, subscribe, updateConfig } from './app/state';
+import { controlsRegistry } from './app/ui';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 
@@ -22,7 +24,7 @@ root.innerHTML = `
     <section class="app-shell__body">
       <section class="panel panel--controls" aria-label="Theme controls">
         <h2>Theme Controls</h2>
-        <p>Controls coming next.</p>
+        <div class="controls-host"></div>
       </section>
 
       <section class="panel panel--preview" aria-label="Live preview">
@@ -39,14 +41,34 @@ root.innerHTML = `
 `;
 
 const previewHost = document.querySelector<HTMLDivElement>('.preview-host');
+const controlsHost = document.querySelector<HTMLDivElement>('.controls-host');
 
 if (!previewHost) {
   throw new Error('Preview host not found');
 }
 
+if (!controlsHost) {
+  throw new Error('Controls host not found');
+}
+
 const preview = createPreview();
 preview.mount(previewHost);
 
+const controlApi = { getConfig, updateConfig, subscribe };
+const controlCleanups: (() => void)[] = [];
+
+// for all ui controls
+Object.values(controlsRegistry).forEach((module) => {
+  const container = document.createElement('div'); // create a div element for the control
+  container.className = 'control-module';
+  controlsHost.appendChild(container);
+  module.mount(container, controlApi); // populate it
+  if (module.unmount) {
+    controlCleanups.push(module.unmount); // register unmount at the end.
+  }
+});
+
 window.addEventListener('beforeunload', () => {
   preview.unmount();
+  controlCleanups.forEach((cleanup) => cleanup()); // clean up event listeners before unload.
 });

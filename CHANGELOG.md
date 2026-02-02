@@ -34,3 +34,9 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.5.1] - 2026-02-02
 ### Added
 - Styling for preview host and iframe container in `src/style.css`.
+
+## [0.6.0] - 2026-02-02
+### Added
+- Controls registry scaffolding and name control stub (`src/app/registry.ts`, `src/app/ui.ts`) mounted from `src/main.ts`.
+- Styles for control groups and inputs in `src/style.css`.
+- Design decision note on iframe lifecycle updated earlier (v0.5.0).

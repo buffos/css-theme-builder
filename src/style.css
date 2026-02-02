@@ -91,6 +91,43 @@ body {
   min-height: 260px;
 }
 
+.control-module + .control-module {
+  margin-top: 12px;
+}
+
+.control-group {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #cbd5ff;
+}
+
+.control-group input[type='text'],
+.control-group input[type='number'] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #1f2c4f;
+  background: #0c1324;
+  color: #e7ecff;
+  font-size: 14px;
+}
+
+.control-group input:focus {
+  outline: 2px solid #476ddb;
+  outline-offset: 2px;
+}
+
+.controls-placeholder {
+  margin: 0;
+  color: #8aa0d6;
+  font-size: 13px;
+}
+
 .preview-host {
   margin-top: 8px;
   border: 1px dashed #2c3a63;

@@ -21,6 +21,9 @@
 - Iframe isolation; write concatenated CSS into `<style>` tag; set `data-theme` on `documentElement`.
 - Lifecycle: iframe is created/destroyed by a preview module; uses `srcdoc` (no `document.write`) to avoid deprecated APIs and keep preview isolated from host styles/scripts.
 
+## Controls Architecture
+- Controls are modular: each section registers a `ControlModule` (id, title, mount/unmount) via a registry. Modules receive a small `ControlApi` (getConfig/updateConfig/subscribe) so they stay decoupled from the store implementation.
+
 ## Exports
 - Download `theme.config.json`.
 - Zip `css-bundle.zip` with the four CSS files.
