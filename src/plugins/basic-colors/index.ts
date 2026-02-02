@@ -227,6 +227,7 @@ export const colorsControlModule: ControlModule = {
       [p500, p600, n50, n900, d500].forEach((el) => {
         if (el) el.disabled = disableManual;
       });
+      // base color is set only in non-manual modes
       if (baseInput) baseInput.disabled = mode === 'manual';
     };
 

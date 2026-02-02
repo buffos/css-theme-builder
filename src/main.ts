@@ -1,4 +1,5 @@
 import './style.css';
+import { downloadCssBundle, downloadJson } from './app/export';
 import { createPreview } from './app/preview';
 import { getConfig, subscribe, updateConfig } from './app/state';
 import { controlsRegistry } from './app/ui';
@@ -34,8 +35,8 @@ root.innerHTML = `
     </section>
 
     <section class="app-shell__footer" aria-label="Export actions">
-      <button type="button" disabled>Download theme.config.json</button>
-      <button type="button" disabled>Download css-bundle.zip</button>
+      <button type="button" data-action="download-json">Download theme.config.json</button>
+      <button type="button" data-action="download-css">Download css-bundle.zip</button>
     </section>
   </main>
 `;
@@ -98,4 +99,15 @@ preview.setActive([...openIds]);
 window.addEventListener('beforeunload', () => {
   preview.unmount();
   controlCleanups.forEach((cleanup) => cleanup()); // clean up event listeners before unload.
+});
+
+const jsonBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-json"]');
+const cssBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-css"]');
+
+jsonBtn?.addEventListener('click', () => {
+  downloadJson();
+});
+
+cssBtn?.addEventListener('click', () => {
+  downloadCssBundle();
 });

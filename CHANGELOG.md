@@ -106,3 +106,12 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.11.6] - 2026-02-02
 ### Changed
 - Restyled control accordions (bordered cards, custom arrow indicator, improved spacing).
+
+## [0.12.0] - 2026-02-02
+### Added
+- Export helpers to download `theme.config.json` and `css-bundle.zip` (fflate).
+- Hooked footer buttons to export actions in `main.ts`.
+
+## [0.12.1] - 2026-02-02
+### Fixed
+- Cleaned export zip typing and lint issues; payload now uses `Zippable` and Blob creation is typed.
