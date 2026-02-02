@@ -56,17 +56,44 @@ preview.mount(previewHost);
 
 const controlApi = { getConfig, updateConfig, subscribe };
 const controlCleanups: (() => void)[] = [];
+const openIds = new Set<string>();
+const accordions: { details: HTMLDetailsElement; id: string }[] = [];
 
-// for all ui controls
-Object.values(controlsRegistry).forEach((module) => {
-  const container = document.createElement('div'); // create a div element for the control
+// Build accordion per control module (single-open behavior)
+Object.values(controlsRegistry).forEach((module, index) => {
+  const details = document.createElement('details');
+  details.className = 'control-accordion';
+  if (index === 0) details.open = true;
+  const summary = document.createElement('summary');
+  summary.textContent = module.title;
+  const container = document.createElement('div');
   container.className = 'control-module';
-  controlsHost.appendChild(container);
-  module.mount(container, controlApi); // populate it
-  if (module.unmount) {
-    controlCleanups.push(module.unmount); // register unmount at the end.
-  }
+  details.append(summary, container);
+  controlsHost.appendChild(details);
+
+  module.mount(container, controlApi);
+  if (module.unmount) controlCleanups.push(module.unmount);
+
+  if (details.open) openIds.add(module.id);
+
+  accordions.push({ details, id: module.id });
+
+  details.addEventListener('toggle', () => {
+    if (details.open) {
+      // close all others
+      accordions.forEach((entry) => {
+        if (entry.details !== details) entry.details.open = false;
+      });
+      openIds.clear();
+      openIds.add(module.id);
+    } else {
+      openIds.delete(module.id);
+    }
+    preview.setActive([...openIds]);
+  });
 });
+
+preview.setActive([...openIds]);
 
 window.addEventListener('beforeunload', () => {
   preview.unmount();

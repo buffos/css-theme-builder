@@ -1,3 +1,4 @@
+import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
 declare module '../../compiler/types' {
@@ -42,4 +43,28 @@ export const buttonsCompilerEntry = {
   color: #0b1021;
 }
 `,
+};
+
+export const buttonsControlModule: ControlModule = {
+  id: 'buttons',
+  title: 'Buttons',
+  mount: (container) => {
+    container.innerHTML = `
+      <p class="controls-placeholder">
+        Button controls will be added here (variants, density, rounding).
+      </p>
+    `;
+  },
+};
+
+export const buttonsPreviewModule = {
+  id: 'buttons',
+  title: 'Buttons',
+  render: () => `
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <button class="btn" type="button">Default</button>
+      <button class="btn btn--primary" type="button">Primary</button>
+      <button class="btn" type="button" disabled>Disabled</button>
+    </div>
+  `,
 };

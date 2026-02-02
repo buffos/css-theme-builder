@@ -1,3 +1,4 @@
+import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
 declare module '../../compiler/types' {
@@ -20,4 +21,27 @@ export const cardCompilerEntry = {
   box-shadow: var(--shadow-1, 0 1px 3px rgba(0,0,0,0.15));
 }
 `,
+};
+
+export const cardControlModule: ControlModule = {
+  id: 'card',
+  title: 'Card',
+  mount: (container) => {
+    container.innerHTML = `
+      <p class="controls-placeholder">
+        Card controls will be added here (padding, shadow, radius).
+      </p>
+    `;
+  },
+};
+
+export const cardPreviewModule = {
+  id: 'card',
+  title: 'Card',
+  render: () => `
+    <div class="card">
+      <h3 class="text-base" style="margin-top:0;">Card title</h3>
+      <p class="text-sm" style="margin:0;">Body copy for card preview.</p>
+    </div>
+  `,
 };

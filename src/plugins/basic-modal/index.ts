@@ -1,3 +1,4 @@
+import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
 declare module '../../compiler/types' {
@@ -29,4 +30,33 @@ export const modalCompilerEntry = {
   padding: var(--space-4, 1rem);
 }
 `,
+};
+
+export const modalControlModule: ControlModule = {
+  id: 'modal',
+  title: 'Modal',
+  mount: (container) => {
+    container.innerHTML = `
+      <p class="controls-placeholder">
+        Modal controls will be added here (backdrop, padding, radius).
+      </p>
+    `;
+  },
+};
+
+export const modalPreviewModule = {
+  id: 'modal',
+  title: 'Modal',
+  render: () => `
+    <div class="modal-backdrop">
+      <div class="modal">
+        <h3 class="text-base" style="margin-top:0;">Modal title</h3>
+        <p class="text-sm" style="margin:0 0 0.75rem;">Modal body preview content.</p>
+        <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+          <button class="btn" type="button">Cancel</button>
+          <button class="btn btn--primary" type="button">Confirm</button>
+        </div>
+      </div>
+    </div>
+  `,
 };

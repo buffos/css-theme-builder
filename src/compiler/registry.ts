@@ -1,15 +1,15 @@
-import { colorsCompilerEntry } from '../plugins/basic-colors';
 import { alertCompilerEntry } from '../plugins/basic-alert';
 import { buttonsCompilerEntry } from '../plugins/basic-buttons';
 import { cardCompilerEntry } from '../plugins/basic-card';
+import { colorsCompilerEntry } from '../plugins/basic-colors';
 import { inputsCompilerEntry } from '../plugins/basic-inputs';
 import { modalCompilerEntry } from '../plugins/basic-modal';
 import { radiusCompilerEntry } from '../plugins/basic-radius';
 import { shadowCompilerEntry } from '../plugins/basic-shadow';
 import { spacingCompilerEntry } from '../plugins/basic-spacing';
 import { surfaceCompilerEntry } from '../plugins/basic-surface';
-import { typographyCompilerEntry } from '../plugins/basic-typography';
 import { tableCompilerEntry } from '../plugins/basic-table';
+import { typographyCompilerEntry } from '../plugins/basic-typography';
 
 import type { ThemeConfig, ThemeModules } from './types';
 

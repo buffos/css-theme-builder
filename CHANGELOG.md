@@ -78,3 +78,27 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.11.0] - 2026-02-02
 ### Changed
 - Split components into individual plugins (buttons, inputs, card, alert, table, modal) and wired each into the compiler registry; removed the single monolithic components plugin.
+
+## [0.11.1] - 2026-02-02
+### Added
+- Placeholder controls for component plugins (buttons, inputs, card, alert, table, modal) registered in the controls registry.
+
+## [0.11.2] - 2026-02-02
+### Changed
+- ESLint config now allows unused variables prefixed with `_` (for plugin isEnabled signatures, etc.).
+
+## [0.11.3] - 2026-02-02
+### Added
+- Preview registry now aggregates per-plugin preview modules (buttons, inputs, card, alert, table, modal) and renders them as accordions in the iframe.
+### Changed
+- Components preview is decentralized; plugins supply their own preview snippets.
+
+## [0.11.4] - 2026-02-02
+### Changed
+- Controls panel now renders each plugin inside an accordion; preview shows only accordions that are open, via preview setActive filter.
+
+## [0.11.5] - 2026-02-02
+### Changed
+- Enforced single-open behavior for control accordions; preview filters to the active accordion.
+- Added per-plugin preview modules (decentralized) and typed preview handling.
+- Lint cleanup for array types in main.

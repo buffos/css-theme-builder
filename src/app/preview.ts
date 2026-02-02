@@ -1,10 +1,13 @@
 import { compile } from '../compiler/compile';
 
+import { previewModules } from './preview-registry';
+import type { PreviewModule } from './preview-registry';
 import { getConfig, subscribe } from './state';
 
 type PreviewHandles = {
   mount: (container: HTMLElement) => void;
   unmount: () => void;
+  setActive: (ids: string[]) => void;
 };
 
 const createIframe = (): HTMLIFrameElement => {
@@ -19,7 +22,11 @@ const createIframe = (): HTMLIFrameElement => {
   return iframe;
 };
 
-const writePreviewDocument = (iframe: HTMLIFrameElement, css: string): void => {
+const writePreviewDocument = (
+  iframe: HTMLIFrameElement,
+  css: string,
+  modules = previewModules satisfies PreviewModule[]
+): void => {
   iframe.srcdoc = `
     <!doctype html>
     <html>
@@ -34,20 +41,38 @@ const writePreviewDocument = (iframe: HTMLIFrameElement, css: string): void => {
             display: grid;
             gap: 16px;
           }
-          .placeholder {
-            border: 1px dashed #2c3a63;
+          .preview-accordion {
+            border: 1px solid #2c3a63;
             border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-            color: #9cb2f3;
+            overflow: hidden;
+            background: #0c1324;
+          }
+          .preview-accordion > summary {
+            cursor: pointer;
+            padding: 12px 14px;
+            font-weight: 600;
+            list-style: none;
+          }
+          .preview-accordion[open] > summary {
+            border-bottom: 1px solid #1f2c4f;
+          }
+          .preview-pane {
+            padding: 12px 14px;
           }
         </style>
         <style>${css}</style>
       </head>
       <body>
-        <div class="placeholder">
-          Preview components will render here once compiler and UI are wired.
-        </div>
+        ${modules
+          .map(
+            (mod: PreviewModule, index: number) => `
+              <details class="preview-accordion"${index === 0 ? ' open' : ''}>
+                <summary>${mod.title}</summary>
+                <div class="preview-pane">${mod.render()}</div>
+              </details>
+            `
+          )
+          .join('\n')}
       </body>
     </html>
   `;
@@ -56,6 +81,7 @@ const writePreviewDocument = (iframe: HTMLIFrameElement, css: string): void => {
 export const createPreview = (): PreviewHandles => {
   let iframe: HTMLIFrameElement | null = null;
   let unsubscribe: (() => void) | null = null;
+  let activeIds = new Set<string>();
 
   const render = () => {
     if (!iframe) return;
@@ -67,7 +93,11 @@ export const createPreview = (): PreviewHandles => {
       compiled['components.css'],
       compiled['index.css'],
     ].join('\n');
-    writePreviewDocument(iframe, css);
+    const filteredModules =
+      activeIds.size === 0
+        ? previewModules
+        : previewModules.filter((mod: PreviewModule) => activeIds.has(String(mod.id)));
+    writePreviewDocument(iframe, css, filteredModules);
   };
 
   const mount = (container: HTMLElement) => {
@@ -85,5 +115,10 @@ export const createPreview = (): PreviewHandles => {
     iframe = null;
   };
 
-  return { mount, unmount };
+  const setActive = (ids: string[]) => {
+    activeIds = new Set(ids.map(String));
+    render();
+  };
+
+  return { mount, unmount, setActive };
 };
