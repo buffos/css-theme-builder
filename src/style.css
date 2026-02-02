@@ -101,6 +101,51 @@ body {
   margin-bottom: 8px;
 }
 
+.control-accordion {
+  border: 1px solid #1f2c4f;
+  border-radius: 10px;
+  background: #0d1528;
+  overflow: hidden;
+}
+
+.control-accordion + .control-accordion {
+  margin-top: 10px;
+}
+
+.control-accordion > summary {
+  position: relative;
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 14px 14px 34px;
+  font-weight: 600;
+  color: #d9e3ff;
+}
+
+.control-accordion > summary::marker {
+  display: none;
+}
+
+.control-accordion > summary::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border: solid #8fb4ff;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 120ms ease;
+}
+
+.control-accordion[open] > summary::before {
+  transform: translateY(-50%) rotate(135deg);
+}
+
+.control-module {
+  padding: 0 14px 14px 14px;
+}
+
 .control-group label {
   font-weight: 600;
   color: #cbd5ff;

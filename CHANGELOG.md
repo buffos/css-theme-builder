@@ -102,3 +102,7 @@ All notable changes to this project will be documented in this file. We will log
 - Enforced single-open behavior for control accordions; preview filters to the active accordion.
 - Added per-plugin preview modules (decentralized) and typed preview handling.
 - Lint cleanup for array types in main.
+
+## [0.11.6] - 2026-02-02
+### Changed
+- Restyled control accordions (bordered cards, custom arrow indicator, improved spacing).
