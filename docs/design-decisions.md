@@ -19,6 +19,7 @@
 
 ## Preview Strategy
 - Iframe isolation; write concatenated CSS into `<style>` tag; set `data-theme` on `documentElement`.
+- Lifecycle: iframe is created/destroyed by a preview module; uses `srcdoc` (no `document.write`) to avoid deprecated APIs and keep preview isolated from host styles/scripts.
 
 ## Exports
 - Download `theme.config.json`.

@@ -20,3 +20,17 @@ All notable changes to this project will be documented in this file. We will log
 ### Added
 - Initial app shell in `src/main.ts` with structure for header, controls, preview placeholder, and export actions.
 - Starter layout and theming styles in `src/style.css` for readability and responsive split layout.
+
+## [0.4.0] - 2026-02-02
+### Added
+- Compiler registry and extensibility types in `src/compiler/types.ts`.
+- Shared state now consumes the central `ThemeConfig` from compiler types to avoid drift (`src/app/state.ts`).
+
+## [0.5.0] - 2026-02-02
+### Added
+- Preview module (`src/app/preview.ts`) with iframe placeholder and state subscription.
+- Main entry now mounts the preview host in `src/main.ts`.
+
+## [0.5.1] - 2026-02-02
+### Added
+- Styling for preview host and iframe container in `src/style.css`.

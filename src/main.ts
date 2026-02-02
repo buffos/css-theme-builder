@@ -1,4 +1,5 @@
 import './style.css';
+import { createPreview } from './app/preview';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 
@@ -26,9 +27,7 @@ root.innerHTML = `
 
       <section class="panel panel--preview" aria-label="Live preview">
         <h2>Live Preview</h2>
-        <div class="preview-placeholder" role="presentation">
-          Preview iframe placeholder
-        </div>
+        <div class="preview-host" role="presentation"></div>
       </section>
     </section>
 
@@ -38,3 +37,16 @@ root.innerHTML = `
     </section>
   </main>
 `;
+
+const previewHost = document.querySelector<HTMLDivElement>('.preview-host');
+
+if (!previewHost) {
+  throw new Error('Preview host not found');
+}
+
+const preview = createPreview();
+preview.mount(previewHost);
+
+window.addEventListener('beforeunload', () => {
+  preview.unmount();
+});
