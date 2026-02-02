@@ -70,3 +70,11 @@ All notable changes to this project will be documented in this file. We will log
 - Colors plugin now supports palette modes (manual, analogous, complementary, triadic) with auto-generated swatches and manual overrides; UI wired to state.
 ### Changed
 - Refactored HSL conversion helpers for readability and documented parameters.
+
+## [0.10.1] - 2026-02-02
+### Added
+- Components plugin emitting base component styles (buttons, inputs, card, alert, table, modal) and wired into compiler registry.
+
+## [0.11.0] - 2026-02-02
+### Changed
+- Split components into individual plugins (buttons, inputs, card, alert, table, modal) and wired each into the compiler registry; removed the single monolithic components plugin.
