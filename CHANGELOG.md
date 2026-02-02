@@ -64,3 +64,9 @@ All notable changes to this project will be documented in this file. We will log
 ### Changed
 - Removed legacy compiler emit helper files in favor of plugin-based emitters.
 - `compile` now skips empty emitter outputs to avoid blank CSS chunks.
+
+## [0.10.0] - 2026-02-02
+### Added
+- Colors plugin now supports palette modes (manual, analogous, complementary, triadic) with auto-generated swatches and manual overrides; UI wired to state.
+### Changed
+- Refactored HSL conversion helpers for readability and documented parameters.
