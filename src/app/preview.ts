@@ -1,3 +1,5 @@
+import { compile } from '../compiler/compile';
+
 import { getConfig, subscribe } from './state';
 
 type PreviewHandles = {
@@ -58,8 +60,13 @@ export const createPreview = (): PreviewHandles => {
   const render = () => {
     if (!iframe) return;
     const config = getConfig();
-    // TODO: replace with real compiler output. For now, inject a comment showing the current theme name.
-    const css = `/* theme: ${config.name} | mode: ${config.mode} */`;
+    const compiled = compile(config);
+    const css = [
+      compiled['tokens.css'],
+      compiled['utilities.css'],
+      compiled['components.css'],
+      compiled['index.css'],
+    ].join('\n');
     writePreviewDocument(iframe, css);
   };
 

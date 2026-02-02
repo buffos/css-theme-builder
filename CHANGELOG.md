@@ -40,3 +40,12 @@ All notable changes to this project will be documented in this file. We will log
 - Controls registry scaffolding and name control stub (`src/app/registry.ts`, `src/app/ui.ts`) mounted from `src/main.ts`.
 - Styles for control groups and inputs in `src/style.css`.
 - Design decision note on iframe lifecycle updated earlier (v0.5.0).
+
+## [0.7.0] - 2026-02-02
+### Added
+- Compiler stub (`src/compiler/compile.ts`) returning placeholder CSS files.
+- Preview now consumes compile output for iframe content.
+
+## [0.7.1] - 2026-02-02
+### Added
+- Skeleton emitters for tokens, utilities, and components (`src/compiler/emit-*.ts`) and `compile` now delegates to them.
