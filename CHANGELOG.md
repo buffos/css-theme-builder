@@ -49,3 +49,18 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.7.1] - 2026-02-02
 ### Added
 - Skeleton emitters for tokens, utilities, and components (`src/compiler/emit-*.ts`) and `compile` now delegates to them.
+
+## [0.8.0] - 2026-02-02
+### Added
+- Introduced plugin structure: `plugins/basic-colors` and `plugins/basic-theme-name` control module.
+- Controls registry now pulls controls from plugins; compiler registry uses the colors plugin.
+
+## [0.9.0] - 2026-02-02
+### Added
+- Split remaining sections into plugins: surface, spacing, radius, shadow, typography; each provides compiler entry and controls stub.
+- Compiler and controls registries now fully plugin-driven for these sections.
+
+## [0.9.1] - 2026-02-02
+### Changed
+- Removed legacy compiler emit helper files in favor of plugin-based emitters.
+- `compile` now skips empty emitter outputs to avoid blank CSS chunks.

@@ -17,3 +17,5 @@ export type ControlApi = {
 export type ControlsRegistry = Record<string, ControlModule>;
 
 export const defineControlsRegistry = (registry: ControlsRegistry): ControlsRegistry => registry;
+
+export const controlsRegistry: ControlsRegistry = {};

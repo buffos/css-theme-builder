@@ -3,7 +3,8 @@
 export type ThemeMode = 'light-dark' | 'light' | 'dark' | 'system';
 
 // Section shapes (extensible via module augmentation).
-export type ThemeModules = {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface ThemeModules {
   colors: {
     primary: { 500: string; 600: string };
     neutral: { 50: string; 900: string };
@@ -27,7 +28,7 @@ export type ThemeModules = {
   spacing: Record<string, string>;
   radius: Record<string, string>;
   shadow: Record<string, string>;
-};
+}
 
 // Generic ThemeConfig derived from registered sections.
 export type ThemeConfig<M extends ThemeModules = ThemeModules> = {
