@@ -119,3 +119,11 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.2] - 2026-02-02
 ### Changed
 - Initial theme config now assembled from per-plugin defaults (colors, surface, typography, spacing, radius, shadow, components), removing centralized defaults file.
+
+## [0.12.3] - 2026-02-02
+### Changed
+- Enabled export buttons with proper hover/active styles; disabled state now only applies when the button is actually disabled.
+
+## [0.12.4] - 2026-02-02
+### Changed
+- Danger color in generated palettes now forces a red hue (fixed ~0°) while keeping base saturation/lightness, preventing greenish danger tones.

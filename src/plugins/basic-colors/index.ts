@@ -171,6 +171,12 @@ export const colorsControlModule: ControlModule = {
     };
 
     // Generate palette variants from a base color for the chosen mode.
+    const dangerFromBase = (base: string): string => {
+      const { s, l } = hexToHsl(base);
+      // force hue near 0 (red), preserve saturation/lightness with slight bump
+      return hslToHex(5, Math.min(1, s + 0.05), Math.min(1, l + 0.02));
+    };
+
     const generatePalette = (base: string) => {
       switch (mode) {
         case 'analogous':
@@ -179,7 +185,7 @@ export const colorsControlModule: ControlModule = {
             p600: shiftHue(base, 20, -0.03),
             n50: shiftHue(base, -30, 0.25, -0.25),
             n900: shiftHue(base, 40, -0.3, -0.2),
-            d500: shiftHue(base, -50, 0, 0.1),
+            d500: dangerFromBase(base),
           };
         case 'complementary':
           return {
@@ -187,7 +193,7 @@ export const colorsControlModule: ControlModule = {
             p600: shiftHue(base, 180, -0.02),
             n50: shiftHue(base, 0, 0.3, -0.3),
             n900: shiftHue(base, 180, -0.25, -0.2),
-            d500: shiftHue(base, 200, 0, 0.05),
+            d500: dangerFromBase(base),
           };
         case 'triadic':
           return {
@@ -195,7 +201,7 @@ export const colorsControlModule: ControlModule = {
             p600: shiftHue(base, 120, -0.02),
             n50: shiftHue(base, -120, 0.25, -0.25),
             n900: shiftHue(base, 120, -0.25, -0.2),
-            d500: shiftHue(base, -60, 0, 0.05),
+            d500: dangerFromBase(base),
           };
         default:
           return null;
@@ -233,7 +239,7 @@ export const colorsControlModule: ControlModule = {
 
       const disableManual = mode !== 'manual';
       [p500, p600, n50, n900, d500].forEach((el) => {
-        if (el) el.disabled = disableManual;
+        if (el) el.disabled = disableManual; // disable all other buttons if we are not in manual
       });
       // base color is set only in non-manual modes
       if (baseInput) baseInput.disabled = mode === 'manual';
