@@ -1,7 +1,7 @@
 import { alertCompilerEntry } from '../plugins/basic-alert';
 import { buttonsCompilerEntry } from '../plugins/basic-buttons';
 import { cardCompilerEntry } from '../plugins/basic-card';
-import { colorsCompilerEntry } from '../plugins/basic-colors';
+import { colorsCompilerEntry } from '../plugins/basic-colors/index';
 import { inputsCompilerEntry } from '../plugins/basic-inputs';
 import { modalCompilerEntry } from '../plugins/basic-modal';
 import { radiusCompilerEntry } from '../plugins/basic-radius';

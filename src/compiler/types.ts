@@ -2,33 +2,8 @@
 
 export type ThemeMode = 'light-dark' | 'light' | 'dark' | 'system';
 
-// Section shapes (extensible via module augmentation).
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface ThemeModules {
-  colors: {
-    primary: { 500: string; 600: string };
-    neutral: { 50: string; 900: string };
-    danger?: { 500: string };
-  };
-  surface: {
-    background: string;
-    foreground: string;
-    card: string;
-  };
-  typography: {
-    fontFamily: string;
-    baseFontSizePx: number;
-    scale: {
-      sm: { sizeRem: number; lineHeight: number };
-      base: { sizeRem: number; lineHeight: number };
-      lg: { sizeRem: number; lineHeight: number };
-      xl: { sizeRem: number; lineHeight: number };
-    };
-  };
-  spacing: Record<string, string>;
-  radius: Record<string, string>;
-  shadow: Record<string, string>;
-}
+// Section shapes are provided entirely by plugin module augmentation.
+export interface ThemeModules {} //  eslint-disable-line
 
 // Generic ThemeConfig derived from registered sections.
 export type ThemeConfig<M extends ThemeModules = ThemeModules> = {
@@ -36,6 +11,33 @@ export type ThemeConfig<M extends ThemeModules = ThemeModules> = {
   mode: ThemeMode;
 } & {
   [K in keyof M]: M[K];
+};
+
+export type PartialThemeConfig<M extends ThemeModules = ThemeModules> = Partial<{
+  name: string;
+  mode: ThemeMode;
+}> &
+  Partial<{
+    [K in keyof M]: M[K];
+  }>;
+
+/**
+ * Build a config object starting from name/mode and layering plugin-provided defaults.
+ * Callers are responsible for supplying enough fragments to satisfy all required sections.
+ */
+export const buildThemeConfig = <M extends ThemeModules>(
+  base: PartialThemeConfig<M> = {},
+  fragments: PartialThemeConfig<M>[] = []
+): ThemeConfig<M> => {
+  const merged = Object.assign(
+    {
+      name: 'My Theme',
+      mode: 'light-dark' as ThemeMode,
+    },
+    base,
+    ...fragments
+  ) as ThemeConfig<M>;
+  return merged;
 };
 
 // Section spec used to build compiler registries.
@@ -54,5 +56,4 @@ export type SectionRegistry<M extends ThemeModules = ThemeModules> = {
 };
 
 // Helper to keep registry definitions type-safe.
-export const defineRegistry = <M extends ThemeModules>(registry: SectionRegistry<M>) =>
-  registry;
+export const defineRegistry = <M extends ThemeModules>(registry: SectionRegistry<M>) => registry;

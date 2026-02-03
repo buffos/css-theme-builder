@@ -144,3 +144,11 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.8] - 2026-02-02
 ### Added
 - Success and warning palettes with on-color tokens emitted; defaults set to green and amber tones.
+
+## [0.12.9] - 2026-02-03
+### Added
+- Success and warning swatches exposed in the Colors control; palette inputs now sit in a compact grid with the mode selector on its own line.
+- `buildThemeConfig` helper composes initial config from plugin defaults instead of a hardcoded object.
+### Changed
+- Select elements now match input styling (padding, font, dark chrome) for consistency.
+- Plugin type augmentation avoids a fixed `ThemeModules` shape, keeping the system fully plugin-driven.

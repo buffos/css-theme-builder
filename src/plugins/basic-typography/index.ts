@@ -1,11 +1,20 @@
 import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
-// Augment ThemeModules with typography section.
+// Augment ThemeModules with typography section (explicit shape to avoid cycles).
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeModules {
-    typography: ThemeConfig['typography'];
+    typography: {
+      fontFamily: string;
+      baseFontSizePx: number;
+      scale: {
+        sm: { sizeRem: number; lineHeight: number };
+        base: { sizeRem: number; lineHeight: number };
+        lg: { sizeRem: number; lineHeight: number };
+        xl: { sizeRem: number; lineHeight: number };
+      };
+    };
   }
 }
 

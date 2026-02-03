@@ -1,4 +1,4 @@
-import type { ThemeConfig } from '../compiler/types';
+import { buildThemeConfig, type ThemeConfig } from '../compiler/types';
 import { alertDefaults } from '../plugins/basic-alert';
 import { buttonsDefaults } from '../plugins/basic-buttons';
 import { cardDefaults } from '../plugins/basic-card';
@@ -16,22 +16,25 @@ export type ThemeMode = ThemeConfig['mode'];
 
 type StateListener = (config: ThemeConfig) => void;
 
-const initialConfig = {
-  name: 'Aurora',
-  mode: 'light-dark',
-  ...colorsDefaults,
-  ...surfaceDefaults,
-  ...typographyDefaults,
-  ...spacingDefaults,
-  ...radiusDefaults,
-  ...shadowDefaults,
-  ...alertDefaults,
-  ...buttonsDefaults,
-  ...cardDefaults,
-  ...inputsDefaults,
-  ...modalDefaults,
-  ...tableDefaults,
-} as ThemeConfig;
+const defaultFragments = [
+  colorsDefaults,
+  surfaceDefaults,
+  typographyDefaults,
+  spacingDefaults,
+  radiusDefaults,
+  shadowDefaults,
+  alertDefaults,
+  buttonsDefaults,
+  cardDefaults,
+  inputsDefaults,
+  modalDefaults,
+  tableDefaults,
+];
+
+const initialConfig: ThemeConfig = buildThemeConfig(
+  { name: 'Aurora', mode: 'light-dark' },
+  defaultFragments
+);
 
 let config: ThemeConfig = initialConfig;
 const listeners = new Set<StateListener>();

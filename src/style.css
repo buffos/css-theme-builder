@@ -162,6 +162,17 @@ body {
   font-size: 14px;
 }
 
+.control-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #1f2c4f;
+  background: #0c1324;
+  color: #e7ecff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
 .control-group input:focus {
   outline: 2px solid #476ddb;
   outline-offset: 2px;
@@ -171,6 +182,12 @@ body {
   margin: 0;
   color: #8aa0d6;
   font-size: 13px;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
 }
 
 .preview-host {

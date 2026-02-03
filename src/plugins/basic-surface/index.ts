@@ -1,11 +1,15 @@
 import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
-// Augment ThemeModules with surface section.
+// Augment ThemeModules with surface section without referencing ThemeConfig to avoid cycles.
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeModules {
-    surface: ThemeConfig['surface'];
+    surface: {
+      background: string;
+      foreground: string;
+      card: string;
+    };
   }
 }
 
