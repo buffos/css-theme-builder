@@ -43,6 +43,14 @@ export const colorsCompilerEntry = {
     ].join('\n'),
 };
 
+export const colorsDefaults = {
+  colors: {
+    primary: { 500: '#5b8def', 600: '#3f6ad8' },
+    neutral: { 50: '#f7f9fc', 900: '#0f172a' },
+    danger: { 500: '#f05656' },
+  },
+};
+
 // Controls with palette modes and manual overrides.
 export const colorsControlModule: ControlModule = {
   id: 'colors',

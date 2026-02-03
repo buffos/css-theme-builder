@@ -68,3 +68,7 @@ export const buttonsPreviewModule = {
     </div>
   `,
 };
+
+export const buttonsDefaults = {
+  buttons: {},
+};

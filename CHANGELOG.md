@@ -115,3 +115,7 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.1] - 2026-02-02
 ### Fixed
 - Cleaned export zip typing and lint issues; payload now uses `Zippable` and Blob creation is typed.
+
+## [0.12.2] - 2026-02-02
+### Changed
+- Initial theme config now assembled from per-plugin defaults (colors, surface, typography, spacing, radius, shadow, components), removing centralized defaults file.

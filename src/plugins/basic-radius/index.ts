@@ -40,3 +40,7 @@ export const radiusControlModule: ControlModule = {
     `;
   },
 };
+
+export const radiusDefaults = {
+  radius: { 1: '8px', 2: '12px' },
+};

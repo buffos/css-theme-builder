@@ -51,3 +51,16 @@ export const typographyControlModule: ControlModule = {
     `;
   },
 };
+
+export const typographyDefaults = {
+  typography: {
+    fontFamily: 'Inter, "Segoe UI", system-ui, -apple-system, sans-serif',
+    baseFontSizePx: 16,
+    scale: {
+      sm: { sizeRem: 0.875, lineHeight: 1.4 },
+      base: { sizeRem: 1, lineHeight: 1.6 },
+      lg: { sizeRem: 1.125, lineHeight: 1.6 },
+      xl: { sizeRem: 1.25, lineHeight: 1.6 },
+    },
+  },
+};

@@ -45,3 +45,7 @@ export const cardPreviewModule = {
     </div>
   `,
 };
+
+export const cardDefaults = {
+  card: {},
+};

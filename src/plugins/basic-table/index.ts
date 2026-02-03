@@ -60,3 +60,7 @@ export const tablePreviewModule = {
     </table>
   `,
 };
+
+export const tableDefaults = {
+  table: {},
+};

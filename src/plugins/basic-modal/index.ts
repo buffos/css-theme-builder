@@ -60,3 +60,7 @@ export const modalPreviewModule = {
     </div>
   `,
 };
+
+export const modalDefaults = {
+  modal: {},
+};

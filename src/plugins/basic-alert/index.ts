@@ -40,3 +40,7 @@ export const alertPreviewModule = {
   title: 'Alert',
   render: () => `<div class="alert">Something happened; here is an alert preview.</div>`,
 };
+
+export const alertDefaults = {
+  alert: {},
+};

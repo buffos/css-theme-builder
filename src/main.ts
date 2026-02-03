@@ -1,5 +1,5 @@
 import './style.css';
-import { downloadCssBundle, downloadJson } from './app/export';
+import { downloadCssBundle, downloadJson, loadConfigFromFile } from './app/export';
 import { createPreview } from './app/preview';
 import { getConfig, subscribe, updateConfig } from './app/state';
 import { controlsRegistry } from './app/ui';
@@ -37,6 +37,7 @@ root.innerHTML = `
     <section class="app-shell__footer" aria-label="Export actions">
       <button type="button" data-action="download-json">Download theme.config.json</button>
       <button type="button" data-action="download-css">Download css-bundle.zip</button>
+      <button type="button" data-action="load-json">Load theme.config.json</button>
     </section>
   </main>
 `;
@@ -103,6 +104,7 @@ window.addEventListener('beforeunload', () => {
 
 const jsonBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-json"]');
 const cssBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-css"]');
+const loadBtn = document.querySelector<HTMLButtonElement>('button[data-action="load-json"]');
 
 jsonBtn?.addEventListener('click', () => {
   downloadJson();
@@ -110,4 +112,18 @@ jsonBtn?.addEventListener('click', () => {
 
 cssBtn?.addEventListener('click', () => {
   downloadCssBundle();
+});
+
+loadBtn?.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.addEventListener('change', () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    loadConfigFromFile(file).catch((err) => {
+      console.error(err);
+    });
+  });
+  input.click();
 });

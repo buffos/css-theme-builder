@@ -122,3 +122,7 @@ export const inputsPreviewModule = {
     </div>
   `,
 };
+
+export const inputsDefaults = {
+  inputs: {},
+};

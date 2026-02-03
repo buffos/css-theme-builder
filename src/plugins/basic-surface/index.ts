@@ -36,3 +36,11 @@ export const surfaceControlModule: ControlModule = {
     `;
   },
 };
+
+export const surfaceDefaults = {
+  surface: {
+    background: '#0b1021',
+    foreground: '#e7ecff',
+    card: '#0f1729',
+  },
+};
