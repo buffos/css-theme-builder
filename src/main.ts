@@ -107,11 +107,28 @@ const jsonBtn = document.querySelector<HTMLButtonElement>('button[data-action="d
 const cssBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-css"]');
 const loadBtn = document.querySelector<HTMLButtonElement>('button[data-action="load-json"]');
 const statusEl = document.querySelector<HTMLDivElement>('.export-status');
+const toastRoot = document.body;
 
 const setStatus = (message: string, tone: 'info' | 'error' = 'info') => {
-  if (!statusEl) return;
-  statusEl.textContent = message;
-  statusEl.dataset.tone = tone;
+  if (statusEl) {
+    statusEl.textContent = message;
+    statusEl.dataset.tone = tone;
+  }
+  showToast(tone === 'error' ? 'Error' : 'Success', message, tone);
+};
+
+const showToast = (title: string, message: string, tone: 'info' | 'error' = 'info') => {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.dataset.tone = tone;
+  toast.innerHTML = `
+    <div class="toast__title">${title}</div>
+    <div class="toast__body">${message}</div>
+  `;
+  toastRoot.appendChild(toast);
+  setTimeout(() => {
+    toast.remove();
+  }, 3500);
 };
 
 jsonBtn?.addEventListener('click', () => {

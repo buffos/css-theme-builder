@@ -131,3 +131,7 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.5] - 2026-02-02
 ### Added
 - Export/footer status messaging for downloads and load failures; visible, screen-reader-friendly status text.
+
+## [0.12.6] - 2026-02-02
+### Added
+- Toast notifications for export/load success and errors; styled and animated for quick feedback.
