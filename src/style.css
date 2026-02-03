@@ -195,6 +195,17 @@ body {
   gap: 12px;
 }
 
+.export-status {
+  min-height: 20px;
+  color: #9cb2f3;
+  font-size: 13px;
+  align-self: center;
+}
+
+.export-status[data-tone='error'] {
+  color: #f79ea0;
+}
+
 button {
   appearance: none;
   border: 1px solid #2f497a;

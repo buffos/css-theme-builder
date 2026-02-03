@@ -38,6 +38,7 @@ root.innerHTML = `
       <button type="button" data-action="download-json">Download theme.config.json</button>
       <button type="button" data-action="download-css">Download css-bundle.zip</button>
       <button type="button" data-action="load-json">Load theme.config.json</button>
+      <div class="export-status" role="status" aria-live="polite"></div>
     </section>
   </main>
 `;
@@ -105,13 +106,22 @@ window.addEventListener('beforeunload', () => {
 const jsonBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-json"]');
 const cssBtn = document.querySelector<HTMLButtonElement>('button[data-action="download-css"]');
 const loadBtn = document.querySelector<HTMLButtonElement>('button[data-action="load-json"]');
+const statusEl = document.querySelector<HTMLDivElement>('.export-status');
+
+const setStatus = (message: string, tone: 'info' | 'error' = 'info') => {
+  if (!statusEl) return;
+  statusEl.textContent = message;
+  statusEl.dataset.tone = tone;
+};
 
 jsonBtn?.addEventListener('click', () => {
   downloadJson();
+  setStatus('Downloaded theme.config.json');
 });
 
 cssBtn?.addEventListener('click', () => {
   downloadCssBundle();
+  setStatus('Downloaded css-bundle.zip');
 });
 
 loadBtn?.addEventListener('click', () => {
@@ -123,6 +133,7 @@ loadBtn?.addEventListener('click', () => {
     if (!file) return;
     loadConfigFromFile(file).catch((err) => {
       console.error(err);
+      setStatus(err instanceof Error ? err.message : 'Failed to load config', 'error');
     });
   });
   input.click();

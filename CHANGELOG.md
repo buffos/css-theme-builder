@@ -127,3 +127,7 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.4] - 2026-02-02
 ### Changed
 - Danger color in generated palettes now forces a red hue (fixed ~0°) while keeping base saturation/lightness, preventing greenish danger tones.
+
+## [0.12.5] - 2026-02-02
+### Added
+- Export/footer status messaging for downloads and load failures; visible, screen-reader-friendly status text.
