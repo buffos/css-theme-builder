@@ -135,3 +135,12 @@ All notable changes to this project will be documented in this file. We will log
 ## [0.12.6] - 2026-02-02
 ### Added
 - Toast notifications for export/load success and errors; styled and animated for quick feedback.
+
+## [0.12.7] - 2026-02-02
+### Changed
+- Colors plugin now emits on-color tokens (on-primary, on-danger, on-surface) using luminance to pick readable text colors.
+- Buttons primary text and alert text now use on-color tokens for better contrast.
+
+## [0.12.8] - 2026-02-02
+### Added
+- Success and warning palettes with on-color tokens emitted; defaults set to green and amber tones.

@@ -18,7 +18,7 @@ export const alertCompilerEntry = {
   border-radius: var(--radius-1, 8px);
   border: 1px solid var(--color-danger-500, #f05656);
   background: color-mix(in srgb, var(--color-danger-500, #f05656) 8%, transparent);
-  color: var(--surface-fg, #e7ecff);
+  color: var(--on-danger, #e7ecff);
 }
 `,
 };
