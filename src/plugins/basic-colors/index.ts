@@ -1,5 +1,6 @@
 import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
+import { getContrastRatio, getOnColor, getWCAGLevel } from '../../utils/colors';
 
 type PaletteMode = 'manual' | 'analogous' | 'complementary' | 'triadic';
 
@@ -26,22 +27,6 @@ export const colorsCompilerEntry = {
     if (!colors) return '';
     const getColor = (val: unknown) => (typeof val === 'string' ? val : undefined);
 
-    const luminance = (hex: string): number => {
-      const clean = hex.replace('#', '');
-      if (clean.length !== 6) return 0;
-      const num = Number.parseInt(clean, 16);
-      const r = ((num >> 16) & 255) / 255;
-      const g = ((num >> 8) & 255) / 255;
-      const b = (num & 255) / 255;
-      const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-      const rl = lin(r);
-      const gl = lin(g);
-      const bl = lin(b);
-      return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
-    };
-
-    const onColor = (bg: string): string => (luminance(bg) > 0.6 ? '#0b1021' : '#f8fbff');
-
     const primary500 = getColor(colors.primary?.[500]);
     const primary600 = getColor(colors.primary?.[600]);
     const neutral50 = getColor(colors.neutral?.[50]);
@@ -49,11 +34,11 @@ export const colorsCompilerEntry = {
     const danger500 = getColor(colors.danger?.[500]);
     const success500 = getColor(colors.success?.[500]);
     const warning500 = getColor(colors.warning?.[500]);
-    const primaryOn = onColor(primary500 ?? '#5b8def');
-    const dangerOn = onColor(danger500 ?? '#f05656');
-    const successOn = onColor(success500 ?? '#3ba55a');
-    const warningOn = onColor(warning500 ?? '#f29e38');
-    const surfaceOn = onColor(config.surface?.card ?? '#ffffff');
+    const primaryOn = getOnColor(primary500 ?? '#5b8def');
+    const dangerOn = getOnColor(danger500 ?? '#f05656');
+    const successOn = getOnColor(success500 ?? '#3ba55a');
+    const warningOn = getOnColor(warning500 ?? '#f29e38');
+    const surfaceOn = getOnColor(config.surface?.card ?? '#ffffff');
 
     const lines = [
       ':root {',
@@ -78,22 +63,6 @@ export const colorsCompilerEntry = {
     if (!colors) return '';
     const getColor = (val: unknown) => (typeof val === 'string' ? val : undefined);
 
-    const luminance = (hex: string): number => {
-      const clean = hex.replace('#', '');
-      if (clean.length !== 6) return 0;
-      const num = Number.parseInt(clean, 16);
-      const r = ((num >> 16) & 255) / 255;
-      const g = ((num >> 8) & 255) / 255;
-      const b = (num & 255) / 255;
-      const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-      const rl = lin(r);
-      const gl = lin(g);
-      const bl = lin(b);
-      return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
-    };
-
-    const onColor = (bg: string): string => (luminance(bg) > 0.6 ? '#0b1021' : '#f8fbff');
-
     const primary500 = getColor(colors.primary?.[500]);
     const primary600 = getColor(colors.primary?.[600]);
     const neutral50 = getColor(colors.neutral?.[50]);
@@ -101,11 +70,11 @@ export const colorsCompilerEntry = {
     const danger500 = getColor(colors.danger?.[500]);
     const success500 = getColor(colors.success?.[500]);
     const warning500 = getColor(colors.warning?.[500]);
-    const primaryOn = onColor(primary500 ?? '#5b8def');
-    const dangerOn = onColor(danger500 ?? '#f05656');
-    const successOn = onColor(success500 ?? '#3ba55a');
-    const warningOn = onColor(warning500 ?? '#f29e38');
-    const surfaceOn = onColor(config.surface?.darkCardSnippet ?? '#0f1729');
+    const primaryOn = getOnColor(primary500 ?? '#5b8def');
+    const dangerOn = getOnColor(danger500 ?? '#f05656');
+    const successOn = getOnColor(success500 ?? '#3ba55a');
+    const warningOn = getOnColor(warning500 ?? '#f29e38');
+    const surfaceOn = getOnColor(config.surface?.darkCardSnippet ?? '#0f1729');
 
     const lines = [
       ':root {',
@@ -163,35 +132,35 @@ export const colorsControlModule: ControlModule = {
       </div>
       <div class="control-grid">
         <div class="control-group">
-          <label for="base-color">Base color</label>
+          <label for="base-color">Base color <span id="base-color-badge"></span></label>
           <input id="base-color" name="base-color" type="color" value="#5b8def" />
         </div>
         <div class="control-group">
-          <label for="primary-500">Primary 500</label>
+          <label for="primary-500">Primary 500 <span id="primary-500-badge"></span></label>
           <input id="primary-500" name="primary-500" type="color" />
         </div>
         <div class="control-group">
-          <label for="primary-600">Primary 600</label>
+          <label for="primary-600">Primary 600 <span id="primary-600-badge"></span></label>
           <input id="primary-600" name="primary-600" type="color" />
         </div>
         <div class="control-group">
-          <label for="neutral-50">Neutral 50</label>
+          <label for="neutral-50">Neutral 50 <span id="neutral-50-badge"></span></label>
           <input id="neutral-50" name="neutral-50" type="color" />
         </div>
         <div class="control-group">
-          <label for="neutral-900">Neutral 900</label>
+          <label for="neutral-900">Neutral 900 <span id="neutral-900-badge"></span></label>
           <input id="neutral-900" name="neutral-900" type="color" />
         </div>
         <div class="control-group">
-          <label for="danger-500">Danger 500</label>
+          <label for="danger-500">Danger 500 <span id="danger-500-badge"></span></label>
           <input id="danger-500" name="danger-500" type="color" />
         </div>
         <div class="control-group">
-          <label for="success-500">Success 500</label>
+          <label for="success-500">Success 500 <span id="success-500-badge"></span></label>
           <input id="success-500" name="success-500" type="color" />
         </div>
         <div class="control-group">
-          <label for="warning-500">Warning 500</label>
+          <label for="warning-500">Warning 500 <span id="warning-500-badge"></span></label>
           <input id="warning-500" name="warning-500" type="color" />
         </div>
       </div>
@@ -207,6 +176,37 @@ export const colorsControlModule: ControlModule = {
     const d500 = container.querySelector<HTMLInputElement>('#danger-500');
     const s500 = container.querySelector<HTMLInputElement>('#success-500');
     const w500 = container.querySelector<HTMLInputElement>('#warning-500');
+    const badges = {
+      base: container.querySelector<HTMLElement>('#base-color-badge'),
+      p500: container.querySelector<HTMLElement>('#primary-500-badge'),
+      p600: container.querySelector<HTMLElement>('#primary-600-badge'),
+      n50: container.querySelector<HTMLElement>('#neutral-50-badge'),
+      n900: container.querySelector<HTMLElement>('#neutral-900-badge'),
+      d500: container.querySelector<HTMLElement>('#danger-500-badge'),
+      s500: container.querySelector<HTMLElement>('#success-500-badge'),
+      w500: container.querySelector<HTMLElement>('#warning-500-badge'),
+    };
+
+    const updateBadge = (el: HTMLElement | null, color: string, onColor?: string) => {
+      if (!el || !color) return;
+      const targetOn = onColor ?? getOnColor(color);
+      const ratio = getContrastRatio(color, targetOn);
+      const level = getWCAGLevel(ratio);
+      el.className = 'accessibility-badge';
+      el.dataset.level = level;
+      el.textContent = `${level} ${ratio.toFixed(1)}:1`;
+    };
+
+    const updateAllBadges = (cfg: ThemeConfig) => {
+      updateBadge(badges.base, cfg.colors?.primary?.[500] ?? '');
+      updateBadge(badges.p500, cfg.colors?.primary?.[500] ?? '');
+      updateBadge(badges.p600, cfg.colors?.primary?.[600] ?? '');
+      updateBadge(badges.n50, cfg.colors?.neutral?.[50] ?? '');
+      updateBadge(badges.n900, cfg.colors?.neutral?.[900] ?? '');
+      updateBadge(badges.d500, cfg.colors?.danger?.[500] ?? '');
+      updateBadge(badges.s500, cfg.colors?.success?.[500] ?? '');
+      updateBadge(badges.w500, cfg.colors?.warning?.[500] ?? '');
+    };
 
     const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
       const clean = hex.replace('#', '');
@@ -322,23 +322,33 @@ export const colorsControlModule: ControlModule = {
       }));
     };
 
-    const syncInputs = () => {
-      const cfg = api.getConfig();
+    const syncPaletteState = (cfg: ThemeConfig) => {
       if (modeSelect) modeSelect.value = mode;
       if (baseInput && cfg.colors?.primary?.[500]) baseInput.value = cfg.colors.primary[500];
-      if (p500 && cfg.colors?.primary?.[500]) p500.value = cfg.colors.primary[500];
-      if (p600 && cfg.colors?.primary?.[600]) p600.value = cfg.colors.primary[600];
-      if (n50 && cfg.colors?.neutral?.[50]) n50.value = cfg.colors.neutral[50];
-      if (n900 && cfg.colors?.neutral?.[900]) n900.value = cfg.colors.neutral[900];
-      if (d500 && cfg.colors?.danger?.[500]) d500.value = cfg.colors.danger[500];
-      if (s500 && cfg.colors?.success?.[500]) s500.value = cfg.colors.success[500];
-      if (w500 && cfg.colors?.warning?.[500]) w500.value = cfg.colors.warning[500];
-
       const disableManual = mode !== 'manual';
       [p500, p600, n50, n900, d500, s500, w500].forEach((el) => {
         if (el) el.disabled = disableManual;
       });
       if (baseInput) baseInput.disabled = mode === 'manual';
+    };
+
+    const syncColorValues = (cfg: ThemeConfig) => {
+      const c = cfg.colors;
+      if (!c) return;
+      if (p500 && c.primary?.[500]) p500.value = c.primary[500];
+      if (p600 && c.primary?.[600]) p600.value = c.primary[600];
+      if (n50 && c.neutral?.[50]) n50.value = c.neutral[50];
+      if (n900 && c.neutral?.[900]) n900.value = c.neutral[900];
+      if (d500 && c.danger?.[500]) d500.value = c.danger[500];
+      if (s500 && c.success?.[500]) s500.value = c.success[500];
+      if (w500 && c.warning?.[500]) w500.value = c.warning[500];
+    };
+
+    const syncInputs = () => {
+      const cfg = api.getConfig();
+      syncPaletteState(cfg);
+      syncColorValues(cfg);
+      updateAllBadges(cfg);
     };
 
     const onModeChange = () => {
@@ -394,4 +404,4 @@ export const colorsControlModule: ControlModule = {
 };
 
 // Re-export explicitly to avoid tree-shaking glitches in dev reloads.
-export { colorsCompilerEntry as default };
+export default colorsCompilerEntry;

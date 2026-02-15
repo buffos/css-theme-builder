@@ -294,3 +294,13 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented dynamic `@import` emission in the Typography compiler.
   - Added a searchable font picker (datalist) to the Typography panel.
   - Refactored `basic-typography` plugin to improve type safety and reduce cognitive complexity.
+
+## [0.20.0] - 2026-02-11
+
+### Added
+
+- Real-Time Accessibility Checks:
+  - Created `utils/colors.ts` with WCAG 2.1 contrast and luminance calculation helpers.
+  - Added live contrast badges (AAA/AA/Fail) to the Colors panel.
+  - Badges update instantly during color picking or palette generation.
+  - Refactored `basic-colors` plugin to use shared utilities and reduced cognitive complexity.
