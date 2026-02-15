@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import type { ThemeConfig } from '../../compiler/types';
+
 import { spacingCompilerEntry, generateSpacingTokens } from './index';
 
 describe('Spacing Scale Generator', () => {

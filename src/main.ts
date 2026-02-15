@@ -131,7 +131,8 @@ Object.values(controlsRegistry).forEach((module, index) => {
   details.append(summary, container);
   controlsHost.appendChild(details);
 
-  module.mount(container, controlApi);
+  const cleanup = module.mount(container, controlApi);
+  if (cleanup) controlCleanups.push(cleanup);
   if (module.unmount) controlCleanups.push(module.unmount);
 
   if (details.open) openIds.add(module.id);

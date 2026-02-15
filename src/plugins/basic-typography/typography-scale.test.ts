@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import type { ThemeConfig } from '../../compiler/types';
+
 import { typographyCompilerEntry } from './index';
 
 describe('Typography Scale Presets', () => {

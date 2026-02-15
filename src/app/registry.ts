@@ -3,7 +3,7 @@ import type { ThemeConfig } from '../compiler/types';
 export type ControlModule = {
   id: string;
   title: string;
-  mount: (container: HTMLElement, api: ControlApi) => void;
+  mount: (container: HTMLElement, api: ControlApi) => (() => void) | void;
   unmount?: () => void;
 };
 

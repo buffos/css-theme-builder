@@ -1,8 +1,8 @@
+import type { ThemeConfig } from '../compiler/types';
 import { alertPreviewModule } from '../plugins/basic-alert';
 import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
 import { colorsPreviewModule } from '../plugins/basic-colors';
-import { dashboardPreviewModule } from '../plugins/dashboard';
 import { elevationPreviewModule } from '../plugins/basic-elevation';
 import { iconsPreviewModule } from '../plugins/basic-icons';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
@@ -17,11 +17,12 @@ import { styleguidePreviewModule } from '../plugins/basic-styleguide';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
 import { typographyPreviewModule } from '../plugins/basic-typography';
+import { dashboardPreviewModule } from '../plugins/dashboard';
 
 export type PreviewModule = {
   id: string;
   title: string;
-  render: (config: any) => string;
+  render: (config: ThemeConfig) => string;
 };
 
 export const previewModules: PreviewModule[] = [

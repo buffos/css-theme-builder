@@ -13,11 +13,13 @@ describe('Compiler Core', () => {
     },
     surface: {
       background: '#ffffff',
-      foreground: '#000000',
+      onBackground: '#000000',
       card: '#f0f0f0',
-      darkBackgroundSnippet: '#111111',
-      darkForegroundSnippet: '#eeeeee',
-      darkCardSnippet: '#222222',
+      onCard: '#000000',
+      darkBackground: '#111111',
+      darkOnBackground: '#eeeeee',
+      darkCard: '#222222',
+      darkOnCard: '#eeeeee',
     }
   } as unknown as ThemeConfig;
 
