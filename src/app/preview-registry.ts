@@ -8,6 +8,7 @@ export type PreviewModule = {
 import { alertPreviewModule } from '../plugins/basic-alert';
 import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
+import { colorsPreviewModule } from '../plugins/basic-colors';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
@@ -18,6 +19,7 @@ import { dashboardPreviewModule } from '../plugins/dashboard';
 
 export const previewModules = [
   dashboardPreviewModule,
+  colorsPreviewModule,
   buttonsPreviewModule,
   inputsPreviewModule,
   cardPreviewModule,

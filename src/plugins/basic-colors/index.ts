@@ -1,8 +1,23 @@
 import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
-import { getContrastRatio, getOnColor, getWCAGLevel } from '../../utils/colors';
+import { 
+  getContrastRatio, 
+  getOnColor, 
+  getWCAGLevel, 
+  hexToHsl, 
+  hslToHex, 
+  nudgeContrast 
+} from '../../utils/colors';
 
 type PaletteMode = 'manual' | 'analogous' | 'complementary' | 'triadic';
+
+/** Picks which neutral provides better contrast as text on the given background */
+const pickOnColor = (bg: string, n50?: string, n900?: string): string => {
+  const r50 = n50 ? getContrastRatio(bg, n50) : 0;
+  const r900 = n900 ? getContrastRatio(bg, n900) : 0;
+  return r900 >= r50 ? (n900 ?? getOnColor(bg)) : (n50 ?? getOnColor(bg));
+};
+
 
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -34,29 +49,31 @@ export const colorsCompilerEntry = {
     const danger500 = getColor(colors.danger?.[500]);
     const success500 = getColor(colors.success?.[500]);
     const warning500 = getColor(colors.warning?.[500]);
-    const primaryOn = getOnColor(primary500 ?? '#5b8def');
-    const dangerOn = getOnColor(danger500 ?? '#f05656');
-    const successOn = getOnColor(success500 ?? '#3ba55a');
-    const warningOn = getOnColor(warning500 ?? '#f29e38');
-    const surfaceOn = getOnColor(config.surface?.card ?? '#ffffff');
 
-    const lines = [
-      ':root {',
-      `  --color-primary-500: ${primary500 ?? ''};`,
-      `  --color-primary-600: ${primary600 ?? ''};`,
-      `  --color-neutral-50: ${neutral50 ?? ''};`,
-      `  --color-neutral-900: ${neutral900 ?? ''};`,
-      `  --on-primary: ${primaryOn};`,
-      `  --on-danger: ${dangerOn};`,
-      `  --on-success: ${successOn};`,
-      `  --on-warning: ${warningOn};`,
-      `  --on-surface: ${surfaceOn};`,
-    ];
-    if (danger500) lines.push(`  --color-danger-500: ${danger500};`);
-    if (success500) lines.push(`  --color-success-500: ${success500};`);
-    if (warning500) lines.push(`  --color-warning-500: ${warning500};`);
-    lines.push('}');
-    return lines.join('\n');
+    const primaryOn = pickOnColor(primary500 ?? '#5b8def', neutral50, neutral900);
+    const dangerOn = pickOnColor(danger500 ?? '#f05656', neutral50, neutral900);
+    const successOn = pickOnColor(success500 ?? '#3ba55a', neutral50, neutral900);
+    const warningOn = pickOnColor(warning500 ?? '#f29e38', neutral50, neutral900);
+    const surfaceOn = pickOnColor(neutral50 ?? config.surface?.card ?? '#ffffff', neutral50, neutral900);
+
+    return `
+:root {
+  --color-primary-500: ${primary500 ?? ''};
+  --color-primary-600: ${primary600 ?? ''};
+  --color-neutral-50: ${neutral50 ?? ''};
+  --color-neutral-900: ${neutral900 ?? ''};
+  
+  --on-primary: ${primaryOn};
+  --on-danger: ${dangerOn};
+  --on-success: ${successOn};
+  --on-warning: ${warningOn};
+  --on-surface: ${surfaceOn};
+  
+  --color-danger-500: ${danger500 ?? ''};
+  --color-success-500: ${success500 ?? ''};
+  --color-warning-500: ${warning500 ?? ''};
+}
+`;
   },
   emitDarkTokens: (config: ThemeConfig) => {
     const colors = config.colors;
@@ -70,29 +87,31 @@ export const colorsCompilerEntry = {
     const danger500 = getColor(colors.danger?.[500]);
     const success500 = getColor(colors.success?.[500]);
     const warning500 = getColor(colors.warning?.[500]);
-    const primaryOn = getOnColor(primary500 ?? '#5b8def');
-    const dangerOn = getOnColor(danger500 ?? '#f05656');
-    const successOn = getOnColor(success500 ?? '#3ba55a');
-    const warningOn = getOnColor(warning500 ?? '#f29e38');
-    const surfaceOn = getOnColor(config.surface?.darkCardSnippet ?? '#0f1729');
 
-    const lines = [
-      ':root {',
-      `  --color-primary-500: ${primary500 ?? ''};`,
-      `  --color-primary-600: ${primary600 ?? ''};`,
-      `  --color-neutral-50: ${neutral50 ?? ''};`,
-      `  --color-neutral-900: ${neutral900 ?? ''};`,
-      `  --on-primary: ${primaryOn};`,
-      `  --on-danger: ${dangerOn};`,
-      `  --on-success: ${successOn};`,
-      `  --on-warning: ${warningOn};`,
-      `  --on-surface: ${surfaceOn};`,
-    ];
-    if (danger500) lines.push(`  --color-danger-500: ${danger500};`);
-    if (success500) lines.push(`  --color-success-500: ${success500};`);
-    if (warning500) lines.push(`  --color-warning-500: ${warning500};`);
-    lines.push('}');
-    return lines.join('\n');
+    const primaryOn = pickOnColor(primary500 ?? '#5b8def', neutral50, neutral900);
+    const dangerOn = pickOnColor(danger500 ?? '#f05656', neutral50, neutral900);
+    const successOn = pickOnColor(success500 ?? '#3ba55a', neutral50, neutral900);
+    const warningOn = pickOnColor(warning500 ?? '#f29e38', neutral50, neutral900);
+    const surfaceOn = pickOnColor(neutral900 ?? '#0f172a', neutral50, neutral900);
+
+    return `
+:root {
+  --color-primary-500: ${primary500 ?? ''};
+  --color-primary-600: ${primary600 ?? ''};
+  --color-neutral-50: ${neutral50 ?? ''};
+  --color-neutral-900: ${neutral900 ?? ''};
+  
+  --on-primary: ${primaryOn};
+  --on-danger: ${dangerOn};
+  --on-success: ${successOn};
+  --on-warning: ${warningOn};
+  --on-surface: ${surfaceOn};
+  
+  --color-danger-500: ${danger500 ?? ''};
+  --color-success-500: ${success500 ?? ''};
+  --color-warning-500: ${warning500 ?? ''};
+}
+`;
   },
   emitUtilities: () =>
     [
@@ -113,7 +132,6 @@ export const colorsDefaults = {
   },
 };
 
-// Controls with palette modes and manual overrides.
 export const colorsControlModule: ControlModule = {
   id: 'colors',
   title: 'Colors',
@@ -164,18 +182,20 @@ export const colorsControlModule: ControlModule = {
           <input id="warning-500" name="warning-500" type="color" />
         </div>
       </div>
-      <p class="controls-placeholder">Pick a mode or fine-tune manually.</p>
     `;
 
-    const modeSelect = container.querySelector<HTMLSelectElement>('#color-mode');
-    const baseInput = container.querySelector<HTMLInputElement>('#base-color');
-    const p500 = container.querySelector<HTMLInputElement>('#primary-500');
-    const p600 = container.querySelector<HTMLInputElement>('#primary-600');
-    const n50 = container.querySelector<HTMLInputElement>('#neutral-50');
-    const n900 = container.querySelector<HTMLInputElement>('#neutral-900');
-    const d500 = container.querySelector<HTMLInputElement>('#danger-500');
-    const s500 = container.querySelector<HTMLInputElement>('#success-500');
-    const w500 = container.querySelector<HTMLInputElement>('#warning-500');
+    const inputs = {
+      mode: container.querySelector<HTMLSelectElement>('#color-mode'),
+      base: container.querySelector<HTMLInputElement>('#base-color'),
+      p500: container.querySelector<HTMLInputElement>('#primary-500'),
+      p600: container.querySelector<HTMLInputElement>('#primary-600'),
+      n50: container.querySelector<HTMLInputElement>('#neutral-50'),
+      n900: container.querySelector<HTMLInputElement>('#neutral-900'),
+      d500: container.querySelector<HTMLInputElement>('#danger-500'),
+      s500: container.querySelector<HTMLInputElement>('#success-500'),
+      w500: container.querySelector<HTMLInputElement>('#warning-500'),
+    };
+    
     const badges = {
       base: container.querySelector<HTMLElement>('#base-color-badge'),
       p500: container.querySelector<HTMLElement>('#primary-500-badge'),
@@ -187,77 +207,47 @@ export const colorsControlModule: ControlModule = {
       w500: container.querySelector<HTMLElement>('#warning-500-badge'),
     };
 
-    const updateBadge = (el: HTMLElement | null, color: string, onColor?: string) => {
+    /** Picks which neutral will be used as text on the given background */
+    const getTextColorFor = (bg: string): string => {
+      const cfg = api.getConfig();
+      const n50 = cfg.colors?.neutral?.[50] ?? '#f7f9fc';
+      const n900 = cfg.colors?.neutral?.[900] ?? '#0f172a';
+      const r50 = getContrastRatio(bg, n50);
+      const r900 = getContrastRatio(bg, n900);
+      return r900 >= r50 ? n900 : n50;
+    };
+
+    const fixContrast = (key: string, color: string, onColor: string) => {
+      const fixed = nudgeContrast(color, onColor);
+      api.updateConfig((cfg) => {
+        const next = { ...cfg };
+        if (key === 'primary-500') next.colors = { ...next.colors, primary: { ...next.colors?.primary, 500: fixed } };
+        if (key === 'primary-600') next.colors = { ...next.colors, primary: { ...next.colors?.primary, 600: fixed } };
+        if (key === 'neutral-50') next.colors = { ...next.colors, neutral: { ...next.colors?.neutral, 50: fixed } };
+        if (key === 'neutral-900') next.colors = { ...next.colors, neutral: { ...next.colors?.neutral, 900: fixed } };
+        if (key === 'danger-500') next.colors = { ...next.colors, danger: { 500: fixed } };
+        if (key === 'success-500') next.colors = { ...next.colors, success: { 500: fixed } };
+        if (key === 'warning-500') next.colors = { ...next.colors, warning: { 500: fixed } };
+        return next;
+      });
+    };
+
+    const updateBadge = (el: HTMLElement | null, color: string, key: string) => {
       if (!el || !color) return;
-      const targetOn = onColor ?? getOnColor(color);
-      const ratio = getContrastRatio(color, targetOn);
+      const onColor = getTextColorFor(color);
+      const ratio = getContrastRatio(color, onColor);
       const level = getWCAGLevel(ratio);
-      el.className = 'accessibility-badge';
-      el.dataset.level = level;
-      el.textContent = `${level} ${ratio.toFixed(1)}:1`;
-    };
-
-    const updateAllBadges = (cfg: ThemeConfig) => {
-      updateBadge(badges.base, cfg.colors?.primary?.[500] ?? '');
-      updateBadge(badges.p500, cfg.colors?.primary?.[500] ?? '');
-      updateBadge(badges.p600, cfg.colors?.primary?.[600] ?? '');
-      updateBadge(badges.n50, cfg.colors?.neutral?.[50] ?? '');
-      updateBadge(badges.n900, cfg.colors?.neutral?.[900] ?? '');
-      updateBadge(badges.d500, cfg.colors?.danger?.[500] ?? '');
-      updateBadge(badges.s500, cfg.colors?.success?.[500] ?? '');
-      updateBadge(badges.w500, cfg.colors?.warning?.[500] ?? '');
-    };
-
-    const hexToHsl = (hex: string): { h: number; s: number; l: number } => {
-      const clean = hex.replace('#', '');
-      if (clean.length !== 6) return { h: 0, s: 0, l: 0.5 };
-      const num = Number.parseInt(clean, 16);
-      const r = (num >> 16) & 255;
-      const g = (num >> 8) & 255;
-      const b = num & 255;
-      const rn = r / 255;
-      const gn = g / 255;
-      const bn = b / 255;
-      const max = Math.max(rn, gn, bn);
-      const min = Math.min(rn, gn, bn);
-      const l = (max + min) / 2;
-      const d = max - min;
-      if (d === 0) return { h: 0, s: 0, l };
-      const s = d / (1 - Math.abs(2 * l - 1));
-      let h = 0;
-      switch (max) {
-        case rn:
-          h = ((gn - bn) / d) % 6;
-          break;
-        case gn:
-          h = (bn - rn) / d + 2;
-          break;
-        default:
-          h = (rn - gn) / d + 4;
-      }
-      h *= 60;
-      if (h < 0) h += 360;
-      return { h, s, l };
-    };
-
-    const hueSegment = (h: number, c: number, x: number): [number, number, number] => {
-      if (h < 60) return [c, x, 0];
-      if (h < 120) return [x, c, 0];
-      if (h < 180) return [0, c, x];
-      if (h < 240) return [0, x, c];
-      if (h < 300) return [x, 0, c];
-      return [c, 0, x];
-    };
-
-    const hslToHex = (h: number, s: number, l: number): string => {
-      const c = (1 - Math.abs(2 * l - 1)) * s;
-      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-      const m = l - c / 2;
-      const [r1, g1, b1] = hueSegment(h, c, x);
-      const to255 = (v: number) => Math.round((v + m) * 255);
-      return `#${[to255(r1), to255(g1), to255(b1)]
-        .map((v) => v.toString(16).padStart(2, '0'))
-        .join('')}`;
+      
+      el.innerHTML = `
+        <span class="accessibility-badge" data-level="${level}">${level} ${ratio.toFixed(1)}:1</span>
+        ${level === 'Fail' ? `<button class="btn--fix" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid currentColor;background:transparent;color:inherit;cursor:pointer;vertical-align:middle;line-height:1.4;" data-key="${key}" data-color="${color}" data-on="${onColor}">Fix</button>` : ''}
+      `;
+      
+      const fixBtn = el.querySelector<HTMLButtonElement>('.btn--fix');
+      fixBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        fixContrast(key, color, onColor);
+      });
     };
 
     const shiftHue = (hex: string, delta: number, lAdjust = 0, sAdjust = 0): string => {
@@ -268,9 +258,13 @@ export const colorsControlModule: ControlModule = {
       return hslToHex(h2, s2, l2);
     };
 
-    const dangerFromBase = (base: string): string => {
-      const { s, l } = hexToHsl(base);
-      return hslToHex(5, Math.min(1, s + 0.05), Math.min(1, l + 0.02));
+    /** Ensures neutrals hit proper lightness: n50 >= 92%, n900 <= 12% */
+    const clampNeutral = (hex: string, target: 'light' | 'dark'): string => {
+      const { h, s } = hexToHsl(hex);
+      let { l } = hexToHsl(hex);
+      if (target === 'light') l = Math.max(l, 0.92);
+      if (target === 'dark') l = Math.min(l, 0.12);
+      return hslToHex(h, Math.min(s, 0.15), l);
     };
 
     const generatePalette = (base: string) => {
@@ -279,129 +273,171 @@ export const colorsControlModule: ControlModule = {
           return {
             p500: base,
             p600: shiftHue(base, 20, -0.03),
-            n50: shiftHue(base, -30, 0.25, -0.25),
-            n900: shiftHue(base, 40, -0.3, -0.2),
-            d500: dangerFromBase(base),
+            n50: clampNeutral(shiftHue(base, -30, 0.25, -0.25), 'light'),
+            n900: clampNeutral(shiftHue(base, 40, -0.3, -0.2), 'dark'),
+            d500: shiftHue(base, 5, 0.05, 0.02),
           };
         case 'complementary':
           return {
             p500: base,
             p600: shiftHue(base, 180, -0.02),
-            n50: shiftHue(base, 0, 0.3, -0.3),
-            n900: shiftHue(base, 180, -0.25, -0.2),
-            d500: dangerFromBase(base),
+            n50: clampNeutral(shiftHue(base, 0, 0.3, -0.3), 'light'),
+            n900: clampNeutral(shiftHue(base, 180, -0.25, -0.2), 'dark'),
+            d500: shiftHue(base, 5, 0.05, 0.02),
           };
         case 'triadic':
           return {
             p500: base,
             p600: shiftHue(base, 120, -0.02),
-            n50: shiftHue(base, -120, 0.25, -0.25),
-            n900: shiftHue(base, 120, -0.25, -0.2),
-            d500: dangerFromBase(base),
+            n50: clampNeutral(shiftHue(base, -120, 0.25, -0.25), 'light'),
+            n900: clampNeutral(shiftHue(base, 120, -0.25, -0.2), 'dark'),
+            d500: shiftHue(base, 5, 0.05, 0.02),
           };
-        default:
-          return null;
+        default: return null;
       }
     };
 
-    const applyPalette = (palette: {
-      p500: string;
-      p600: string;
-      n50: string;
-      n900: string;
-      d500: string;
-    }) => {
-      api.updateConfig((cfg) => ({
-        ...cfg,
-        colors: {
-          ...cfg.colors,
-          primary: { 500: palette.p500, 600: palette.p600 },
-          neutral: { 50: palette.n50, 900: palette.n900 },
-          danger: { 500: palette.d500 },
-        },
-      }));
-    };
-
-    const syncPaletteState = (cfg: ThemeConfig) => {
-      if (modeSelect) modeSelect.value = mode;
-      if (baseInput && cfg.colors?.primary?.[500]) baseInput.value = cfg.colors.primary[500];
-      const disableManual = mode !== 'manual';
-      [p500, p600, n50, n900, d500, s500, w500].forEach((el) => {
-        if (el) el.disabled = disableManual;
-      });
-      if (baseInput) baseInput.disabled = mode === 'manual';
-    };
-
-    const syncColorValues = (cfg: ThemeConfig) => {
+    const sync = () => {
+      const cfg = api.getConfig();
       const c = cfg.colors;
       if (!c) return;
-      if (p500 && c.primary?.[500]) p500.value = c.primary[500];
-      if (p600 && c.primary?.[600]) p600.value = c.primary[600];
-      if (n50 && c.neutral?.[50]) n50.value = c.neutral[50];
-      if (n900 && c.neutral?.[900]) n900.value = c.neutral[900];
-      if (d500 && c.danger?.[500]) d500.value = c.danger[500];
-      if (s500 && c.success?.[500]) s500.value = c.success[500];
-      if (w500 && c.warning?.[500]) w500.value = c.warning[500];
+
+      if (inputs.mode) inputs.mode.value = mode;
+      if (inputs.base && c.primary?.[500]) inputs.base.value = c.primary[500];
+      
+      const setVal = (input: HTMLInputElement | null, val?: string) => { if (input && val) input.value = val; };
+      setVal(inputs.p500, c.primary?.[500]);
+      setVal(inputs.p600, c.primary?.[600]);
+      setVal(inputs.n50, c.neutral?.[50]);
+      setVal(inputs.n900, c.neutral?.[900]);
+      setVal(inputs.d500, c.danger?.[500]);
+      setVal(inputs.s500, c.success?.[500]);
+      setVal(inputs.w500, c.warning?.[500]);
+
+      updateBadge(badges.base, c.primary?.[500] ?? '', 'base');
+      updateBadge(badges.p500, c.primary?.[500] ?? '', 'primary-500');
+      updateBadge(badges.p600, c.primary?.[600] ?? '', 'primary-600');
+      updateBadge(badges.n50, c.neutral?.[50] ?? '', 'neutral-50');
+      updateBadge(badges.n900, c.neutral?.[900] ?? '', 'neutral-900');
+      updateBadge(badges.d500, c.danger?.[500] ?? '', 'danger-500');
+      updateBadge(badges.s500, c.success?.[500] ?? '', 'success-500');
+      updateBadge(badges.w500, c.warning?.[500] ?? '', 'warning-500');
+
+      const isManual = mode === 'manual';
+      [inputs.p500, inputs.p600, inputs.n50, inputs.n900, inputs.d500, inputs.s500, inputs.w500].forEach(i => {
+        if (i) i.disabled = !isManual;
+      });
+      // Base color should stay active as it serves as the original seed/reference.
+      if (inputs.base) inputs.base.disabled = false;
     };
 
-    const syncInputs = () => {
-      const cfg = api.getConfig();
-      syncPaletteState(cfg);
-      syncColorValues(cfg);
-      updateAllBadges(cfg);
-    };
-
-    const onModeChange = () => {
-      mode = (modeSelect?.value as PaletteMode) ?? 'manual';
-      if (mode !== 'manual') {
-        const base = baseInput?.value ?? '#5b8def';
-        const palette = generatePalette(base);
-        if (palette) applyPalette(palette);
+    const onInputChange = (e: Event) => {
+      const target = e.target as HTMLInputElement | HTMLSelectElement;
+      if (target.id === 'color-mode') {
+        mode = target.value as PaletteMode;
+        if (mode !== 'manual') {
+          const palette = generatePalette(inputs.base?.value ?? '#5b8def');
+          if (palette) {
+            api.updateConfig(cfg => ({
+              ...cfg,
+              colors: {
+                ...cfg.colors,
+                primary: { 500: palette.p500, 600: palette.p600 },
+                neutral: { 50: palette.n50, 900: palette.n900 },
+                danger: { 500: palette.d500 },
+              }
+            }));
+          }
+        }
+        sync();
+      } else if (target.id === 'base-color') {
+        const palette = generatePalette(target.value);
+        if (palette) {
+          api.updateConfig(cfg => ({
+            ...cfg,
+            colors: {
+              ...cfg.colors,
+              primary: { 500: palette.p500, 600: palette.p600 },
+              neutral: { 50: palette.n50, 900: palette.n900 },
+              danger: { 500: palette.d500 },
+            }
+          }));
+        }
+      } else {
+        api.updateConfig(cfg => ({
+          ...cfg,
+          colors: {
+            ...cfg.colors,
+            primary: { 500: inputs.p500?.value ?? '', 600: inputs.p600?.value ?? '' },
+            neutral: { 50: inputs.n50?.value ?? '', 900: inputs.n900?.value ?? '' },
+            danger: { 500: inputs.d500?.value ?? '' },
+            success: { 500: inputs.s500?.value ?? '' },
+            warning: { 500: inputs.w500?.value ?? '' },
+          }
+        }));
       }
-      syncInputs();
     };
 
-    const onBaseChange = () => {
-      if (mode === 'manual') return;
-      const base = baseInput?.value ?? '#5b8def';
-      const palette = generatePalette(base);
-      if (palette) applyPalette(palette);
-    };
-
-    const onManualInput = () => {
-      if (mode !== 'manual') return;
-      api.updateConfig((cfg) => ({
-        ...cfg,
-        colors: {
-          ...cfg.colors,
-          primary: { 500: p500?.value ?? '', 600: p600?.value ?? '' },
-          neutral: { 50: n50?.value ?? '', 900: n900?.value ?? '' },
-          danger: { 500: d500?.value ?? '' },
-          success: s500?.value ? { 500: s500.value } : cfg.colors?.success,
-          warning: w500?.value ? { 500: w500.value } : cfg.colors?.warning,
-        },
-      }));
-    };
-
-    modeSelect?.addEventListener('change', onModeChange);
-    baseInput?.addEventListener('input', onBaseChange);
-    [p500, p600, n50, n900, d500, s500, w500].forEach((el) =>
-      el?.addEventListener('input', onManualInput)
-    );
-
-    const unsubscribe = api.subscribe(syncInputs);
-    syncInputs();
+    Object.values(inputs).forEach(i => {
+      if (!i) return;
+      const eventName = i.tagName === 'SELECT' ? 'change' : 'input';
+      i.addEventListener(eventName, onInputChange);
+    });
+    
+    const unsubscribe = api.subscribe(sync);
+    sync();
 
     return () => {
-      modeSelect?.removeEventListener('change', onModeChange);
-      baseInput?.removeEventListener('input', onBaseChange);
-      [p500, p600, n50, n900, d500, s500, w500].forEach((el) => {
-        el?.removeEventListener('input', onManualInput);
-      });
       unsubscribe();
+      Object.values(inputs).forEach(i => i?.removeEventListener('input', onInputChange));
     };
   },
 };
 
-// Re-export explicitly to avoid tree-shaking glitches in dev reloads.
+export const colorsPreviewModule = {
+  id: 'colors',
+  title: 'Color Usage Matrix',
+  render: () => `
+    <style>
+      .usage-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+      .usage-swatch {
+        border-radius: 8px; padding: 16px 12px; text-align: center;
+        font-size: 12px; font-weight: 600; line-height: 1.6;
+        border: 1px solid color-mix(in srgb, var(--color-neutral-900) 20%, transparent);
+      }
+      .usage-swatch .swatch-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+    </style>
+    <div class="usage-matrix">
+      <div class="usage-swatch" style="background: var(--color-primary-500); color: var(--on-primary);">
+        <div class="swatch-label">Primary + On</div>
+        Button Text
+      </div>
+      <div class="usage-swatch" style="background: var(--color-primary-600); color: var(--on-primary);">
+        <div class="swatch-label">Primary 600 + On</div>
+        Hover State
+      </div>
+      <div class="usage-swatch" style="background: var(--color-danger-500); color: var(--on-danger);">
+        <div class="swatch-label">Danger + On</div>
+        Error Alert
+      </div>
+      <div class="usage-swatch" style="background: var(--color-success-500); color: var(--on-success);">
+        <div class="swatch-label">Success + On</div>
+        Confirmation
+      </div>
+      <div class="usage-swatch" style="background: var(--color-warning-500); color: var(--on-warning);">
+        <div class="swatch-label">Warning + On</div>
+        Caution Badge
+      </div>
+      <div class="usage-swatch" style="background: var(--color-neutral-50); color: var(--color-neutral-900);">
+        <div class="swatch-label">Neutral 50 + 900</div>
+        Body Text
+      </div>
+      <div class="usage-swatch" style="background: var(--color-neutral-900); color: var(--color-neutral-50);">
+        <div class="swatch-label">Neutral 900 + 50</div>
+        Dark Card
+      </div>
+    </div>
+  `,
+};
+
 export default colorsCompilerEntry;

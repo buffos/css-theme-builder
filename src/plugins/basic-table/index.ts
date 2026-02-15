@@ -29,14 +29,14 @@ export const tableCompilerEntry = {
     const stripedStyles = striped
       ? `
 .table tr:nth-child(even) {
-  background: color-mix(in srgb, var(--surface-card, #0f1729) 40%, transparent);
+  background: color-mix(in srgb, var(--surface-card) 40%, transparent);
 }`
       : '';
 
     const hoverStyles = hoverEffect
       ? `
 .table tr:hover {
-  background: color-mix(in srgb, var(--surface-card, #0f1729) 70%, transparent);
+  background: color-mix(in srgb, var(--surface-card) 70%, transparent);
 }`
       : '';
 
@@ -49,12 +49,12 @@ export const tableCompilerEntry = {
 .table th,
 .table td {
   padding: ${py} ${px};
-  border-bottom: ${borderWeight} solid color-mix(in srgb, var(--color-neutral-900, #0f172a) 60%, transparent);
+  border-bottom: ${borderWeight} solid color-mix(in srgb, var(--color-neutral-900) 60%, transparent);
   text-align: left;
 }
 .table th {
   font-weight: 700;
-  color: var(--surface-fg, #e7ecff);
+  color: var(--surface-fg);
 }
 ${stripedStyles}
 ${hoverStyles}

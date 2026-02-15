@@ -1,40 +1,49 @@
 import type { ControlModule } from '../../app/registry';
 
 const template = `
-  <div class="control-group">
-    <label for="theme-name">Theme name</label>
-    <input id="theme-name" name="theme-name" type="text" />
+  <div class="control-grid">
+    <div class="control-group">
+      <label for="theme-name">Theme name</label>
+      <input id="theme-name" name="name" type="text" />
+    </div>
+    <div class="control-group">
+      <label for="theme-version">Version</label>
+      <input id="theme-version" name="version" type="text" placeholder="1.0.0" />
+    </div>
+    <div class="control-group">
+      <label for="theme-author">Author</label>
+      <input id="theme-author" name="author" type="text" placeholder="Your name" />
+    </div>
   </div>
-  <p class="controls-placeholder">
-    Controls UI coming next: colors, typography, spacing, radius, shadow, mode toggle.
-  </p>
 `;
 
 const bind = (root: HTMLElement, api: Parameters<ControlModule['mount']>[1]): (() => void) => {
-  const nameInput = root.querySelector<HTMLInputElement>('#theme-name');
+  const inputs = root.querySelectorAll<HTMLInputElement>('input');
 
   const sync = () => {
     const cfg = api.getConfig();
-    if (nameInput) nameInput.value = cfg.name;
+    inputs.forEach((input) => {
+      const key = input.name as 'name' | 'version' | 'author';
+      if (cfg[key] !== undefined) {
+        input.value = cfg[key];
+      }
+    });
   };
 
-  const onNameInput = (evt: Event) => {
+  const onInput = (evt: Event) => {
     const target = evt.target as HTMLInputElement;
-    api.updateConfig((cfg) => ({ ...cfg, name: target.value }));
+    const key = target.name as 'name' | 'version' | 'author';
+    api.updateConfig((cfg) => ({ ...cfg, [key]: target.value }));
   };
 
-  if (nameInput) {
-    nameInput.addEventListener('input', onNameInput);
-  }
+  inputs.forEach((input) => input.addEventListener('input', onInput));
 
   const unsubscribe = api.subscribe(sync);
   sync();
 
   return () => {
     unsubscribe();
-    if (nameInput) {
-      nameInput.removeEventListener('input', onNameInput);
-    }
+    inputs.forEach((input) => input.removeEventListener('input', onInput));
   };
 };
 

@@ -142,15 +142,15 @@ export const shadowPreviewModule = {
     return `
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 16px; padding: 16px 0;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-sm" style="width: 80px; height: 80px; background: #fff; border-radius: 8px;"></div>
+          <div class="shadow-sm" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
           <span style="font-size: 11px; font-weight: 600;">Small (sm)</span>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-md" style="width: 80px; height: 80px; background: #fff; border-radius: 8px;"></div>
+          <div class="shadow-md" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
           <span style="font-size: 11px; font-weight: 600;">Medium (md)</span>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-lg" style="width: 80px; height: 80px; background: #fff; border-radius: 8px;"></div>
+          <div class="shadow-lg" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
           <span style="font-size: 11px; font-weight: 600;">Large (lg)</span>
         </div>
       </div>

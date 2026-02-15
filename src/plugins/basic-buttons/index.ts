@@ -34,10 +34,10 @@ export const buttonsCompilerEntry = {
 
     const defRadius = `var(--radius-${radiusKey}, var(--radius-1, 8px))`;
     const vars = [
-      `--btn-bg: ${overrides?.bg ?? 'var(--surface-card, #0f1729)'};`,
-      `--btn-fg: ${overrides?.fg ?? 'var(--surface-fg, #e7ecff)'};`,
+      `--btn-bg: ${overrides?.bg ?? 'var(--surface-card)'};`,
+      `--btn-fg: ${overrides?.fg ?? 'var(--surface-fg)'};`,
       `--btn-radius: ${overrides?.radius ?? defRadius};`,
-      `--btn-border: ${overrides?.border ?? '1px solid var(--color-neutral-900, #0f172a)'};`,
+      `--btn-border: ${overrides?.border ?? '1px solid var(--color-neutral-900)'};`,
     ].join('\n  ');
 
     return `
@@ -71,9 +71,9 @@ export const buttonsCompilerEntry = {
   cursor: not-allowed;
 }
 .btn--primary {
-  --btn-bg: ${overrides?.bg ?? 'var(--color-primary-500, #5b8def)'};
-  --btn-border: ${overrides?.border ?? '1px solid var(--color-primary-600, #3f6ad8)'};
-  --btn-fg: ${overrides?.fg ?? 'var(--on-primary, #0b1021)'};
+  --btn-bg: ${overrides?.bg ?? 'var(--color-primary-500)'};
+  --btn-border: ${overrides?.border ?? '1px solid var(--color-primary-600)'};
+  --btn-fg: ${overrides?.fg ?? 'var(--on-primary)'};
 }
 `;
   },

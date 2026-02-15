@@ -33,7 +33,7 @@ export const modalCompilerEntry = {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, ${opacity});
+  background: color-mix(in srgb, var(--color-neutral-900) calc(${opacity} * 100%), transparent);
   backdrop-filter: blur(${blur});
   display: grid;
   place-items: center;
@@ -43,10 +43,10 @@ export const modalCompilerEntry = {
   min-width: 320px;
   max-width: ${maxWidth};
   width: 100%;
-  background: var(--surface-card, #0f1729);
-  border: ${borderWeight} solid var(--color-neutral-900, #0f172a);
+  background: var(--surface-card);
+  border: ${borderWeight} solid var(--color-neutral-900);
   border-radius: ${radius};
-  box-shadow: var(--shadow-lg, var(--shadow-2, 0 10px 30px rgba(0,0,0,0.25)));
+  box-shadow: var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.25));
   padding: ${padding};
 }
 `;

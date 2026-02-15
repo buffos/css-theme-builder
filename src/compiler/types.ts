@@ -8,6 +8,8 @@ export interface ThemeModules {} //  eslint-disable-line
 // Generic ThemeConfig derived from registered sections.
 export type ThemeConfig<M extends ThemeModules = ThemeModules> = {
   name: string;
+  version: string;
+  author: string;
   mode: ThemeMode;
 } & {
   [K in keyof M]: M[K];
@@ -15,6 +17,8 @@ export type ThemeConfig<M extends ThemeModules = ThemeModules> = {
 
 export type PartialThemeConfig<M extends ThemeModules = ThemeModules> = Partial<{
   name: string;
+  version: string;
+  author: string;
   mode: ThemeMode;
 }> &
   Partial<{
@@ -32,6 +36,8 @@ export const buildThemeConfig = <M extends ThemeModules>(
   const merged = Object.assign(
     {
       name: 'My Theme',
+      version: '1.0.0',
+      author: 'Unknown',
       mode: 'light-dark' as ThemeMode,
     },
     base,

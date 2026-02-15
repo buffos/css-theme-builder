@@ -24,18 +24,18 @@ export const inputsCompilerEntry = {
   width: 100%;
   padding: 0.6rem 0.75rem;
   border-radius: var(--radius-${radiusKey}, var(--radius-1, 8px));
-  border: 1px solid var(--color-neutral-900, #0f172a);
-  background: var(--surface-card, #0f1729);
-  color: var(--surface-fg, #e7ecff);
+  border: 1px solid var(--color-neutral-900);
+  background: var(--surface-card);
+  color: var(--surface-fg);
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 .input:focus, .input.focus {
   outline: none;
-  border-color: var(--color-primary-500, #5b8def);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500, #5b8def) 30%, transparent);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500) 30%, transparent);
 }
 .input--error {
-  border-color: var(--color-danger-500, #f05656);
+  border-color: var(--color-danger-500);
 }
 `;
   },

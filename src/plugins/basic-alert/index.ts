@@ -24,10 +24,10 @@ export const alertCompilerEntry = {
     const radius = `var(--radius-${radiusToken}, 8px)`;
 
     const variants = [
-      { name: 'danger', color: 'var(--color-danger-500, #f05656)', on: 'var(--on-danger, #ffffff)' },
-      { name: 'success', color: 'var(--color-success-500, #3ba55a)', on: 'var(--on-success, #ffffff)' },
-      { name: 'warning', color: 'var(--color-warning-500, #f29e38)', on: 'var(--on-warning, #ffffff)' },
-      { name: 'info', color: 'var(--color-primary-500, #5b8def)', on: 'var(--on-primary, #ffffff)' },
+      { name: 'danger', color: 'var(--color-danger-500)', on: 'var(--on-danger)' },
+      { name: 'success', color: 'var(--color-success-500)', on: 'var(--on-success)' },
+      { name: 'warning', color: 'var(--color-warning-500)', on: 'var(--on-warning)' },
+      { name: 'info', color: 'var(--color-primary-500)', on: 'var(--on-primary)' },
     ];
 
     const variantStyles = variants

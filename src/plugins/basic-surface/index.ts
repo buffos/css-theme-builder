@@ -35,9 +35,9 @@ export const surfaceCompilerEntry = {
     const { darkBackgroundSnippet, darkForegroundSnippet, darkCardSnippet } = config.surface;
     return [
       ':root {',
-      `  --surface-bg: ${darkBackgroundSnippet ?? '#0b1021'};`,
-      `  --surface-fg: ${darkForegroundSnippet ?? '#e7ecff'};`,
-      `  --surface-card: ${darkCardSnippet ?? '#0f1729'};`,
+      `  --surface-bg: ${darkBackgroundSnippet ?? 'var(--color-neutral-900)'};`,
+      `  --surface-fg: ${darkForegroundSnippet ?? 'var(--color-neutral-50)'};`,
+      `  --surface-card: ${darkCardSnippet ?? 'color-mix(in srgb, var(--color-neutral-900) 90%, white)'};`,
       '}',
     ].join('\n');
   },
