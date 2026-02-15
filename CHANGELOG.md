@@ -284,3 +284,13 @@ All notable changes to this project will be documented in this file. We will log
   - Expanded `Buttons` preview to show a full grid of states for both default and primary variations.
   - Expanded `Inputs` preview to show Vertical alignment of Normal, Focus, and Error states.
   - Added `.card--interactive` class with hover elevation and updated `Card` preview to show interactive variations.
+
+## [0.19.0] - 2026-02-10
+
+### Added
+
+- Google Fonts Integration:
+  - Added a curated list of popular Google Fonts in `fonts.ts`.
+  - Implemented dynamic `@import` emission in the Typography compiler.
+  - Added a searchable font picker (datalist) to the Typography panel.
+  - Refactored `basic-typography` plugin to improve type safety and reduce cognitive complexity.

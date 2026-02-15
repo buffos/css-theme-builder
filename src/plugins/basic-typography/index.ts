@@ -1,6 +1,8 @@
 import type { ControlModule } from '../../app/registry';
 import type { ThemeConfig } from '../../compiler/types';
 
+import { getGoogleFontImport, GOOGLE_FONTS, isGoogleFont } from './fonts';
+
 // Augment ThemeModules with typography section (explicit shape to avoid cycles).
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -27,7 +29,10 @@ export const typographyCompilerEntry = {
   emitTokens: (config: ThemeConfig) => {
     if (!config.typography) return '';
     const { fontFamily, baseFontSizePx, scale } = config.typography;
+    const fontImport = isGoogleFont(fontFamily) ? getGoogleFontImport(fontFamily) : '';
+
     return [
+      fontImport,
       ':root {',
       `  --font-family: ${fontFamily};`,
       `  --base-font-size: ${baseFontSizePx}px;`,
@@ -65,6 +70,64 @@ const calculateRem = (
   return clamp(Number(input?.value ?? def), 0.6, 4);
 };
 
+type TypographyInputs = {
+  fontFamily: HTMLInputElement | null;
+  baseSize: HTMLInputElement | null;
+  scaleMode: HTMLSelectElement | null;
+  scaleRatio: HTMLSelectElement | null;
+  ratioGroup: HTMLElement | null;
+  smSize: HTMLInputElement | null;
+  smLine: HTMLInputElement | null;
+  baseSizeRem: HTMLInputElement | null;
+  baseLine: HTMLInputElement | null;
+  lgSize: HTMLInputElement | null;
+  lgLine: HTMLInputElement | null;
+  xlSize: HTMLInputElement | null;
+  xlLine: HTMLInputElement | null;
+};
+
+const calculateScale = (
+  mode: 'manual' | 'modular',
+  inputs: TypographyInputs,
+  current: NonNullable<ThemeConfig['typography']>,
+  baseRem: number,
+  ratio: number
+) => ({
+  sm: {
+    sizeRem: calculateRem(mode, inputs.smSize, current.scale.sm.sizeRem, baseRem, ratio, -1),
+    lineHeight: clamp(Number(inputs.smLine?.value ?? 1.4), 1, 2.2),
+  },
+  base: {
+    sizeRem: baseRem,
+    lineHeight: clamp(Number(inputs.baseLine?.value ?? 1.6), 1, 2.4),
+  },
+  lg: {
+    sizeRem: calculateRem(mode, inputs.lgSize, current.scale.lg.sizeRem, baseRem, ratio, 1),
+    lineHeight: clamp(Number(inputs.lgLine?.value ?? 1.6), 1, 2.8),
+  },
+  xl: {
+    sizeRem: calculateRem(mode, inputs.xlSize, current.scale.xl.sizeRem, baseRem, ratio, 2),
+    lineHeight: clamp(Number(inputs.xlLine?.value ?? 1.6), 1, 3.2),
+  },
+});
+
+const syncFieldValues = (inputs: TypographyInputs, typography: NonNullable<ThemeConfig['typography']>) => {
+  const { fontFamily, baseFontSizePx, scale, scaleMode, ratio } = typography;
+  if (inputs.fontFamily) inputs.fontFamily.value = fontFamily;
+  if (inputs.baseSize) inputs.baseSize.value = String(baseFontSizePx);
+  if (inputs.scaleMode) inputs.scaleMode.value = scaleMode;
+  if (inputs.scaleRatio) inputs.scaleRatio.value = String(ratio);
+
+  if (inputs.smSize) inputs.smSize.value = String(scale.sm.sizeRem);
+  if (inputs.smLine) inputs.smLine.value = String(scale.sm.lineHeight);
+  if (inputs.baseSizeRem) inputs.baseSizeRem.value = String(scale.base.sizeRem);
+  if (inputs.baseLine) inputs.baseLine.value = String(scale.base.lineHeight);
+  if (inputs.lgSize) inputs.lgSize.value = String(scale.lg.sizeRem);
+  if (inputs.lgLine) inputs.lgLine.value = String(scale.lg.lineHeight);
+  if (inputs.xlSize) inputs.xlSize.value = String(scale.xl.sizeRem);
+  if (inputs.xlLine) inputs.xlLine.value = String(scale.xl.lineHeight);
+};
+
 export const typographyControlModule: ControlModule = {
   id: 'typography',
   title: 'Typography',
@@ -73,7 +136,10 @@ export const typographyControlModule: ControlModule = {
       <div class="control-grid">
         <div class="control-group">
           <label for="font-family">Font family</label>
-          <input id="font-family" name="font-family" type="text" placeholder='Inter, "Segoe UI", system-ui' />
+          <input id="font-family" name="font-family" type="text" list="font-family-list" placeholder='e.g. Inter, Montserrat' />
+          <datalist id="font-family-list">
+            ${GOOGLE_FONTS.map((f) => `<option value="${f}"></option>`).join('')}
+          </datalist>
         </div>
         <div class="control-group">
           <label for="base-size">Base font size (px)</label>
@@ -163,11 +229,9 @@ export const typographyControlModule: ControlModule = {
     const sync = () => {
       const cfg = api.getConfig();
       if (!cfg.typography) return;
-      const { fontFamily, baseFontSizePx, scale, scaleMode, ratio } = cfg.typography;
-      if (inputs.fontFamily) inputs.fontFamily.value = fontFamily;
-      if (inputs.baseSize) inputs.baseSize.value = String(baseFontSizePx);
-      if (inputs.scaleMode) inputs.scaleMode.value = scaleMode;
-      if (inputs.scaleRatio) inputs.scaleRatio.value = String(ratio);
+      const { scaleMode } = cfg.typography;
+
+      syncFieldValues(inputs, cfg.typography);
 
       if (inputs.ratioGroup) {
         inputs.ratioGroup.style.display = scaleMode === 'modular' ? 'block' : 'none';
@@ -177,15 +241,6 @@ export const typographyControlModule: ControlModule = {
       [inputs.smSize, inputs.baseSizeRem, inputs.lgSize, inputs.xlSize].forEach((i) => {
         if (i) i.disabled = isModular;
       });
-
-      if (inputs.smSize) inputs.smSize.value = String(scale.sm.sizeRem);
-      if (inputs.smLine) inputs.smLine.value = String(scale.sm.lineHeight);
-      if (inputs.baseSizeRem) inputs.baseSizeRem.value = String(scale.base.sizeRem);
-      if (inputs.baseLine) inputs.baseLine.value = String(scale.base.lineHeight);
-      if (inputs.lgSize) inputs.lgSize.value = String(scale.lg.sizeRem);
-      if (inputs.lgLine) inputs.lgLine.value = String(scale.lg.lineHeight);
-      if (inputs.xlSize) inputs.xlSize.value = String(scale.xl.sizeRem);
-      if (inputs.xlLine) inputs.xlLine.value = String(scale.xl.lineHeight);
     };
 
     const onChange = () => {
@@ -196,24 +251,7 @@ export const typographyControlModule: ControlModule = {
       const r = Number(inputs.scaleRatio?.value ?? 1.25);
       const baseRem = clamp(Number(inputs.baseSizeRem?.value ?? 1), 0.8, 2.4);
 
-      const scale = {
-        sm: {
-          sizeRem: calculateRem(mode, inputs.smSize, current.scale.sm.sizeRem, baseRem, r, -1),
-          lineHeight: clamp(Number(inputs.smLine?.value ?? 1.4), 1, 2.2),
-        },
-        base: {
-          sizeRem: baseRem,
-          lineHeight: clamp(Number(inputs.baseLine?.value ?? 1.6), 1, 2.4),
-        },
-        lg: {
-          sizeRem: calculateRem(mode, inputs.lgSize, current.scale.lg.sizeRem, baseRem, r, 1),
-          lineHeight: clamp(Number(inputs.lgLine?.value ?? 1.6), 1, 2.8),
-        },
-        xl: {
-          sizeRem: calculateRem(mode, inputs.xlSize, current.scale.xl.sizeRem, baseRem, r, 2),
-          lineHeight: clamp(Number(inputs.xlLine?.value ?? 1.6), 1, 3.2),
-        },
-      };
+      const scale = calculateScale(mode, inputs, current, baseRem, r);
 
       api.updateConfig((cfg) => ({
         ...cfg,
