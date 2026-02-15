@@ -2,6 +2,8 @@
 
 # CSS Theme Builder v0.1.0
 
+**[🔗 Live Demo](https://buffos.github.io/css-theme-builder/)**
+
 A high-performance, plugin-based engine for generating modern design systems. This tool allows designers and developers to build, audit, and export CSS design tokens and utility classes through a visual interface.
 
 ## 🎯 Goal
