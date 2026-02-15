@@ -381,3 +381,15 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented Row Striping toggle with automatic theme-aware contrast.
   - Implemented Hover Effect toggle for table rows.
   - Enhanced preview module with realistic data to showcase density and striping.
+
+## [0.29.0] - 2026-02-15
+
+### Added
+
+- Design System Overview Dashboard:
+  - Created a new summary preview module that aggregates all design tokens.
+  - Added visual swatches for the Color Palette.
+  - Added Typography scale demonstration.
+  - Added visual representations of Spacing and Radius scales.
+  - Added Elevation and Depth section showcasing all shadow levels.
+  - Integrated the dashboard as the primary view in the preview panel.

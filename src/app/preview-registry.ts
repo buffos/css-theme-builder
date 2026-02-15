@@ -14,8 +14,10 @@ import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
+import { dashboardPreviewModule } from '../plugins/dashboard';
 
 export const previewModules = [
+  dashboardPreviewModule,
   buttonsPreviewModule,
   inputsPreviewModule,
   cardPreviewModule,
