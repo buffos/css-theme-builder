@@ -304,3 +304,12 @@ All notable changes to this project will be documented in this file. We will log
   - Added live contrast badges (AAA/AA/Fail) to the Colors panel.
   - Badges update instantly during color picking or palette generation.
   - Refactored `basic-colors` plugin to use shared utilities and reduced cognitive complexity.
+
+## [0.21.0] - 2026-02-12
+
+### Added
+
+- Responsive Layout Preview:
+  - Added a viewport switcher toolbar to the Live Preview panel.
+  - Implemented dynamic iframe resizing for Mobile (375px), Tablet (768px), and Desktop (100%).
+  - Added centering and polished background for the preview viewport.

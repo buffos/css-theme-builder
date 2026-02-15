@@ -80,8 +80,18 @@ const writePreviewDocument = (
   `;
 };
 
+type ViewportSize = 'mobile' | 'tablet' | 'desktop';
+
+const VIEWPORT_WIDTHS: Record<ViewportSize, string> = {
+  mobile: '375px',
+  tablet: '768px',
+  desktop: '100%',
+};
+
 export const createPreview = (): PreviewHandles => {
   let iframe: HTMLIFrameElement | null = null;
+  let toolbar: HTMLElement | null = null;
+  let container: HTMLElement | null = null;
   let unsubscribe: (() => void) | null = null;
   let activeIds = new Set<string>();
 
@@ -102,10 +112,45 @@ export const createPreview = (): PreviewHandles => {
     writePreviewDocument(iframe, css, config.mode, filteredModules);
   };
 
-  const mount = (container: HTMLElement) => {
+  const setViewport = (size: ViewportSize) => {
+    if (iframe) {
+      iframe.style.width = VIEWPORT_WIDTHS[size];
+    }
+    if (toolbar) {
+      toolbar.querySelectorAll('button').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.size === size);
+      });
+    }
+  };
+
+  const mount = (host: HTMLElement) => {
+    host.innerHTML = '';
+
+    // Create Toolbar
+    toolbar = document.createElement('div');
+    toolbar.className = 'preview-toolbar';
+    toolbar.innerHTML = `
+      <button type="button" data-size="mobile">Mobile</button>
+      <button type="button" data-size="tablet">Tablet</button>
+      <button type="button" data-size="desktop" class="active">Desktop</button>
+    `;
+    toolbar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button');
+      if (btn?.dataset.size) {
+        setViewport(btn.dataset.size as ViewportSize);
+      }
+    });
+
+    // Create Iframe Container (for centering)
+    container = document.createElement('div');
+    container.className = 'preview-viewport-container';
+
     iframe = createIframe();
-    container.innerHTML = '';
     container.appendChild(iframe);
+
+    host.appendChild(toolbar);
+    host.appendChild(container);
+
     unsubscribe = subscribe(render);
     render();
   };
@@ -114,7 +159,11 @@ export const createPreview = (): PreviewHandles => {
     if (unsubscribe) unsubscribe();
     unsubscribe = null;
     iframe?.remove();
+    toolbar?.remove();
+    container?.remove();
     iframe = null;
+    toolbar = null;
+    container = null;
   };
 
   const setActive = (ids: string[]) => {

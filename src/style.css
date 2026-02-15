@@ -348,3 +348,43 @@ button:disabled {
   background: #fee2e2;
   color: #991b1b;
 }
+
+.preview-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #1f2c4f;
+  width: fit-content;
+}
+
+.preview-toolbar button {
+  padding: 4px 10px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #8aa0d6;
+}
+
+.preview-toolbar button.active {
+  background: #233260;
+  border-color: #3f518e;
+  color: #fff;
+}
+
+.preview-viewport-container {
+  display: flex;
+  justify-content: center;
+  background: #090e1a;
+  border: 1px dashed #2c3a63;
+  border-radius: 10px;
+  padding: 20px 0;
+  overflow-x: auto;
+}
+
+.preview-viewport-container iframe {
+  transition: width 200ms ease-in-out;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
