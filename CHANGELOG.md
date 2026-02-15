@@ -264,3 +264,13 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented automated scale generation (0, 0.5, 1, 2, 4, 8, etc.) based on the base unit.
   - Updated utility emission to handle decimal steps (e.g., `.p-0_5`).
   - New test suite for spacing scale logic.
+
+## [0.17.0] - 2026-02-08
+
+### Added
+
+- Per-Component Token Overrides:
+  - Redesigned `Buttons` and `Card` components to use internal CSS variables that default to theme tokens.
+  - Added "Overrides" section to the Buttons panel (Background, Text, Radius, Border).
+  - Added "Overrides" section to the Card panel (Background, Radius, Padding, Border, Shadow).
+  - Implemented unit tests for component-level override propagation.

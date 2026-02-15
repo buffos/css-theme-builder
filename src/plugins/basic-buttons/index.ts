@@ -6,7 +6,15 @@ type ButtonDensity = 'comfortable' | 'compact' | 'spacious';
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeModules {
-    buttons: { density?: ButtonDensity };
+    buttons: {
+      density?: ButtonDensity;
+      overrides?: {
+        bg?: string;
+        fg?: string;
+        radius?: string;
+        border?: string;
+      };
+    };
   }
 }
 
@@ -15,12 +23,22 @@ export const buttonsCompilerEntry = {
   title: 'Buttons',
   isEnabled: (_config: ThemeConfig) => true,
   emitComponents: (config: ThemeConfig) => {
-    const radiusKey = Object.keys(config.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '1';
-    const density =
-      (config.buttons as { density?: ButtonDensity } | undefined)?.density ?? 'comfortable';
+    const radiusKey =
+      Object.keys(config.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '1';
+    const density = config.buttons?.density ?? 'comfortable';
+    const overrides = config.buttons?.overrides;
+
     let padding = '0.65rem 1rem';
     if (density === 'compact') padding = '0.5rem 0.85rem';
     if (density === 'spacious') padding = '0.75rem 1.15rem';
+
+    const defRadius = `var(--radius-${radiusKey}, var(--radius-1, 8px))`;
+    const vars = [
+      `--btn-bg: ${overrides?.bg ?? 'var(--surface-card, #0f1729)'};`,
+      `--btn-fg: ${overrides?.fg ?? 'var(--surface-fg, #e7ecff)'};`,
+      `--btn-radius: ${overrides?.radius ?? defRadius};`,
+      `--btn-border: ${overrides?.border ?? '1px solid var(--color-neutral-900, #0f172a)'};`,
+    ].join('\n  ');
 
     return `
 .btn {
@@ -29,10 +47,11 @@ export const buttonsCompilerEntry = {
   justify-content: center;
   gap: 0.5rem;
   padding: ${padding};
-  border-radius: var(--radius-${radiusKey}, var(--radius-1, 8px));
-  border: 1px solid var(--color-neutral-900, #0f172a);
-  background: var(--surface-card, #0f1729);
-  color: var(--surface-fg, #e7ecff);
+  ${vars}
+  border-radius: var(--btn-radius);
+  border: var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 160ms ease, opacity 120ms ease;
 }
@@ -48,9 +67,9 @@ export const buttonsCompilerEntry = {
   cursor: not-allowed;
 }
 .btn--primary {
-  background: var(--color-primary-500, #5b8def);
-  border-color: var(--color-primary-600, #3f6ad8);
-  color: var(--on-primary, #0b1021);
+  --btn-bg: ${overrides?.bg ?? 'var(--color-primary-500, #5b8def)'};
+  --btn-border: ${overrides?.border ?? '1px solid var(--color-primary-600, #3f6ad8)'};
+  --btn-fg: ${overrides?.fg ?? 'var(--on-primary, #0b1021)'};
 }
 `;
   },
@@ -61,85 +80,119 @@ export const buttonsControlModule: ControlModule = {
   title: 'Buttons',
   mount: (container, api) => {
     container.innerHTML = `
-      <div class="control-group">
-        <label for="btn-radius-key">Button radius token</label>
-        <select id="btn-radius-key" name="btn-radius-key"></select>
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="btn-radius-key">Base radius token</label>
+          <select id="btn-radius-key" name="btn-radius-key"></select>
+        </div>
+        <div class="control-group">
+          <label for="btn-density">Density</label>
+          <select id="btn-density" name="btn-density">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+            <option value="spacious">Spacious</option>
+          </select>
+        </div>
       </div>
-      <div class="control-group">
-        <label for="btn-density">Density</label>
-        <select id="btn-density" name="btn-density">
-          <option value="comfortable">Comfortable</option>
-          <option value="compact">Compact</option>
-          <option value="spacious">Spacious</option>
-        </select>
+      <div class="control-divider">Overrides</div>
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="btn-ov-bg">Background</label>
+          <input id="btn-ov-bg" type="text" placeholder="e.g. #ff0000 or var(...)" />
+        </div>
+        <div class="control-group">
+          <label for="btn-ov-fg">Text color</label>
+          <input id="btn-ov-fg" type="text" placeholder="e.g. white" />
+        </div>
+      </div>
+      <div class="control-grid">
+        <div class="control-group">
+          <label for="btn-ov-radius">Radius</label>
+          <input id="btn-ov-radius" type="text" placeholder="e.g. 50% or 4px" />
+        </div>
+        <div class="control-group">
+          <label for="btn-ov-border">Border</label>
+          <input id="btn-ov-border" type="text" placeholder="e.g. 2px solid red" />
+        </div>
       </div>
       <p class="controls-placeholder">
-        Button controls: radius token and density adjust padding.
+        Component overrides allow this component to diverge from global theme tokens.
       </p>
     `;
 
-    const radiusSelect = container.querySelector<HTMLSelectElement>('#btn-radius-key');
-    const densitySelect = container.querySelector<HTMLSelectElement>('#btn-density');
+    const inputs = {
+      radius: container.querySelector<HTMLSelectElement>('#btn-radius-key'),
+      density: container.querySelector<HTMLSelectElement>('#btn-density'),
+      ovBg: container.querySelector<HTMLInputElement>('#btn-ov-bg'),
+      ovFg: container.querySelector<HTMLInputElement>('#btn-ov-fg'),
+      ovRadius: container.querySelector<HTMLInputElement>('#btn-ov-radius'),
+      ovBorder: container.querySelector<HTMLInputElement>('#btn-ov-border'),
+    };
 
     const refreshRadiusOptions = () => {
-      if (!radiusSelect) return;
+      const select = inputs.radius;
+      if (!select) return;
       const cfg = api.getConfig();
       const keys = Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b));
-      radiusSelect.innerHTML = '';
+      select.innerHTML = '';
       if (keys.length === 0) {
         const opt = document.createElement('option');
         opt.value = '1';
         opt.textContent = '1 (fallback)';
-        radiusSelect.appendChild(opt);
+        select.appendChild(opt);
         return;
       }
       keys.forEach((key) => {
         const opt = document.createElement('option');
         opt.value = key;
         opt.textContent = key;
-        radiusSelect.appendChild(opt);
+        select.appendChild(opt);
       });
     };
 
     const sync = () => {
       const cfg = api.getConfig();
       refreshRadiusOptions();
-      const firstRadiusKey =
-        Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '';
-      if (radiusSelect) radiusSelect.value = firstRadiusKey;
-      const density =
-        (cfg.buttons as { density?: ButtonDensity } | undefined)?.density ?? 'comfortable';
-      if (densitySelect) densitySelect.value = density;
+      const bCfg = cfg.buttons;
+      if (inputs.radius) {
+        inputs.radius.value =
+          Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '';
+      }
+      if (inputs.density) inputs.density.value = bCfg?.density ?? 'comfortable';
+      if (inputs.ovBg) inputs.ovBg.value = bCfg?.overrides?.bg ?? '';
+      if (inputs.ovFg) inputs.ovFg.value = bCfg?.overrides?.fg ?? '';
+      if (inputs.ovRadius) inputs.ovRadius.value = bCfg?.overrides?.radius ?? '';
+      if (inputs.ovBorder) inputs.ovBorder.value = bCfg?.overrides?.border ?? '';
     };
 
-    const onRadiusChange = () => {
-      const key = radiusSelect?.value ?? '1';
+    const onChange = () => {
+      const density = (inputs.density?.value as ButtonDensity | undefined) ?? 'comfortable';
+      const overrides = {
+        bg: inputs.ovBg?.value.trim() ? inputs.ovBg.value.trim() : undefined,
+        fg: inputs.ovFg?.value.trim() ? inputs.ovFg.value.trim() : undefined,
+        radius: inputs.ovRadius?.value.trim() ? inputs.ovRadius.value.trim() : undefined,
+        border: inputs.ovBorder?.value.trim() ? inputs.ovBorder.value.trim() : undefined,
+      };
+
       api.updateConfig((cfg) => ({
         ...cfg,
-        radius: {
-          ...cfg.radius,
-          [key]: cfg.radius?.[key] ?? cfg.radius?.['1'] ?? '8px',
-        },
+        buttons: { density, overrides },
       }));
     };
 
-    const onDensityChange = () => {
-      const value = (densitySelect?.value as ButtonDensity) ?? 'comfortable';
-      api.updateConfig((cfg) => ({
-        ...cfg,
-        buttons: { ...(cfg.buttons as { density?: ButtonDensity }), density: value },
-      }));
-    };
-
-    radiusSelect?.addEventListener('change', onRadiusChange);
-    densitySelect?.addEventListener('change', onDensityChange);
+    inputs.radius?.addEventListener('change', onChange);
+    inputs.density?.addEventListener('change', onChange);
+    inputs.ovBg?.addEventListener('input', onChange);
+    inputs.ovFg?.addEventListener('input', onChange);
+    inputs.ovRadius?.addEventListener('input', onChange);
+    inputs.ovBorder?.addEventListener('input', onChange);
 
     const unsubscribe = api.subscribe(sync);
     sync();
 
     return () => {
-      radiusSelect?.removeEventListener('change', onRadiusChange);
-      densitySelect?.removeEventListener('change', onDensityChange);
+      inputs.radius?.removeEventListener('change', onChange);
+      inputs.density?.removeEventListener('change', onChange);
       unsubscribe();
     };
   },
