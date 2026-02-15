@@ -13,6 +13,9 @@ export const styleguideControlModule: ControlModule = {
       <div style="padding: 1rem; background: var(--surface-bg); border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); font-size: 11px; opacity: 0.8;">
         This view is auto-generated based on your current theme configuration. Use it to hand off specs to developers.
       </div>
+      <div style="margin-top: 1rem; padding: 0.75rem; background: var(--color-primary-500); color: var(--on-primary); border-radius: 8px; font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+        <span>💡 Tip: Click any token name to copy its CSS variable.</span>
+      </div>
     `;
   }
 };
@@ -34,7 +37,7 @@ export const styleguidePreviewModule: PreviewModule = {
               <div style="width: 32px; height: 32px; background: var(--${prefix}-${step}); border-radius: 4px; border: 1px solid rgba(128,128,128,0.2);"></div>
               <div style="display: flex; flex-direction: column;">
                 <span style="font-size: 11px; font-weight: 700;">${step}</span>
-                <code style="font-size: 9px; opacity: 0.6;">--${prefix}-${step}</code>
+                <code class="token-code" onclick="copyToken('--${prefix}-${step}')">--${prefix}-${step}</code>
               </div>
             </div>
           `).join('')}
@@ -43,6 +46,56 @@ export const styleguidePreviewModule: PreviewModule = {
     `;
 
     return `
+      <style>
+        .token-code {
+          font-size: 9px; 
+          opacity: 0.6; 
+          cursor: pointer; 
+          transition: all 0.2s ease;
+          padding: 2px 4px;
+          border-radius: 4px;
+        }
+        .token-code:hover {
+          opacity: 1;
+          background: var(--color-primary-500);
+          color: var(--on-primary);
+        }
+        .token-code:active {
+          transform: scale(0.95);
+        }
+        #copy-toast {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%) translateY(100px);
+          background: #0f172a;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          z-index: 9999;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        #copy-toast.show {
+          transform: translateX(-50%) translateY(0);
+        }
+      </style>
+
+      <script>
+        window.copyToken = (text) => {
+          navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('copy-toast');
+            toast.textContent = 'Copied: ' + text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+          });
+        };
+      </script>
+
+      <div id="copy-toast">Copied!</div>
+
       <div style="display: flex; flex-direction: column; gap: 3rem; color: var(--on-background); font-family: var(--font-family, sans-serif);">
         
         <!-- TYPOGRAPHY SPEC -->
@@ -53,7 +106,7 @@ export const styleguidePreviewModule: PreviewModule = {
               <div style="display: grid; grid-template-columns: 100px 1fr; align-items: baseline; gap: 2rem; padding: 1rem; background: var(--surface-card); border-radius: 8px; border: 1px solid rgba(128,128,128,0.1);">
                 <div style="display: flex; flex-direction: column; gap: 0.25rem;">
                   <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; opacity: 0.5;">${size}</span>
-                  <code style="font-size: 10px; color: var(--color-primary-500);">--text-${size}-size</code>
+                  <code class="token-code" style="font-size: 10px;" onclick="copyToken('--text-${size}-size')">--text-${size}-size</code>
                 </div>
                 <div style="font-size: var(--text-${size}-size); line-height: var(--text-${size}-line-height);">
                   The quick brown fox jumps over the lazy dog.
@@ -81,8 +134,8 @@ export const styleguidePreviewModule: PreviewModule = {
                     <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--color-${role}-500);"></div>
                   </div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <div style="height: 32px; background: var(--color-${role}-500); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--on-${role});">Solid</div>
-                    <div style="height: 32px; background: color-mix(in srgb, var(--color-${role}-500) 15%, transparent); border: 1px solid var(--color-${role}-500); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--color-${role}-600);">Soft</div>
+                    <div class="token-code" style="height: 32px; background: var(--color-${role}-500); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--on-${role});" onclick="copyToken('var(--color-${role}-500)')">Solid</div>
+                    <div class="token-code" style="height: 32px; background: color-mix(in srgb, var(--color-${role}-500) 15%, transparent); border: 1px solid var(--color-${role}-500); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--color-${role}-600);" onclick="copyToken('var(--color-${role}-600)')">Soft</div>
                   </div>
                 </div>
               `).join('')}
@@ -103,7 +156,7 @@ export const styleguidePreviewModule: PreviewModule = {
                   <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; flex-direction: column;">
                       <span style="font-size: 11px; font-weight: 800;">${bp.toUpperCase()}</span>
-                      <code style="font-size: 9px; opacity: 0.5;">--breakpoint-${bp}</code>
+                      <code class="token-code" onclick="copyToken('--breakpoint-${bp}')">--breakpoint-${bp}</code>
                     </div>
                     <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.breakpoints[bp as keyof typeof config.layout.breakpoints]}</span>
                   </div>
@@ -117,14 +170,14 @@ export const styleguidePreviewModule: PreviewModule = {
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; flex-direction: column;">
                   <span style="font-size: 11px; font-weight: 800;">Container Max</span>
-                  <code style="font-size: 9px; opacity: 0.5;">--container-width</code>
+                  <code class="token-code" onclick="copyToken('--container-width')">--container-width</code>
                 </div>
                 <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.container}</span>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="display: flex; flex-direction: column;">
                   <span style="font-size: 11px; font-weight: 800;">Grid Gutter</span>
-                  <code style="font-size: 9px; opacity: 0.5;">--layout-gutter</code>
+                  <code class="token-code" onclick="copyToken('--layout-gutter')">--layout-gutter</code>
                 </div>
                 <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.gutter}</span>
               </div>
@@ -145,7 +198,7 @@ export const styleguidePreviewModule: PreviewModule = {
                 ${radiusKeys.map(key => `
                   <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
                     <div style="width: 48px; height: 48px; background: var(--color-primary-500); border-radius: var(--radius-${key});"></div>
-                    <code style="font-size: 10px;">${key}</code>
+                    <code class="token-code" onclick="copyToken('--radius-${key}')">${key}</code>
                   </div>
                 `).join('')}
               </div>
@@ -157,7 +210,7 @@ export const styleguidePreviewModule: PreviewModule = {
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 ${shadowKeys.map(key => `
                   <div style="height: 60px; background: var(--surface-bg); border-radius: 8px; box-shadow: var(--shadow-${key}); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(128,128,128,0.05);">
-                    <code style="font-size: 10px; font-weight: 800;">${key.toUpperCase()}</code>
+                    <code class="token-code" style="font-weight: 800;" onclick="copyToken('--shadow-${key}')">${key.toUpperCase()}</code>
                   </div>
                 `).join('')}
               </div>
@@ -172,7 +225,7 @@ export const styleguidePreviewModule: PreviewModule = {
                     <div style="width: var(--space-${key}); height: 8px; background: var(--color-primary-500); border-radius: 2px;"></div>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                       <span style="font-size: 10px; font-weight: 700;">${key}</span>
-                      <code style="font-size: 9px; opacity: 0.6;">var(--space-${key})</code>
+                      <code class="token-code" onclick="copyToken('--space-${key}')">var(--space-${key})</code>
                     </div>
                   </div>
                 `).join('')}
@@ -192,7 +245,7 @@ export const styleguidePreviewModule: PreviewModule = {
                   <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; flex-direction: column;">
                       <span style="font-size: 11px; font-weight: 800;">${d.toUpperCase()}</span>
-                      <code style="font-size: 9px; opacity: 0.5;">--duration-${d}</code>
+                      <code class="token-code" onclick="copyToken('--duration-${d}')">--duration-${d}</code>
                     </div>
                     <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.motion?.durations[d as keyof typeof config.motion.durations]}ms</span>
                   </div>
@@ -206,7 +259,7 @@ export const styleguidePreviewModule: PreviewModule = {
                   <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; flex-direction: column;">
                       <span style="font-size: 11px; font-weight: 800;">${e.toUpperCase()}</span>
-                      <code style="font-size: 9px; opacity: 0.5;">--ease-${e.replace(/[A-Z]/, m => '-' + m.toLowerCase())}</code>
+                      <code class="token-code" onclick="copyToken('--ease-${e.replace(/[A-Z]/, m => '-' + m.toLowerCase())}')">--ease-${e.replace(/[A-Z]/, m => '-' + m.toLowerCase())}</code>
                     </div>
                   </div>
                 `).join('')}
