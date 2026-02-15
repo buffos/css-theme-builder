@@ -224,7 +224,7 @@ All notable changes to this project will be documented in this file. We will log
 - Select elements now match input styling (padding, font, dark chrome) for consistency.
 - Plugin type augmentation avoids a fixed `ThemeModules` shape, keeping the system fully plugin-driven.
 
-## [0.13.0] - 2026-02-15
+## [0.13.0] - 2026-02-04
 
 ### Added
 
@@ -234,3 +234,13 @@ All notable changes to this project will be documented in this file. We will log
   - Surface and Colors plugins now emit dark mode overrides using `@media (prefers-color-scheme: dark)` and `[data-theme='dark']`.
   - Preview iframe now respects the selected theme mode via `data-theme` attribute.
   - Updated surface defaults to provide a clean light mode and the signature "Aurora" dark mode.
+
+## [0.14.0] - 2026-02-05
+
+### Added
+
+- Comprehensive Unit Testing Suite:
+  - Installed Vitest as the core testing framework.
+  - Implemented unit tests for the central compiler to verify light/dark/auto mode CSS emission.
+  - Added specialized test suites for `Colors`, `Surface`, and `Typography` plugins to ensure correct token and utility generation.
+  - Wired `npm test` script for CI/CD readiness.
