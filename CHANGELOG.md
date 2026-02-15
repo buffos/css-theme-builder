@@ -313,3 +313,13 @@ All notable changes to this project will be documented in this file. We will log
   - Added a viewport switcher toolbar to the Live Preview panel.
   - Implemented dynamic iframe resizing for Mobile (375px), Tablet (768px), and Desktop (100%).
   - Added centering and polished background for the preview viewport.
+
+## [0.22.0] - 2026-02-13
+
+### Added
+
+- Local Version History:
+  - Implemented Undo/Redo history stacks (max 50 states) in the state manager.
+  - Added `localStorage` persistence to auto-save and restore theme configurations.
+  - Added Undo/Redo buttons to the app header with keyboard shortcuts (Ctrl+Z, Ctrl+Y).
+  - Consolidated state management logic and fixed multiple lint warnings.

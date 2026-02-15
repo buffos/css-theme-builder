@@ -1,7 +1,7 @@
 import './style.css';
 import { downloadCssBundle, downloadJson, loadConfigFromFile } from './app/export';
 import { createPreview } from './app/preview';
-import { getConfig, subscribe, updateConfig } from './app/state';
+import { getConfig, subscribe, updateConfig, undo, redo, subscribeHistory } from './app/state';
 import { controlsRegistry } from './app/ui';
 import type { ThemeMode } from './compiler/types';
 
@@ -23,13 +23,23 @@ root.innerHTML = `
           </p>
         </div>
         <div class="header-actions">
-          <div class="control-group">
-            <label for="theme-mode-select">Theme Mode</label>
-            <select id="theme-mode-select">
-              <option value="light-dark">Auto (Light-Dark)</option>
-              <option value="light">Always Light</option>
-              <option value="dark">Always Dark</option>
-            </select>
+          <div style="display: flex; align-items: center;">
+            <div class="history-actions">
+              <button type="button" class="history-btn" id="undo-btn" title="Undo (Ctrl+Z)" disabled>
+                <span>Undo</span> <kbd>Ctrl+Z</kbd>
+              </button>
+              <button type="button" class="history-btn" id="redo-btn" title="Redo (Ctrl+Y)" disabled>
+                <span>Redo</span> <kbd>Ctrl+Y</kbd>
+              </button>
+            </div>
+            <div class="control-group" style="margin-bottom: 0;">
+              <label for="theme-mode-select">Theme Mode</label>
+              <select id="theme-mode-select">
+                <option value="light-dark">Auto (Light-Dark)</option>
+                <option value="light">Always Light</option>
+                <option value="dark">Always Dark</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -119,7 +129,34 @@ if (modeSelect) {
   });
 }
 
-window.addEventListener('beforeunload', () => {
+// History Controls
+const undoBtn = document.querySelector<HTMLButtonElement>('#undo-btn');
+const redoBtn = document.querySelector<HTMLButtonElement>('#redo-btn');
+
+if (undoBtn && redoBtn) {
+  undoBtn.addEventListener('click', () => undo());
+  redoBtn.addEventListener('click', () => redo());
+
+  subscribeHistory((canUndo, canRedo) => {
+    undoBtn.disabled = !canUndo;
+    redoBtn.disabled = !canRedo;
+  });
+}
+
+globalThis.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'z') {
+      if (e.shiftKey) redo();
+      else undo();
+      e.preventDefault();
+    } else if (e.key === 'y') {
+      redo();
+      e.preventDefault();
+    }
+  }
+});
+
+globalThis.addEventListener('beforeunload', () => {
   preview.unmount();
   controlCleanups.forEach((cleanup) => cleanup()); // clean up event listeners before unload.
 });

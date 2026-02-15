@@ -38,16 +38,60 @@ const initialConfig: ThemeConfig = buildThemeConfig(
 
 let config: ThemeConfig = initialConfig;
 const listeners = new Set<StateListener>();
+const historyListeners = new Set<(canUndo: boolean, canRedo: boolean) => void>();
+
+const past: ThemeConfig[] = [];
+const future: ThemeConfig[] = [];
+const MAX_HISTORY = 50;
+const STORAGE_KEY = 'css-theme-builder-config';
+
+const saveToLocalStorage = (cfg: ThemeConfig) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+  } catch (err) {
+    console.error('Failed to save to localStorage:', err);
+  }
+};
+
+const notifyListeners = () => {
+  listeners.forEach((listener) => listener(config));
+  historyListeners.forEach((listener) => listener(past.length > 0, future.length > 0));
+};
 
 export const getConfig = (): ThemeConfig => config;
 
-export const setConfig = (next: ThemeConfig): void => {
+export const setConfig = (next: ThemeConfig, skipHistory = false): void => {
+  if (!skipHistory) {
+    past.push({ ...config });
+    if (past.length > MAX_HISTORY) past.shift();
+    future.length = 0; // Clear future on new action
+  }
+
   config = { ...next };
-  listeners.forEach((listener) => listener(config));
+  saveToLocalStorage(config);
+  notifyListeners();
 };
 
 export const updateConfig = (mutator: (current: ThemeConfig) => ThemeConfig): void => {
   setConfig(mutator(config));
+};
+
+export const undo = (): void => {
+  if (past.length === 0) return;
+  const previous = past.pop()!;
+  future.push({ ...config });
+  config = previous;
+  saveToLocalStorage(config);
+  notifyListeners();
+};
+
+export const redo = (): void => {
+  if (future.length === 0) return;
+  const next = future.pop()!;
+  past.push({ ...config });
+  config = next;
+  saveToLocalStorage(config);
+  notifyListeners();
 };
 
 export const subscribe = (listener: StateListener): (() => void) => {
@@ -55,4 +99,22 @@ export const subscribe = (listener: StateListener): (() => void) => {
   return () => listeners.delete(listener);
 };
 
+export const subscribeHistory = (
+  listener: (canUndo: boolean, canRedo: boolean) => void
+): (() => void) => {
+  historyListeners.add(listener);
+  listener(past.length > 0, future.length > 0);
+  return () => historyListeners.delete(listener);
+};
+
 export const getInitialConfig = (): ThemeConfig => initialConfig;
+
+// Initialize from localStorage
+try {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    config = JSON.parse(saved) as ThemeConfig;
+  }
+} catch (err) {
+  console.error('Failed to load from localStorage:', err);
+}
