@@ -3,6 +3,7 @@ import { downloadCssBundle, downloadJson, loadConfigFromFile } from './app/expor
 import { createPreview } from './app/preview';
 import { getConfig, subscribe, updateConfig } from './app/state';
 import { controlsRegistry } from './app/ui';
+import type { ThemeMode } from './compiler/types';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 
@@ -13,12 +14,24 @@ if (!root) {
 root.innerHTML = `
   <main class="app-shell" aria-label="Theme generator">
     <header class="app-shell__header">
-      <div>
-        <p class="eyebrow">UI Theme Generator</p>
-        <h1>Build and preview your theme</h1>
-        <p class="lede">
-          Define tokens, preview components, and export JSON plus a CSS bundle — all in-browser.
-        </p>
+      <div class="header-content">
+        <div>
+          <p class="eyebrow">UI Theme Generator</p>
+          <h1>Build and preview your theme</h1>
+          <p class="lede">
+            Define tokens, preview components, and export JSON plus a CSS bundle — all in-browser.
+          </p>
+        </div>
+        <div class="header-actions">
+          <div class="control-group">
+            <label for="theme-mode-select">Theme Mode</label>
+            <select id="theme-mode-select">
+              <option value="light-dark">Auto (Light-Dark)</option>
+              <option value="light">Always Light</option>
+              <option value="dark">Always Dark</option>
+            </select>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -97,6 +110,14 @@ Object.values(controlsRegistry).forEach((module, index) => {
 });
 
 preview.setActive([...openIds]);
+
+const modeSelect = document.querySelector<HTMLSelectElement>('#theme-mode-select');
+if (modeSelect) {
+  modeSelect.value = getConfig().mode;
+  modeSelect.addEventListener('change', () => {
+    updateConfig((cfg) => ({ ...cfg, mode: modeSelect.value as ThemeMode }));
+  });
+}
 
 window.addEventListener('beforeunload', () => {
   preview.unmount();

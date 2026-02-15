@@ -53,7 +53,59 @@ export const colorsCompilerEntry = {
     const dangerOn = onColor(danger500 ?? '#f05656');
     const successOn = onColor(success500 ?? '#3ba55a');
     const warningOn = onColor(warning500 ?? '#f29e38');
-    const surfaceOn = onColor(config.surface?.card ?? '#0f1729');
+    const surfaceOn = onColor(config.surface?.card ?? '#ffffff');
+
+    const lines = [
+      ':root {',
+      `  --color-primary-500: ${primary500 ?? ''};`,
+      `  --color-primary-600: ${primary600 ?? ''};`,
+      `  --color-neutral-50: ${neutral50 ?? ''};`,
+      `  --color-neutral-900: ${neutral900 ?? ''};`,
+      `  --on-primary: ${primaryOn};`,
+      `  --on-danger: ${dangerOn};`,
+      `  --on-success: ${successOn};`,
+      `  --on-warning: ${warningOn};`,
+      `  --on-surface: ${surfaceOn};`,
+    ];
+    if (danger500) lines.push(`  --color-danger-500: ${danger500};`);
+    if (success500) lines.push(`  --color-success-500: ${success500};`);
+    if (warning500) lines.push(`  --color-warning-500: ${warning500};`);
+    lines.push('}');
+    return lines.join('\n');
+  },
+  emitDarkTokens: (config: ThemeConfig) => {
+    const colors = config.colors;
+    if (!colors) return '';
+    const getColor = (val: unknown) => (typeof val === 'string' ? val : undefined);
+
+    const luminance = (hex: string): number => {
+      const clean = hex.replace('#', '');
+      if (clean.length !== 6) return 0;
+      const num = Number.parseInt(clean, 16);
+      const r = ((num >> 16) & 255) / 255;
+      const g = ((num >> 8) & 255) / 255;
+      const b = (num & 255) / 255;
+      const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+      const rl = lin(r);
+      const gl = lin(g);
+      const bl = lin(b);
+      return 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+    };
+
+    const onColor = (bg: string): string => (luminance(bg) > 0.6 ? '#0b1021' : '#f8fbff');
+
+    const primary500 = getColor(colors.primary?.[500]);
+    const primary600 = getColor(colors.primary?.[600]);
+    const neutral50 = getColor(colors.neutral?.[50]);
+    const neutral900 = getColor(colors.neutral?.[900]);
+    const danger500 = getColor(colors.danger?.[500]);
+    const success500 = getColor(colors.success?.[500]);
+    const warning500 = getColor(colors.warning?.[500]);
+    const primaryOn = onColor(primary500 ?? '#5b8def');
+    const dangerOn = onColor(danger500 ?? '#f05656');
+    const successOn = onColor(success500 ?? '#3ba55a');
+    const warningOn = onColor(warning500 ?? '#f29e38');
+    const surfaceOn = onColor(config.surface?.darkCardSnippet ?? '#0f1729');
 
     const lines = [
       ':root {',

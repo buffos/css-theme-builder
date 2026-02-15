@@ -46,9 +46,10 @@ export type ThemeSectionSpec<K extends string, TSection> = {
   title: string;
   description?: string;
   validate: (section: unknown) => section is TSection;
-  emitTokens?: (section: TSection) => Record<string, string>;
-  emitUtilities?: (section: TSection) => Record<string, string>;
-  emitComponents?: (section: TSection) => Record<string, string>;
+  emitTokens?: (section: TSection) => string;
+  emitDarkTokens?: (section: TSection) => string;
+  emitUtilities?: (section: TSection) => string;
+  emitComponents?: (section: TSection) => string;
 };
 
 export type SectionRegistry<M extends ThemeModules = ThemeModules> = {

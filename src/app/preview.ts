@@ -25,11 +25,13 @@ const createIframe = (): HTMLIFrameElement => {
 const writePreviewDocument = (
   iframe: HTMLIFrameElement,
   css: string,
+  mode: string,
   modules = previewModules satisfies PreviewModule[]
 ): void => {
+  const themeAttr = mode === 'dark' ? 'data-theme="dark"' : '';
   iframe.srcdoc = `
     <!doctype html>
-    <html>
+    <html ${themeAttr}>
       <head>
         <style>
           :root { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
@@ -97,7 +99,7 @@ export const createPreview = (): PreviewHandles => {
       activeIds.size === 0
         ? previewModules
         : previewModules.filter((mod: PreviewModule) => activeIds.has(String(mod.id)));
-    writePreviewDocument(iframe, css, filteredModules);
+    writePreviewDocument(iframe, css, config.mode, filteredModules);
   };
 
   const mount = (container: HTMLElement) => {

@@ -18,6 +18,7 @@ type EmitterEntry = {
   title: string;
   isEnabled: (config: ThemeConfig) => boolean;
   emitTokens?: (config: ThemeConfig) => string;
+  emitDarkTokens?: (config: ThemeConfig) => string;
   emitUtilities?: (config: ThemeConfig) => string;
   emitComponents?: (config: ThemeConfig) => string;
 };

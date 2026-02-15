@@ -9,6 +9,9 @@ declare module '../../compiler/types' {
       background: string;
       foreground: string;
       card: string;
+      darkBackgroundSnippet?: string; // Optional custom dark background
+      darkForegroundSnippet?: string;
+      darkCardSnippet?: string;
     };
   }
 }
@@ -27,6 +30,17 @@ export const surfaceCompilerEntry = {
       '}',
     ].join('\n');
   },
+  emitDarkTokens: (config: ThemeConfig) => {
+    if (!config.surface) return '';
+    const { darkBackgroundSnippet, darkForegroundSnippet, darkCardSnippet } = config.surface;
+    return [
+      ':root {',
+      `  --surface-bg: ${darkBackgroundSnippet ?? '#0b1021'};`,
+      `  --surface-fg: ${darkForegroundSnippet ?? '#e7ecff'};`,
+      `  --surface-card: ${darkCardSnippet ?? '#0f1729'};`,
+      '}',
+    ].join('\n');
+  },
 };
 
 export const surfaceControlModule: ControlModule = {
@@ -35,7 +49,7 @@ export const surfaceControlModule: ControlModule = {
   mount: (container) => {
     container.innerHTML = `
       <p class="controls-placeholder">
-        Surface controls will be added here.
+        Surface controls will be added here. (Dark mode surface defaults are applied).
       </p>
     `;
   },
@@ -43,8 +57,11 @@ export const surfaceControlModule: ControlModule = {
 
 export const surfaceDefaults = {
   surface: {
-    background: '#0b1021',
-    foreground: '#e7ecff',
-    card: '#0f1729',
+    background: '#fafafa',
+    foreground: '#0b1021',
+    card: '#ffffff',
+    darkBackgroundSnippet: '#0b1021',
+    darkForegroundSnippet: '#e7ecff',
+    darkCardSnippet: '#0f1729',
   },
 };
