@@ -1,3 +1,5 @@
+[![CI](https://github.com/buffos/css-theme-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/buffos/css-theme-builder/actions/workflows/ci.yml)
+
 # CSS Theme Builder v0.1.0
 
 A high-performance, plugin-based engine for generating modern design systems. This tool allows designers and developers to build, audit, and export CSS design tokens and utility classes through a visual interface.
