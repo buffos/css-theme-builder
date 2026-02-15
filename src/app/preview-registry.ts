@@ -15,6 +15,7 @@ import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
+import { typographyPreviewModule } from '../plugins/basic-typography';
 import { dashboardPreviewModule } from '../plugins/dashboard';
 
 export const previewModules = [
@@ -28,5 +29,6 @@ export const previewModules = [
   shadowPreviewModule,
   alertPreviewModule,
   tablePreviewModule,
+  typographyPreviewModule,
   modalPreviewModule,
 ] satisfies PreviewModule[];

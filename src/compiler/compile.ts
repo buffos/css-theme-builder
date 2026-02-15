@@ -36,14 +36,9 @@ export const compile = (config: ThemeConfig): CompiledFiles => {
   let tokens = '';
 
   if (config.mode === 'dark') {
-    // In dark-only mode, we emit dark tokens as default if they exist, otherwise light.
-    // Actually, usually you want dark tokens to override :root.
-    const darkCombined = darkChunks.filter(Boolean).join('\n');
-    if (darkCombined) {
-      tokens = darkCombined;
-    } else {
-      tokens = lightChunks.filter(Boolean).join('\n');
-    }
+    const light = lightChunks.filter(Boolean).join('\n');
+    const dark = darkChunks.filter(Boolean).join('\n');
+    tokens = dark ? `${light}\n\n${dark}` : light;
   } else if (config.mode === 'light') {
     tokens = lightChunks.filter(Boolean).join('\n');
   } else {

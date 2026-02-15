@@ -24,9 +24,9 @@ type EmitterEntry = {
 };
 
 export const compilerRegistry: EmitterEntry[] = [
+  typographyCompilerEntry,
   colorsCompilerEntry,
   surfaceCompilerEntry,
-  typographyCompilerEntry,
   spacingCompilerEntry,
   radiusCompilerEntry,
   shadowCompilerEntry,

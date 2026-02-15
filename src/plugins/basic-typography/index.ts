@@ -17,6 +17,8 @@ declare module '../../compiler/types' {
         base: { sizeRem: number; lineHeight: number };
         lg: { sizeRem: number; lineHeight: number };
         xl: { sizeRem: number; lineHeight: number };
+        '2xl': { sizeRem: number; lineHeight: number };
+        '3xl': { sizeRem: number; lineHeight: number };
       };
     };
   }
@@ -28,31 +30,48 @@ export const typographyCompilerEntry = {
   isEnabled: (config: ThemeConfig) => Boolean(config.typography),
   emitTokens: (config: ThemeConfig) => {
     if (!config.typography) return '';
-    const { fontFamily, baseFontSizePx, scale } = config.typography;
+    const fontFamily = config.typography.fontFamily ?? 'Inter, sans-serif';
+    const baseFontSizePx = config.typography.baseFontSizePx ?? 16;
+    const scale = config.typography.scale;
     const fontImport = isGoogleFont(fontFamily) ? getGoogleFontImport(fontFamily) : '';
+
+    const s = {
+      sm:   { size: scale?.sm?.sizeRem   ?? 0.875, line: scale?.sm?.lineHeight   ?? 1.4 },
+      base: { size: scale?.base?.sizeRem ?? 1,     line: scale?.base?.lineHeight ?? 1.6 },
+      lg:   { size: scale?.lg?.sizeRem   ?? 1.125, line: scale?.lg?.lineHeight   ?? 1.6 },
+      xl:   { size: scale?.xl?.sizeRem   ?? 1.25,  line: scale?.xl?.lineHeight   ?? 1.6 },
+      '2xl':{ size: scale?.['2xl']?.sizeRem ?? 1.5, line: scale?.['2xl']?.lineHeight ?? 1.6 },
+      '3xl':{ size: scale?.['3xl']?.sizeRem ?? 2,   line: scale?.['3xl']?.lineHeight ?? 1.6 },
+    };
 
     return [
       fontImport,
       ':root {',
       `  --font-family: ${fontFamily};`,
       `  --base-font-size: ${baseFontSizePx}px;`,
-      `  --text-sm-size: ${scale.sm.sizeRem}rem;`,
-      `  --text-sm-line: ${scale.sm.lineHeight};`,
-      `  --text-base-size: ${scale.base.sizeRem}rem;`,
-      `  --text-base-line: ${scale.base.lineHeight};`,
-      `  --text-lg-size: ${scale.lg.sizeRem}rem;`,
-      `  --text-lg-line: ${scale.lg.lineHeight};`,
-      `  --text-xl-size: ${scale.xl.sizeRem}rem;`,
-      `  --text-xl-line: ${scale.xl.lineHeight};`,
+      `  --text-sm-size: ${s.sm.size}rem;`,
+      `  --text-sm-line-height: ${s.sm.line};`,
+      `  --text-base-size: ${s.base.size}rem;`,
+      `  --text-base-line-height: ${s.base.line};`,
+      `  --text-lg-size: ${s.lg.size}rem;`,
+      `  --text-lg-line-height: ${s.lg.line};`,
+      `  --text-xl-size: ${s.xl.size}rem;`,
+      `  --text-xl-line-height: ${s.xl.line};`,
+      `  --text-2xl-size: ${s['2xl'].size}rem;`,
+      `  --text-2xl-line-height: ${s['2xl'].line};`,
+      `  --text-3xl-size: ${s['3xl'].size}rem;`,
+      `  --text-3xl-line-height: ${s['3xl'].line};`,
       '}',
     ].join('\n');
   },
   emitUtilities: () =>
     [
-      `.text-sm { font-size: var(--text-sm-size); line-height: var(--text-sm-line); }`,
-      `.text-base { font-size: var(--text-base-size); line-height: var(--text-base-line); }`,
-      `.text-lg { font-size: var(--text-lg-size); line-height: var(--text-lg-line); }`,
-      `.text-xl { font-size: var(--text-xl-size); line-height: var(--text-xl-line); }`,
+      `.text-sm { font-size: var(--text-sm-size); line-height: var(--text-sm-line-height); }`,
+      `.text-base { font-size: var(--text-base-size); line-height: var(--text-base-line-height); }`,
+      `.text-lg { font-size: var(--text-lg-size); line-height: var(--text-lg-line-height); }`,
+      `.text-xl { font-size: var(--text-xl-size); line-height: var(--text-xl-line-height); }`,
+      `.text-2xl { font-size: var(--text-2xl-size); line-height: var(--text-2xl-line-height); }`,
+      `.text-3xl { font-size: var(--text-3xl-size); line-height: var(--text-3xl-line-height); }`,
     ].join('\n'),
 };
 
@@ -67,7 +86,7 @@ const calculateRem = (
   step: number
 ) => {
   if (mode === 'modular') return Math.round(base * Math.pow(ratio, step) * 1000) / 1000;
-  return clamp(Number(input?.value ?? def), 0.6, 4);
+  return clamp(Number(input?.value ?? def), 0.6, 6);
 };
 
 type TypographyInputs = {
@@ -84,6 +103,10 @@ type TypographyInputs = {
   lgLine: HTMLInputElement | null;
   xlSize: HTMLInputElement | null;
   xlLine: HTMLInputElement | null;
+  '2xlSize': HTMLInputElement | null;
+  '2xlLine': HTMLInputElement | null;
+  '3xlSize': HTMLInputElement | null;
+  '3xlLine': HTMLInputElement | null;
 };
 
 const calculateScale = (
@@ -94,7 +117,7 @@ const calculateScale = (
   ratio: number
 ) => ({
   sm: {
-    sizeRem: calculateRem(mode, inputs.smSize, current.scale.sm.sizeRem, baseRem, ratio, -1),
+    sizeRem: calculateRem(mode, inputs.smSize, current.scale?.sm?.sizeRem ?? 0.875, baseRem, ratio, -1),
     lineHeight: clamp(Number(inputs.smLine?.value ?? 1.4), 1, 2.2),
   },
   base: {
@@ -102,30 +125,54 @@ const calculateScale = (
     lineHeight: clamp(Number(inputs.baseLine?.value ?? 1.6), 1, 2.4),
   },
   lg: {
-    sizeRem: calculateRem(mode, inputs.lgSize, current.scale.lg.sizeRem, baseRem, ratio, 1),
+    sizeRem: calculateRem(mode, inputs.lgSize, current.scale?.lg?.sizeRem ?? 1.125, baseRem, ratio, 1),
     lineHeight: clamp(Number(inputs.lgLine?.value ?? 1.6), 1, 2.8),
   },
   xl: {
-    sizeRem: calculateRem(mode, inputs.xlSize, current.scale.xl.sizeRem, baseRem, ratio, 2),
+    sizeRem: calculateRem(mode, inputs.xlSize, current.scale?.xl?.sizeRem ?? 1.25, baseRem, ratio, 2),
     lineHeight: clamp(Number(inputs.xlLine?.value ?? 1.6), 1, 3.2),
+  },
+  '2xl': {
+    sizeRem: calculateRem(mode, inputs['2xlSize'], current.scale?.['2xl']?.sizeRem ?? 1.5, baseRem, ratio, 3),
+    lineHeight: clamp(Number(inputs['2xlLine']?.value ?? 1.6), 1, 3.2),
+  },
+  '3xl': {
+    sizeRem: calculateRem(mode, inputs['3xlSize'], current.scale?.['3xl']?.sizeRem ?? 2, baseRem, ratio, 4),
+    lineHeight: clamp(Number(inputs['3xlLine']?.value ?? 1.6), 1, 3.2),
   },
 });
 
-const syncFieldValues = (inputs: TypographyInputs, typography: NonNullable<ThemeConfig['typography']>) => {
-  const { fontFamily, baseFontSizePx, scale, scaleMode, ratio } = typography;
-  if (inputs.fontFamily) inputs.fontFamily.value = fontFamily;
-  if (inputs.baseSize) inputs.baseSize.value = String(baseFontSizePx);
-  if (inputs.scaleMode) inputs.scaleMode.value = scaleMode;
-  if (inputs.scaleRatio) inputs.scaleRatio.value = String(ratio);
+const setSafeVal = (input: HTMLInputElement | HTMLSelectElement | null, value: string | number | undefined) => {
+  if (!input || document.activeElement === input) return;
+  const valStr = String(value ?? '');
+  if (input.value !== valStr) {
+    input.value = valStr;
+  }
+};
 
-  if (inputs.smSize) inputs.smSize.value = String(scale.sm.sizeRem);
-  if (inputs.smLine) inputs.smLine.value = String(scale.sm.lineHeight);
-  if (inputs.baseSizeRem) inputs.baseSizeRem.value = String(scale.base.sizeRem);
-  if (inputs.baseLine) inputs.baseLine.value = String(scale.base.lineHeight);
-  if (inputs.lgSize) inputs.lgSize.value = String(scale.lg.sizeRem);
-  if (inputs.lgLine) inputs.lgLine.value = String(scale.lg.lineHeight);
-  if (inputs.xlSize) inputs.xlSize.value = String(scale.xl.sizeRem);
-  if (inputs.xlLine) inputs.xlLine.value = String(scale.xl.lineHeight);
+const syncScaleField = (input: HTMLInputElement | null, value: number | undefined, fallback: number) => {
+  setSafeVal(input, value ?? fallback);
+};
+
+const syncFieldValues = (inputs: TypographyInputs, typography: NonNullable<ThemeConfig['typography']>) => {
+  const scale = typography.scale;
+  setSafeVal(inputs.fontFamily, typography.fontFamily ?? 'Inter, sans-serif');
+  setSafeVal(inputs.baseSize, String(typography.baseFontSizePx ?? 16));
+  setSafeVal(inputs.scaleMode, typography.scaleMode);
+  setSafeVal(inputs.scaleRatio, String(typography.ratio));
+
+  syncScaleField(inputs.smSize,     scale?.sm?.sizeRem,       0.875);
+  syncScaleField(inputs.smLine,     scale?.sm?.lineHeight,    1.4);
+  syncScaleField(inputs.baseSizeRem,scale?.base?.sizeRem,     1);
+  syncScaleField(inputs.baseLine,   scale?.base?.lineHeight,  1.6);
+  syncScaleField(inputs.lgSize,     scale?.lg?.sizeRem,       1.125);
+  syncScaleField(inputs.lgLine,     scale?.lg?.lineHeight,    1.6);
+  syncScaleField(inputs.xlSize,     scale?.xl?.sizeRem,       1.25);
+  syncScaleField(inputs.xlLine,     scale?.xl?.lineHeight,    1.6);
+  syncScaleField(inputs['2xlSize'], scale?.['2xl']?.sizeRem,  1.5);
+  syncScaleField(inputs['2xlLine'], scale?.['2xl']?.lineHeight,1.6);
+  syncScaleField(inputs['3xlSize'], scale?.['3xl']?.sizeRem,  2);
+  syncScaleField(inputs['3xlLine'], scale?.['3xl']?.lineHeight,1.6);
 };
 
 export const typographyControlModule: ControlModule = {
@@ -201,6 +248,22 @@ export const typographyControlModule: ControlModule = {
           <label for="scale-xl-line">xl line-height</label>
           <input id="scale-xl-line" name="scale-xl-line" type="number" min="1" max="3.2" step="0.05" />
         </div>
+        <div class="control-group">
+          <label for="scale-2xl-size">2xl size (rem)</label>
+          <input id="scale-2xl-size" name="scale-2xl-size" type="number" min="1.2" max="5" step="0.001" />
+        </div>
+        <div class="control-group">
+          <label for="scale-2xl-line">2xl line-height</label>
+          <input id="scale-2xl-line" name="scale-2xl-line" type="number" min="1" max="3.2" step="0.05" />
+        </div>
+        <div class="control-group">
+          <label for="scale-3xl-size">3xl size (rem)</label>
+          <input id="scale-3xl-size" name="scale-3xl-size" type="number" min="1.5" max="6" step="0.001" />
+        </div>
+        <div class="control-group">
+          <label for="scale-3xl-line">3xl line-height</label>
+          <input id="scale-3xl-line" name="scale-3xl-line" type="number" min="1" max="3.2" step="0.05" />
+        </div>
       </div>
       <p class="controls-placeholder">
         Adjust font family, base size, and typographic scale.
@@ -224,6 +287,10 @@ export const typographyControlModule: ControlModule = {
       lgLine: byId<HTMLInputElement>('scale-lg-line'),
       xlSize: byId<HTMLInputElement>('scale-xl-size'),
       xlLine: byId<HTMLInputElement>('scale-xl-line'),
+      '2xlSize': byId<HTMLInputElement>('scale-2xl-size'),
+      '2xlLine': byId<HTMLInputElement>('scale-2xl-line'),
+      '3xlSize': byId<HTMLInputElement>('scale-3xl-size'),
+      '3xlLine': byId<HTMLInputElement>('scale-3xl-line'),
     };
 
     const sync = () => {
@@ -238,7 +305,7 @@ export const typographyControlModule: ControlModule = {
       }
 
       const isModular = scaleMode === 'modular';
-      [inputs.smSize, inputs.baseSizeRem, inputs.lgSize, inputs.xlSize].forEach((i) => {
+      [inputs.smSize, inputs.baseSizeRem, inputs.lgSize, inputs.xlSize, inputs['2xlSize'], inputs['3xlSize']].forEach((i) => {
         if (i) i.disabled = isModular;
       });
     };
@@ -266,16 +333,86 @@ export const typographyControlModule: ControlModule = {
       }));
     };
 
-    Object.values(inputs).forEach((input) => input?.addEventListener('input', onChange));
+    Object.entries(inputs).forEach(([key, input]) => {
+      if (!input) return;
+      const eventType = key === 'fontFamily' ? 'change' : 'input';
+      input.addEventListener(eventType, onChange);
+    });
+
+    inputs.fontFamily?.addEventListener('change', () => {
+      // Blur after selection so the next click re-triggers 'focus' logic
+      inputs.fontFamily?.blur();
+    });
+
+    // Special UX for font-family datalist: clear on focus to show all options, restore on blur if empty.
+    let prevFont = '';
+    inputs.fontFamily?.addEventListener('focus', () => {
+      prevFont = inputs.fontFamily?.value ?? '';
+      if (inputs.fontFamily) inputs.fontFamily.value = '';
+    });
+    inputs.fontFamily?.addEventListener('blur', () => {
+      if (inputs.fontFamily && !inputs.fontFamily.value) {
+        inputs.fontFamily.value = prevFont;
+      }
+    });
 
     const unsubscribe = api.subscribe(sync);
     sync();
 
     return () => {
-      Object.values(inputs).forEach((input) => input?.removeEventListener('input', onChange));
+      Object.entries(inputs).forEach(([key, input]) => {
+        if (!input) return;
+        const eventType = key === 'fontFamily' ? 'change' : 'input';
+        input.removeEventListener(eventType, onChange);
+      });
       unsubscribe();
     };
   },
+};
+
+export const typographyPreviewModule = {
+  id: 'typography',
+  title: 'Typography Scale',
+  render: () => `
+    <div style="display: flex; flex-direction: column; gap: 2rem; color: var(--surface-fg);">
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">3XL Text (Hero)</span>
+        <div style="font-size: var(--text-3xl-size); line-height: var(--text-3xl-line-height);">
+          The quick brown fox jumps over the lazy dog.
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">2XL Text (Title)</span>
+        <div style="font-size: var(--text-2xl-size); line-height: var(--text-2xl-line-height);">
+          The quick brown fox jumps over the lazy dog.
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">XL Text (Heading)</span>
+        <div style="font-size: var(--text-xl-size); line-height: var(--text-xl-line-height);">
+          The quick brown fox jumps over the lazy dog.
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">Large Text</span>
+        <div style="font-size: var(--text-lg-size); line-height: var(--text-lg-line-height);">
+          The quick brown fox jumps over the lazy dog.
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">Base Text</span>
+        <div style="font-size: var(--text-base-size); line-height: var(--text-base-line-height);">
+          The quick brown fox jumps over the lazy dog. This is your standard body copy size.
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">Small Text</span>
+        <div style="font-size: var(--text-sm-size); line-height: var(--text-sm-line-height);">
+          The quick brown fox jumps over the lazy dog. Used for captions and fine print.
+        </div>
+      </div>
+    </div>
+  `,
 };
 
 export const typographyDefaults = {
@@ -289,6 +426,8 @@ export const typographyDefaults = {
       base: { sizeRem: 1, lineHeight: 1.6 },
       lg: { sizeRem: 1.125, lineHeight: 1.6 },
       xl: { sizeRem: 1.25, lineHeight: 1.6 },
+      '2xl': { sizeRem: 1.5, lineHeight: 1.6 },
+      '3xl': { sizeRem: 2, lineHeight: 1.6 },
     },
   },
 };

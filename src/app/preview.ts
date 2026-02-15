@@ -34,7 +34,7 @@ const writePreviewDocument = (
     <html ${themeAttr}>
       <head>
         <style>
-          :root { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
+          :root { font-family: var(--font-family, Inter, "Segoe UI", system-ui, -apple-system, sans-serif); }
           body {
             margin: 0;
             background: #0f1729;

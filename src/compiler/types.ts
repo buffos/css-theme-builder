@@ -40,8 +40,8 @@ export const buildThemeConfig = <M extends ThemeModules>(
       author: 'Unknown',
       mode: 'light-dark' as ThemeMode,
     },
-    base,
-    ...fragments
+    ...fragments,
+    base
   ) as ThemeConfig<M>;
   return merged;
 };
