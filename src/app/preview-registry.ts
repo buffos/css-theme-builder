@@ -12,12 +12,14 @@ import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
+import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
 
 export const previewModules = [
   buttonsPreviewModule,
   inputsPreviewModule,
   cardPreviewModule,
+  surfacePreviewModule,
   radiusPreviewModule,
   shadowPreviewModule,
   alertPreviewModule,

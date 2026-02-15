@@ -341,3 +341,12 @@ All notable changes to this project will be documented in this file. We will log
   - Replaced placeholder controls with a multi-slider shadow editor (X, Y, Blur, Spread, Opacity).
   - Added "Shadows Gallery" preview module to visualize elevation levels.
   - Refactored shadow keys to semantic `sm`, `md`, and `lg` tokens.
+
+## [0.25.0] - 2026-02-15
+
+### Added
+
+- Surface Plugin UI:
+  - Replaced placeholder controls with color pickers for Light and Dark modes.
+  - Added controls for `Background`, `Foreground`, and `Card` surfaces for both themes.
+  - Added "Surfaces Gallery" preview module to demonstrate layout depth and contrast.
