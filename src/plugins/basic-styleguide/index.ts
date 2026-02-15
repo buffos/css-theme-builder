@@ -231,6 +231,65 @@ export const styleguidePreviewModule: PreviewModule = {
                 `).join('')}
               </div>
             </div>
+
+            <!-- Elevation (Z-Index) Spec -->
+            <div style="grid-column: 1 / -1; padding: 1.5rem; background: var(--surface-card); border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Z-Index Layers</h5>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;">
+                ${Object.entries(config.elevation ?? {}).sort(([, a], [, b]) => a - b).map(([key, val]) => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--surface-bg); border-radius: 6px; border: 1px solid rgba(128,128,128,0.05);">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 10px; font-weight: 800; color: var(--color-primary-500);">${key.toUpperCase()}</span>
+                      <code class="token-code" onclick="copyToken('--z-index-${key}')">--z-index-${key}</code>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 900; opacity: 0.8;">${val}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ICONOGRAPHY SPEC -->
+        <section>
+          <h4 style="margin: 0 0 1.5rem 0; font-size: 13px; font-weight: 800; border-bottom: 2px solid var(--color-primary-500); padding-bottom: 0.5rem; display: inline-block;">ICONOGRAPHY SPEC</h4>
+          <div style="display: grid; gap: 2rem;">
+            
+            <div style="padding: 1.5rem; background: var(--surface-card); border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1.5rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Size Scale</h5>
+              <div style="display: flex; align-items: flex-end; gap: 2rem; flex-wrap: wrap;">
+                ${Object.entries(config.icons?.sizes ?? {}).map(([key, val]) => `
+                  <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                    <div style="width: var(--icon-size-${key}); height: var(--icon-size-${key}); color: var(--color-primary-500);">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                      <span style="font-size: 10px; font-weight: 800;">${key.toUpperCase()}</span>
+                      <code class="token-code" onclick="copyToken('--icon-size-${key}')">${val}</code>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div style="padding: 1.5rem; background: var(--surface-card); border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1.5rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Stroke Weight</h5>
+              <div style="display: flex; gap: 3rem; flex-wrap: wrap;">
+                ${Object.entries(config.icons?.stroke ?? {}).map(([key, val]) => `
+                  <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 32px; height: 32px; color: var(--color-primary-500);">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="var(--icon-stroke-${key})" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 10px; font-weight: 800;">${key.toUpperCase()}</span>
+                      <code class="token-code" onclick="copyToken('--icon-stroke-${key}')">${val}px</code>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
           </div>
         </section>
 

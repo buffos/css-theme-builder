@@ -3,6 +3,7 @@ import { buttonsCompilerEntry } from '../plugins/basic-buttons';
 import { cardCompilerEntry } from '../plugins/basic-card';
 import { colorsCompilerEntry } from '../plugins/basic-colors/index';
 import { elevationCompilerEntry } from '../plugins/basic-elevation';
+import { iconsCompilerEntry } from '../plugins/basic-icons';
 import { inputsCompilerEntry } from '../plugins/basic-inputs';
 import { layoutCompilerEntry } from '../plugins/basic-layout';
 import { modalCompilerEntry } from '../plugins/basic-modal';
@@ -35,6 +36,7 @@ export const compilerRegistry: EmitterEntry[] = [
   radiusCompilerEntry,
   shadowCompilerEntry,
   elevationCompilerEntry,
+  iconsCompilerEntry,
   buttonsCompilerEntry,
   inputsCompilerEntry,
   cardCompilerEntry,

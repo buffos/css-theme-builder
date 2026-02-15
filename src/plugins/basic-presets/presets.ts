@@ -25,6 +25,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     elevation: {
       hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
       fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    },
+    icons: {
+      sizes: { xs: '12px', sm: '16px', md: '24px', lg: '32px', xl: '48px' },
+      stroke: { thin: '1', base: '2', bold: '3' }
     }
   },
   midnight: {
@@ -54,6 +58,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     elevation: {
       hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
       fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    },
+    icons: {
+      sizes: { xs: '12px', sm: '18px', md: '28px', lg: '36px', xl: '56px' },
+      stroke: { thin: '1', base: '1.5', bold: '2.5' }
     }
   },
   cyberpunk: {
@@ -83,6 +91,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     elevation: {
       hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
       fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    },
+    icons: {
+      sizes: { xs: '14px', sm: '20px', md: '32px', lg: '48px', xl: '64px' },
+      stroke: { thin: '1.5', base: '2.5', bold: '4' }
     }
   },
   corporate: {
@@ -104,6 +116,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     elevation: {
       hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
       fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    },
+    icons: {
+      sizes: { xs: '12px', sm: '16px', md: '24px', lg: '32px', xl: '40px' },
+      stroke: { thin: '1', base: '2', bold: '3' }
     }
   },
   minimalist: {
@@ -125,6 +141,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     elevation: {
       hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
       fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    },
+    icons: {
+      sizes: { xs: '10px', sm: '14px', md: '20px', lg: '28px', xl: '36px' },
+      stroke: { thin: '0.5', base: '1', bold: '2' }
     }
   }
 };

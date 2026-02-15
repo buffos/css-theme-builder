@@ -3,6 +3,8 @@ import { alertDefaults } from '../plugins/basic-alert';
 import { buttonsDefaults } from '../plugins/basic-buttons';
 import { cardDefaults } from '../plugins/basic-card';
 import { colorsDefaults } from '../plugins/basic-colors';
+import { elevationDefaults } from '../plugins/basic-elevation';
+import { iconsDefaults } from '../plugins/basic-icons';
 import { inputsDefaults } from '../plugins/basic-inputs';
 import { layoutDefaults } from '../plugins/basic-layout';
 import { modalDefaults } from '../plugins/basic-modal';
@@ -25,6 +27,8 @@ const defaultFragments: PartialThemeConfig[] = [
   typographyDefaults,
   spacingDefaults,
   radiusDefaults,
+  elevationDefaults,
+  iconsDefaults,
   sandboxDefaults,
   shadowDefaults,
   alertDefaults,

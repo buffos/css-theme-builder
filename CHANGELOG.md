@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file. We will log
 - **Dev Handoff: Copy to Clipboard**: Added one-click copy functionality to the Style Guide, allowing users to instantly copy design tokens as CSS variables.
 - **Accessibility Master Audit**: Implemented a dedicated audit preview module that scans for WCAG contrast violations across all semantic color pairs and provides one-click "Nudge" fixes.
 - **Z-Index & Elevation Foundation**: Introduced a global stacking token system (`--z-index-*`) with a dedicated preview spec and interactive controls. All theme presets have been updated with standard elevation foundations.
+- **Iconography Scale Foundation**: Created a standardized icon scaling system (`--icon-size-*` and `--icon-stroke-*`). Updated all theme personas with tailored iconography scales and added a visual spec preview.
 
 ### Changed
 

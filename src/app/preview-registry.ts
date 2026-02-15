@@ -1,10 +1,10 @@
-import type { ThemeConfig } from '../compiler/types';
-import { accessibilityPreviewModule } from '../plugins/basic-accessibility';
 import { alertPreviewModule } from '../plugins/basic-alert';
 import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
 import { colorsPreviewModule } from '../plugins/basic-colors';
+import { dashboardPreviewModule } from '../plugins/dashboard';
 import { elevationPreviewModule } from '../plugins/basic-elevation';
+import { iconsPreviewModule } from '../plugins/basic-icons';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { layoutPreviewModule } from '../plugins/basic-layout';
 import { modalPreviewModule } from '../plugins/basic-modal';
@@ -17,33 +17,31 @@ import { styleguidePreviewModule } from '../plugins/basic-styleguide';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
 import { typographyPreviewModule } from '../plugins/basic-typography';
-import { dashboardPreviewModule } from '../plugins/dashboard';
 
 export type PreviewModule = {
   id: string;
   title: string;
-  description?: string;
-  render: (config: ThemeConfig) => string;
+  render: (config: any) => string;
 };
 
-export const previewModules = [
-  sandboxPreviewModule,
-  styleguidePreviewModule,
-  accessibilityPreviewModule,
-  layoutPreviewModule,
+export const previewModules: PreviewModule[] = [
   dashboardPreviewModule,
+  styleguidePreviewModule,
+  sandboxPreviewModule,
+  layoutPreviewModule,
+  typographyPreviewModule,
   colorsPreviewModule,
+  spacingPreviewModule,
+  radiusPreviewModule,
+  shadowPreviewModule,
+  elevationPreviewModule,
+  iconsPreviewModule,
+  alertPreviewModule,
+  tablePreviewModule,
   buttonsPreviewModule,
   inputsPreviewModule,
   cardPreviewModule,
-  surfacePreviewModule,
-  radiusPreviewModule,
-  spacingPreviewModule,
-  shadowPreviewModule,
-  elevationPreviewModule,
-  alertPreviewModule,
-  tablePreviewModule,
-  typographyPreviewModule,
   modalPreviewModule,
   motionPreviewModule,
-] satisfies PreviewModule[];
+  surfacePreviewModule,
+];
