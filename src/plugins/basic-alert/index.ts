@@ -35,8 +35,15 @@ export const alertCompilerEntry = {
         (v) => `
 .alert--${v.name} {
   border-color: ${v.color};
-  background: color-mix(in srgb, ${v.color} 8%, transparent);
-  color: ${v.on};
+  background: color-mix(in srgb, ${v.color} 10%, transparent);
+  color: color-mix(in srgb, ${v.color} 80%, var(--color-neutral-900));
+}
+[data-theme='dark'] .alert--${v.name}, 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .alert--${v.name} {
+    color: color-mix(in srgb, ${v.color} 80%, white);
+    background: color-mix(in srgb, ${v.color} 15%, transparent);
+  }
 }`,
       )
       .join('\n');

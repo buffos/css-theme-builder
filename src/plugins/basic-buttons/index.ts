@@ -8,6 +8,7 @@ declare module '../../compiler/types' {
   interface ThemeModules {
     buttons: {
       density?: ButtonDensity;
+      radiusKey?: string;
       overrides?: {
         bg?: string;
         fg?: string;
@@ -24,6 +25,7 @@ export const buttonsCompilerEntry = {
   isEnabled: (_config: ThemeConfig) => true,
   emitComponents: (config: ThemeConfig) => {
     const radiusKey =
+      config.buttons?.radiusKey ??
       Object.keys(config.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '1';
     const density = config.buttons?.density ?? 'comfortable';
     const overrides = config.buttons?.overrides;
@@ -160,6 +162,7 @@ export const buttonsControlModule: ControlModule = {
       const bCfg = cfg.buttons;
       if (inputs.radius) {
         inputs.radius.value =
+          bCfg?.radiusKey ??
           Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '';
       }
       if (inputs.density) inputs.density.value = bCfg?.density ?? 'comfortable';
@@ -171,6 +174,7 @@ export const buttonsControlModule: ControlModule = {
 
     const onChange = () => {
       const density = (inputs.density?.value as ButtonDensity | undefined) ?? 'comfortable';
+      const radiusKey = inputs.radius?.value;
       const overrides = {
         bg: inputs.ovBg?.value.trim() ? inputs.ovBg.value.trim() : undefined,
         fg: inputs.ovFg?.value.trim() ? inputs.ovFg.value.trim() : undefined,
@@ -180,7 +184,7 @@ export const buttonsControlModule: ControlModule = {
 
       api.updateConfig((cfg) => ({
         ...cfg,
-        buttons: { density, overrides },
+        buttons: { density, radiusKey, overrides },
       }));
     };
 

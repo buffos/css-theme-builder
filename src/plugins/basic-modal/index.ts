@@ -11,6 +11,7 @@ declare module '../../compiler/types' {
       radiusToken?: string;
       maxWidth?: string;
       borderWeight?: string;
+      borderColor?: string;
     };
   }
 }
@@ -28,6 +29,7 @@ export const modalCompilerEntry = {
     const blur = mCfg?.backdropBlur ?? '4px';
     const opacity = mCfg?.backdropOpacity ?? 0.5;
     const maxWidth = mCfg?.maxWidth ?? '520px';
+    const borderColor = mCfg?.borderColor ?? 'var(--color-neutral-900)';
 
     return `
 .modal-backdrop {
@@ -40,11 +42,12 @@ export const modalCompilerEntry = {
   z-index: 1000;
 }
 .modal {
-  min-width: 320px;
+  box-sizing: border-box;
+  min-width: 200px;
   max-width: ${maxWidth};
   width: 100%;
   background: var(--surface-card);
-  border: ${borderWeight} solid var(--color-neutral-900);
+  border: ${borderWeight} solid ${borderColor};
   border-radius: ${radius};
   box-shadow: var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.25));
   padding: ${padding};
@@ -59,7 +62,7 @@ export const modalControlModule: ControlModule = {
   mount: (container, api) => {
     container.innerHTML = `
       <div class="control-grid">
-        <div class="control-section-header">Backdrop</div>
+        <div class="control-section-header" style="grid-column: 1 / -1; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Backdrop</div>
         <div class="control-group">
           <label for="modal-blur">Backdrop Blur</label>
           <div class="range-with-value">
@@ -75,7 +78,7 @@ export const modalControlModule: ControlModule = {
           </div>
         </div>
 
-        <div class="control-section-header" style="margin-top: 16px;">Layout & Appearance</div>
+        <div class="control-section-header" style="grid-column: 1 / -1; margin-top: 16px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Layout & Appearance</div>
         <div class="control-group">
           <label for="modal-padding">Padding</label>
           <div class="range-with-value">
@@ -89,6 +92,13 @@ export const modalControlModule: ControlModule = {
             <input id="modal-border" name="borderWeight" type="range" min="0" max="8" step="1" />
             <span class="range-value" id="modal-border-val">1px</span>
           </div>
+        </div>
+        <div class="control-group">
+          <label for="modal-border-color" style="display: flex; justify-content: space-between; align-items: center;">
+            Border Color
+            <button id="modal-border-color-reset" class="text-btn" style="font-size: 10px; opacity: 0.6; cursor: pointer; border: none; background: none; color: inherit; padding: 0;">Reset</button>
+          </label>
+          <input id="modal-border-color" name="borderColor" type="color" />
         </div>
         <div class="control-group">
           <label for="modal-max-width">Max Width</label>
@@ -111,6 +121,8 @@ export const modalControlModule: ControlModule = {
       border: container.querySelector<HTMLInputElement>('#modal-border'),
       maxWidth: container.querySelector<HTMLInputElement>('#modal-max-width'),
       radius: container.querySelector<HTMLSelectElement>('#modal-radius'),
+      borderColor: container.querySelector<HTMLInputElement>('#modal-border-color'),
+      borderColorReset: container.querySelector<HTMLButtonElement>('#modal-border-color-reset'),
     };
 
     const values = {
@@ -156,32 +168,61 @@ export const modalControlModule: ControlModule = {
       if (inputs.radius) {
         inputs.radius.value = mCfg.radiusToken ?? (Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '');
       }
+
+      if (inputs.borderColor) {
+        inputs.borderColor.value = mCfg.borderColor ?? '#0f172a';
+        if (inputs.borderColorReset) inputs.borderColorReset.style.display = mCfg.borderColor ? 'inline' : 'none';
+      }
     };
 
-    const onChange = () => {
-      const backdropBlur = `${inputs.blur?.value}px`;
-      const backdropOpacity = Number(inputs.opacity?.value);
-      const padding = `${inputs.padding?.value}px`;
-      const borderWeight = `${inputs.border?.value}px`;
-      const maxWidth = `${inputs.maxWidth?.value}px`;
-      const radiusToken = inputs.radius?.value ?? undefined;
+    const onInputChange = (e: Event) => {
+      const target = e.target as HTMLInputElement | HTMLSelectElement;
+      const key = target.name;
+      const val = target.value;
+      if (!key) return;
 
-      api.updateConfig((cfg) => ({
-        ...cfg,
-        modal: { backdropBlur, backdropOpacity, padding, borderWeight, maxWidth, radiusToken },
-      }));
+      api.updateConfig((cfg) => {
+        const m = cfg.modal ?? {};
+        let finalVal: string | number = val;
+        if (['backdropBlur', 'padding', 'borderWeight', 'maxWidth'].includes(key)) {
+          finalVal = `${val}px`;
+        } else if (key === 'backdropOpacity') {
+          finalVal = Number(val);
+        }
+        return {
+          ...cfg,
+          modal: { ...m, [key]: finalVal },
+        };
+      });
     };
 
-    Object.values(inputs).forEach((input) => input?.addEventListener('input', onChange));
-    inputs.radius?.addEventListener('change', onChange);
+    const resetBorderColor = (e: MouseEvent) => {
+      e.preventDefault();
+      api.updateConfig((cfg) => {
+        const m = { ...cfg.modal };
+        delete m.borderColor;
+        return { ...cfg, modal: m };
+      });
+    };
+
+    Object.values(inputs).forEach((input) => {
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+        input.addEventListener('input', onInputChange);
+      }
+    });
+    inputs.borderColorReset?.addEventListener('click', resetBorderColor);
 
     const unsubscribe = api.subscribe(sync);
     sync();
 
     return () => {
+      Object.values(inputs).forEach((input) => {
+        if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+          input.removeEventListener('input', onInputChange);
+        }
+      });
+      inputs.borderColorReset?.removeEventListener('click', resetBorderColor);
       unsubscribe();
-      Object.values(inputs).forEach((input) => input?.removeEventListener('input', onChange));
-      inputs.radius?.removeEventListener('change', onChange);
     };
   },
 };
@@ -197,7 +238,7 @@ export const modalPreviewModule = {
         <button class="btn btn--primary">Dummy Button</button>
       </div>
       <div class="modal-backdrop" style="position: absolute;">
-        <div class="modal" style="min-width: 260px;">
+        <div class="modal" style="width: calc(100% - 2rem); max-width: 280px;">
           <h3 class="text-base" style="margin-top:0; color: var(--on-card);">Modal title</h3>
           <p class="text-sm" style="margin:0 0 0.75rem; color: var(--on-card); opacity: 0.8;">Modal body preview content.</p>
           <div style="display:flex; gap:0.5rem; justify-content:flex-end;">

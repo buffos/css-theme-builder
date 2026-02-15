@@ -4,12 +4,9 @@ import type { ThemeConfig } from '../../compiler/types';
 declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeModules {
-    /**
-     * Expected shape:
-     * radius: { [key: string]: string } // e.g., { "1": "8px", "2": "12px" }
-     * colors.danger?.500: string        // used for input error state
-     */
-    inputs: Record<string, never>;
+    inputs: {
+      radiusKey?: string;
+    };
   }
 }
 
@@ -18,7 +15,9 @@ export const inputsCompilerEntry = {
   title: 'Inputs',
   isEnabled: (_config: ThemeConfig) => true,
   emitComponents: (config: ThemeConfig) => {
-    const radiusKey = Object.keys(config.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '1';
+    const radiusKey =
+      config.inputs?.radiusKey ??
+      Object.keys(config.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '1';
     return `
 .input {
   width: 100%;
@@ -48,7 +47,7 @@ export const inputsControlModule: ControlModule = {
     container.innerHTML = `
       <div class="control-group">
         <label for="input-radius">Input radius token</label>
-        <input id="input-radius" name="input-radius" type="text" placeholder="e.g., 1" />
+        <select id="input-radius" name="input-radius"></select>
       </div>
       <div class="control-group">
         <label for="input-error-color">Error color</label>
@@ -59,48 +58,63 @@ export const inputsControlModule: ControlModule = {
       </p>
     `;
 
-    const radiusInput = container.querySelector<HTMLInputElement>('#input-radius');
+    const radiusInput = container.querySelector<HTMLSelectElement>('#input-radius');
     const errorInput = container.querySelector<HTMLInputElement>('#input-error-color');
+
+    const refreshRadiusOptions = () => {
+      if (!radiusInput) return;
+      const cfg = api.getConfig();
+      const keys = Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b));
+      radiusInput.innerHTML = '';
+      if (keys.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '1';
+        opt.textContent = '1 (fallback)';
+        radiusInput.appendChild(opt);
+        return;
+      }
+      keys.forEach((key) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = key;
+        radiusInput.appendChild(opt);
+      });
+    };
 
     const sync = () => {
       const cfg = api.getConfig();
-      const firstRadiusKey =
-        Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '';
-      if (radiusInput) radiusInput.value = firstRadiusKey;
+      refreshRadiusOptions();
+      if (radiusInput) {
+        radiusInput.value =
+          cfg.inputs?.radiusKey ??
+          Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b))[0] ?? '';
+      }
       if (errorInput && cfg.colors?.danger?.[500]) errorInput.value = cfg.colors.danger[500];
     };
 
-    const onRadiusChange = () => {
-      const key = radiusInput?.value?.trim() ?? '1';
-      api.updateConfig((cfg) => ({
-        ...cfg,
-        radius: {
-          ...cfg.radius,
-          [key]: cfg.radius?.[key] ?? cfg.radius?.['1'] ?? '8px',
-        },
-      }));
-    };
+    const onChange = () => {
+      const radiusKey = radiusInput?.value;
+      const errorColor = errorInput?.value ?? '#f05656';
 
-    const onErrorChange = () => {
-      const val = errorInput?.value ?? '#f05656';
       api.updateConfig((cfg) => ({
         ...cfg,
         colors: {
           ...cfg.colors,
-          danger: { 500: val },
+          danger: { ...cfg.colors?.danger, 500: errorColor },
         },
+        inputs: { radiusKey },
       }));
     };
 
-    radiusInput?.addEventListener('input', onRadiusChange);
-    errorInput?.addEventListener('input', onErrorChange);
+    radiusInput?.addEventListener('change', onChange);
+    errorInput?.addEventListener('input', onChange);
 
     const unsubscribe = api.subscribe(sync);
     sync();
 
     return () => {
-      radiusInput?.removeEventListener('input', onRadiusChange);
-      errorInput?.removeEventListener('input', onErrorChange);
+      radiusInput?.removeEventListener('change', onChange);
+      errorInput?.removeEventListener('input', onChange);
       unsubscribe();
     };
   },

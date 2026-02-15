@@ -145,6 +145,30 @@ export const spacingControlModule: ControlModule = {
   },
 };
 
+export const spacingPreviewModule = {
+  id: 'spacing',
+  title: 'Spacing Scale',
+  render: (config: ThemeConfig) => {
+    if (!config.spacing) return '';
+    const { tokens } = config.spacing;
+    const sortedKeys = Object.keys(tokens).sort((a, b) => Number(a) - Number(b));
+    
+    const rows = sortedKeys.map(key => `
+      <div style="display: flex; align-items: center; gap: 12px; font-family: monospace; font-size: 11px;">
+        <span style="width: 40px; opacity: 0.6;">${key}</span>
+        <div style="width: var(--space-${key}); height: 16px; background: var(--color-primary-500); border-radius: 2px;"></div>
+        <span style="opacity: 0.6;">${tokens[key]}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div style="display: grid; gap: 8px; padding: 8px 0;">
+        ${rows}
+      </div>
+    `;
+  },
+};
+
 export const spacingDefaults = {
   spacing: {
     baseUnitPx: 4,

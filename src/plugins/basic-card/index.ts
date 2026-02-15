@@ -7,10 +7,12 @@ declare module '../../compiler/types' {
     card: {
       overrides?: {
         bg?: string;
-        radius?: string;
+        radiusKey?: string;
         padding?: string;
-        border?: string;
-        shadow?: string;
+        borderWeight?: string;
+        borderColor?: string;
+        shadowKey?: string;
+        radiusToken?: string;
       };
     };
   }
@@ -22,17 +24,21 @@ export const cardCompilerEntry = {
   isEnabled: (_config: ThemeConfig) => true,
   emitComponents: (config: ThemeConfig) => {
     const overrides = config.card?.overrides;
+    const radiusKey = overrides?.radiusToken ?? '2';
+    const shadowKey = overrides?.shadowKey ?? '1';
+    
     const vars = [
       `--card-bg: ${overrides?.bg ?? 'var(--surface-card, #0f1729)'};`,
-      `--card-radius: ${overrides?.radius ?? 'var(--radius-2, 12px)'};`,
-      `--card-padding: ${overrides?.padding ?? 'var(--space-4, 1rem)'};`,
-      `--card-border: ${overrides?.border ?? '1px solid var(--color-neutral-900, #0f172a)'};`,
-      `--card-shadow: ${overrides?.shadow ?? 'var(--shadow-1, 0 1px 3px rgba(0,0,0,0.15))'};`,
+      `--card-radius: var(--radius-${radiusKey}, 12px);` ,
+      `--card-padding: ${overrides?.padding ?? '24px'};` ,
+      `--card-border: ${overrides?.borderWeight ?? '1px'} solid ${overrides?.borderColor ?? 'var(--color-neutral-900, #0f172a)'};` ,
+      `--card-shadow: var(--shadow-${shadowKey}, 0 2px 4px rgba(0,0,0,0.1));` ,
     ].join('\n  ');
 
     return `
 .card {
   ${vars}
+  box-sizing: border-box;
   padding: var(--card-padding);
   border-radius: var(--card-radius);
   background: var(--card-bg);
@@ -55,71 +61,168 @@ export const cardControlModule: ControlModule = {
   title: 'Card',
   mount: (container, api) => {
     container.innerHTML = `
-      <div class="control-divider">Overrides</div>
       <div class="control-grid">
         <div class="control-group">
-          <label for="card-ov-bg">Background</label>
-          <input id="card-ov-bg" type="text" placeholder="e.g. #fff" />
+          <label for="card-ov-bg" style="display: flex; justify-content: space-between; align-items: center;">
+            Background
+            <button id="card-ov-bg-reset" class="text-btn" style="font-size: 10px; opacity: 0.6; cursor: pointer; border: none; background: none; color: inherit; padding: 0;">Reset</button>
+          </label>
+          <input id="card-ov-bg" name="bg" type="color" />
         </div>
         <div class="control-group">
-          <label for="card-ov-radius">Radius</label>
-          <input id="card-ov-radius" type="text" placeholder="e.g. 8px" />
+          <label for="card-ov-radius">Corner Radius</label>
+          <select id="card-ov-radius" name="radiusToken"></select>
         </div>
       </div>
       <div class="control-grid">
         <div class="control-group">
           <label for="card-ov-padding">Padding</label>
-          <input id="card-ov-padding" type="text" placeholder="e.g. 2rem" />
+          <div class="range-with-value">
+            <input id="card-ov-padding" name="padding" type="range" min="8" max="64" step="4" />
+            <span class="range-value" id="card-ov-padding-val">24px</span>
+          </div>
         </div>
         <div class="control-group">
-          <label for="card-ov-border">Border</label>
-          <input id="card-ov-border" type="text" placeholder="e.g. none" />
+          <label for="card-ov-border" style="display: flex; justify-content: space-between; align-items: center;">
+            Border Weight
+          </label>
+          <div class="range-with-value">
+            <input id="card-ov-border" name="borderWeight" type="range" min="0" max="8" step="1" />
+            <span class="range-value" id="card-ov-border-val">1px</span>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="card-ov-border-color" style="display: flex; justify-content: space-between; align-items: center;">
+            Border Color
+            <button id="card-ov-border-color-reset" class="text-btn" style="font-size: 10px; opacity: 0.6; cursor: pointer; border: none; background: none; color: inherit; padding: 0;">Reset</button>
+          </label>
+          <input id="card-ov-border-color" name="borderColor" type="color" />
         </div>
       </div>
       <div class="control-group">
-        <label for="card-ov-shadow">Shadow</label>
-        <input id="card-ov-shadow" type="text" placeholder="e.g. none" />
+        <label for="card-ov-shadow">Shadow Level</label>
+        <select id="card-ov-shadow" name="shadowKey"></select>
       </div>
       <p class="controls-placeholder">
-        Override card properties to diverge from theme defaults.
+        Customize card properties using theme tokens and granular controls.
       </p>
     `;
 
     const inputs = {
       bg: container.querySelector<HTMLInputElement>('#card-ov-bg'),
-      radius: container.querySelector<HTMLInputElement>('#card-ov-radius'),
+      bgReset: container.querySelector<HTMLButtonElement>('#card-ov-bg-reset'),
+      radius: container.querySelector<HTMLSelectElement>('#card-ov-radius'),
       padding: container.querySelector<HTMLInputElement>('#card-ov-padding'),
       border: container.querySelector<HTMLInputElement>('#card-ov-border'),
-      shadow: container.querySelector<HTMLInputElement>('#card-ov-shadow'),
+      borderColor: container.querySelector<HTMLInputElement>('#card-ov-border-color'),
+      borderColorReset: container.querySelector<HTMLButtonElement>('#card-ov-border-color-reset'),
+      shadow: container.querySelector<HTMLSelectElement>('#card-ov-shadow'),
+    };
+
+    const values = {
+      padding: container.querySelector<HTMLElement>('#card-ov-padding-val'),
+      border: container.querySelector<HTMLElement>('#card-ov-border-val'),
+    };
+
+    const refreshOptions = () => {
+      const cfg = api.getConfig();
+      if (inputs.radius) {
+        const keys = Object.keys(cfg.radius ?? {}).sort((a, b) => a.localeCompare(b));
+        inputs.radius.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+      }
+      if (inputs.shadow) {
+        const keys = Object.keys(cfg.shadow ?? {}).sort((a, b) => a.localeCompare(b));
+        inputs.shadow.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+      }
     };
 
     const sync = () => {
-      const bCfg = api.getConfig().card;
-      if (inputs.bg) inputs.bg.value = bCfg?.overrides?.bg ?? '';
-      if (inputs.radius) inputs.radius.value = bCfg?.overrides?.radius ?? '';
-      if (inputs.padding) inputs.padding.value = bCfg?.overrides?.padding ?? '';
-      if (inputs.border) inputs.border.value = bCfg?.overrides?.border ?? '';
-      if (inputs.shadow) inputs.shadow.value = bCfg?.overrides?.shadow ?? '';
+      const cfg = api.getConfig();
+      refreshOptions();
+      const bCfg = cfg.card;
+      const ov = bCfg?.overrides;
+
+      if (inputs.bg) {
+        inputs.bg.value = ov?.bg ?? '#ffffff';
+        if (inputs.bgReset) inputs.bgReset.style.display = ov?.bg ? 'inline' : 'none';
+      }
+      if (inputs.radius) inputs.radius.value = ov?.radiusToken ?? '2';
+      
+      if (inputs.padding) {
+        const val = Number.parseInt(ov?.padding ?? '24', 10);
+        inputs.padding.value = String(val);
+        if (values.padding) values.padding.textContent = `${val}px`;
+      }
+      
+      if (inputs.border) {
+        const val = Number.parseInt(ov?.borderWeight ?? '1', 10);
+        inputs.border.value = String(val);
+        if (values.border) values.border.textContent = `${val}px`;
+      }
+
+      if (inputs.borderColor) {
+        inputs.borderColor.value = ov?.borderColor ?? '#0f172a';
+        if (inputs.borderColorReset) inputs.borderColorReset.style.display = ov?.borderColor ? 'inline' : 'none';
+      }
+
+      if (inputs.shadow) inputs.shadow.value = ov?.shadowKey ?? '1';
     };
 
-    const onChange = () => {
-      const overrides = {
-        bg: inputs.bg?.value.trim() ? inputs.bg.value.trim() : undefined,
-        radius: inputs.radius?.value.trim() ? inputs.radius.value.trim() : undefined,
-        padding: inputs.padding?.value.trim() ? inputs.padding.value.trim() : undefined,
-        border: inputs.border?.value.trim() ? inputs.border.value.trim() : undefined,
-        shadow: inputs.shadow?.value.trim() ? inputs.shadow.value.trim() : undefined,
-      };
+    const onInputChange = (e: Event) => {
+      const target = e.target as HTMLInputElement | HTMLSelectElement;
+      const key = target.name;
+      const val = target.value;
+      if (!key) return;
+
+      api.updateConfig((cfg) => {
+        const currentOverrides = cfg.card?.overrides ?? {};
+        const newOverrides = { ...currentOverrides };
+        
+        type CardOverrideKey = keyof NonNullable<NonNullable<ThemeConfig['card']>['overrides']>;
+        
+        if (key === 'padding' || key === 'borderWeight') {
+          newOverrides[key as CardOverrideKey] = `${val}px`;
+        } else {
+          newOverrides[key as CardOverrideKey] = val;
+        }
+
+        return { ...cfg, card: { overrides: newOverrides } };
+      });
+    };
+
+    const resetBg = (e: MouseEvent) => {
+      e.preventDefault();
+      const overrides = { ...api.getConfig().card?.overrides };
+      delete overrides.bg;
       api.updateConfig((cfg) => ({ ...cfg, card: { overrides } }));
     };
 
-    Object.values(inputs).forEach((input) => input?.addEventListener('input', onChange));
+    const resetBorderColor = (e: MouseEvent) => {
+      e.preventDefault();
+      const overrides = { ...api.getConfig().card?.overrides };
+      delete overrides.borderColor;
+      api.updateConfig((cfg) => ({ ...cfg, card: { overrides } }));
+    };
+
+    Object.values(inputs).forEach((input) => {
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+        input.addEventListener('input', onInputChange);
+      }
+    });
+    inputs.bgReset?.addEventListener('click', resetBg);
+    inputs.borderColorReset?.addEventListener('click', resetBorderColor);
 
     const unsubscribe = api.subscribe(sync);
     sync();
 
     return () => {
-      Object.values(inputs).forEach((input) => input?.removeEventListener('input', onChange));
+      Object.values(inputs).forEach((input) => {
+        if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+          input.removeEventListener('input', onInputChange);
+        }
+      });
+      inputs.bgReset?.removeEventListener('click', resetBg);
+      inputs.borderColorReset?.removeEventListener('click', resetBorderColor);
       unsubscribe();
     };
   },

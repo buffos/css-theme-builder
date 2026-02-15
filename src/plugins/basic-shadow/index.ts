@@ -139,19 +139,33 @@ export const shadowPreviewModule = {
   id: 'shadow',
   title: 'Shadows Gallery',
   render: (_config: ThemeConfig) => {
+    const cardStyle = `
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--color-primary-500);
+      color: var(--on-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      transition: box-shadow 0.3s ease;
+    `;
+
     return `
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 16px; padding: 16px 0;">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-sm" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
-          <span style="font-size: 11px; font-weight: 600;">Small (sm)</span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 24px; padding: 16px 0;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <div class="shadow-sm" style="${cardStyle}">sm</div>
+          <span style="font-size: 11px; font-weight: 600; opacity: 0.7;">Small (sm)</span>
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-md" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
-          <span style="font-size: 11px; font-weight: 600;">Medium (md)</span>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <div class="shadow-md" style="${cardStyle}">md</div>
+          <span style="font-size: 11px; font-weight: 600; opacity: 0.7;">Medium (md)</span>
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-          <div class="shadow-lg" style="width: 80px; height: 80px; background: var(--surface-bg); color: var(--surface-fg); border-radius: 8px; border: 1px solid var(--color-neutral-900);"></div>
-          <span style="font-size: 11px; font-weight: 600;">Large (lg)</span>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <div class="shadow-lg" style="${cardStyle}">lg</div>
+          <span style="font-size: 11px; font-weight: 600; opacity: 0.7;">Large (lg)</span>
         </div>
       </div>
     `;

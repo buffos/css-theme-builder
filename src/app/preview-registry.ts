@@ -7,6 +7,7 @@ import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
+import { spacingPreviewModule } from '../plugins/basic-spacing';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
 import { typographyPreviewModule } from '../plugins/basic-typography';
@@ -27,6 +28,7 @@ export const previewModules = [
   cardPreviewModule,
   surfacePreviewModule,
   radiusPreviewModule,
+  spacingPreviewModule,
   shadowPreviewModule,
   alertPreviewModule,
   tablePreviewModule,

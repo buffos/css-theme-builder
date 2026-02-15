@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. We will log every step as we build the UI Theme Generator in small, focused increments.
 
+## [0.33.0] - 2026-02-15
+
+### Added
+
+- **Card Background & Border overrides**: Added color pickers and "Reset" buttons to revert to theme defaults.
+- **Modal Border Color**: Added color picker and "Reset" button for modal borders.
+- **Improved Alert visibility**: Implemented dynamic high-contrast status text colors using `color-mix`, fixing contrast issues in both light and dark themes.
+- **Robust State Management**: Implemented granular input tracking in Card and Modal plugins to prevent unintentional override "pollution" when adjusting other controls.
+
+### Changed
+
+- **Refined Card controls**: Converted text inputs to intuitive sliders (Padding, Border weight) and token-based dropdowns (Radius, Shadow).
+- **Standardized Box Model**: Applied `box-sizing: border-box` to Cards and Modals to ensure padding is calculated correctly on all sides.
+
+### Fixed
+
+- Fixed Modal padding bug where padding was only applied vertically; it now applies correctly to all sides.
+- Fixed Card override bug where border color was unintentionally affecting the background color.
+- Refined Modal layout with standardized section headers and improved preview responsiveness.
+
 ## [0.0.0] - 2026-02-01
 
 ### Added
