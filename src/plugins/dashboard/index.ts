@@ -1,11 +1,12 @@
 import type { PreviewModule } from '../../app/preview-registry';
+import type { ThemeConfig } from '../../compiler/types';
 
 export const dashboardPreviewModule: PreviewModule = {
   id: 'dashboard',
   title: 'Design System Overview',
-  render: () => {
+  render: (_config: ThemeConfig) => {
     return `
-      <div style="display: flex; flex-direction: column; gap: 2rem; color: var(--surface-fg);">
+      <div style="display: flex; flex-direction: column; gap: 2rem; color: var(--on-background);">
         <!-- Colors Section -->
         <section>
           <h4 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Color Palette</h4>
@@ -45,9 +46,9 @@ export const dashboardPreviewModule: PreviewModule = {
           <section>
             <h4 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Radius Scale</h4>
             <div style="display: flex; gap: 1rem;">
-              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-sm); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">SM</div>
-              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-md); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">MD</div>
-              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-lg); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">LG</div>
+              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-sm); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--color-neutral-50);">SM</div>
+              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-md); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--color-neutral-50);">MD</div>
+              <div style="width: 40px; height: 40px; background: var(--color-neutral-900); border-radius: var(--radius-lg); border: 1px solid rgba(128,128,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--color-neutral-50);">LG</div>
             </div>
           </section>
           
@@ -65,10 +66,10 @@ export const dashboardPreviewModule: PreviewModule = {
         <!-- Shadows & Surfaces Section -->
         <section>
           <h4 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Elevation & Depth</h4>
-          <div style="background: var(--surface-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); display: flex; gap: 1.5rem; flex-wrap: wrap;">
-             <div style="background: var(--surface-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">SM Shadow</div>
-             <div style="background: var(--surface-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">MD Shadow</div>
-             <div style="background: var(--surface-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">LG Shadow</div>
+          <div style="background: var(--surface-bg); color: var(--on-background); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+             <div style="background: var(--surface-card); color: var(--on-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">SM Shadow</div>
+             <div style="background: var(--surface-card); color: var(--on-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">MD Shadow</div>
+             <div style="background: var(--surface-card); color: var(--on-card); padding: 1rem; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); border: 1px solid rgba(128,128,128,0.1); font-size: 12px;">LG Shadow</div>
           </div>
         </section>
       </div>

@@ -393,3 +393,31 @@ All notable changes to this project will be documented in this file. We will log
   - Added visual representations of Spacing and Radius scales.
   - Added Elevation and Depth section showcasing all shadow levels.
   - Integrated the dashboard as the primary view in the preview panel.
+
+## [0.31.0] - 2026-02-15
+
+### Added
+
+- Persistent Palette Modes: The Colors plugin now saves and restores the selected generation mode (Analogous, Complementary, Triadic, Manual) in the theme configuration.
+- Absolute Semantic Hues: Refactored status color generation to pin specific hues (Red for Danger, Green for Success, Orange for Warning) while maintaining thematic saturation/lightness.
+- Role Indicators: Added a 4-dot status indicator to the Color Usage Matrix for rapid visual validation of core semantic roles.
+
+### Fixed
+
+- Resolved architectural circular dependency between the global state manager and plugin preview modules by implementing a configuration-injection pattern.
+- Fixed a bug where "Danger" colors would lose their semantic meaning (turning green) when using a green primary base.
+
+## [0.30.0] - 2026-02-15
+
+### Changed
+
+- Refined Typography system: expanded scale to include `2xl` and `3xl`, and standardized line-height variable names (`--text-*-line-height`).
+- Improved Font Family selector UX: implemented "Smart Reveal" behavior (auto-clear on focus, auto-restore on blur) and auto-blur after selection.
+- Restored architectural integrity by moving plugin-specific migration logic out of the core state manager and into the Typography plugin.
+
+### Fixed
+
+- Resolved critical compiler bug where light-mode tokens were discarded when the app was set to "Always Dark" mode.
+- Fixed configuration merging order in `buildThemeConfig` to ensure user settings correctly override plugin defaults.
+- Fixed CSS `@import` invalidation by reordering the compiler registry to prioritize Typography (and its Google Font imports) at the top of the stylesheet.
+- Fixed Typography preview regression where the `--font-family` variable was ignored by the iframe body.

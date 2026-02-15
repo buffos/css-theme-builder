@@ -35,7 +35,7 @@ export const buttonsCompilerEntry = {
     const defRadius = `var(--radius-${radiusKey}, var(--radius-1, 8px))`;
     const vars = [
       `--btn-bg: ${overrides?.bg ?? 'var(--surface-card)'};`,
-      `--btn-fg: ${overrides?.fg ?? 'var(--surface-fg)'};`,
+      `--btn-fg: ${overrides?.fg ?? 'var(--on-background)'};`,
       `--btn-radius: ${overrides?.radius ?? defRadius};`,
       `--btn-border: ${overrides?.border ?? '1px solid var(--color-neutral-900)'};`,
     ].join('\n  ');
@@ -205,7 +205,7 @@ export const buttonsControlModule: ControlModule = {
 export const buttonsPreviewModule = {
   id: 'buttons',
   title: 'Buttons',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <div style="display:grid; gap:1.5rem;">
       <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
         <span style="width:70px; font-size:12px; opacity:0.6;">Default</span>

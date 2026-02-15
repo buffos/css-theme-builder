@@ -46,7 +46,6 @@ export const typographyCompilerEntry = {
 
     return [
       fontImport,
-      ':root {',
       `  --font-family: ${fontFamily};`,
       `  --base-font-size: ${baseFontSizePx}px;`,
       `  --text-sm-size: ${s.sm.size}rem;`,
@@ -61,7 +60,6 @@ export const typographyCompilerEntry = {
       `  --text-2xl-line-height: ${s['2xl'].line};`,
       `  --text-3xl-size: ${s['3xl'].size}rem;`,
       `  --text-3xl-line-height: ${s['3xl'].line};`,
-      '}',
     ].join('\n');
   },
   emitUtilities: () =>
@@ -373,7 +371,7 @@ export const typographyControlModule: ControlModule = {
 export const typographyPreviewModule = {
   id: 'typography',
   title: 'Typography Scale',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <div style="display: flex; flex-direction: column; gap: 2rem; color: var(--surface-fg);">
       <div style="display: flex; flex-direction: column; gap: 0.5rem;">
         <span style="font-size: 10px; opacity: 0.5; text-transform: uppercase;">3XL Text (Hero)</span>

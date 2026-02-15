@@ -36,6 +36,7 @@ export const cardCompilerEntry = {
   padding: var(--card-padding);
   border-radius: var(--card-radius);
   background: var(--card-bg);
+  color: var(--on-card, inherit);
   border: var(--card-border);
   box-shadow: var(--card-shadow);
   transition: transform 120ms ease, box-shadow 120ms ease;
@@ -127,7 +128,7 @@ export const cardControlModule: ControlModule = {
 export const cardPreviewModule = {
   id: 'card',
   title: 'Card',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:1.5rem;">
       <div class="card">
         <h3 class="text-base" style="margin-top:0;">Static Card</h3>

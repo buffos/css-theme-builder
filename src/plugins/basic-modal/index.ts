@@ -189,17 +189,17 @@ export const modalControlModule: ControlModule = {
 export const modalPreviewModule = {
   id: 'modal',
   title: 'Modal',
-  render: () => `
-    <div style="position: relative; height: 300px; width: 100%; overflow: hidden; border-radius: 8px; border: 1px solid var(--color-neutral-900);">
-      <div style="padding: 1rem; color: var(--surface-fg);">
+  render: (_config: ThemeConfig) => `
+    <div style="position: relative; height: 300px; width: 100%; overflow: hidden; border-radius: 8px; border: 1px solid var(--color-neutral-900, rgba(0,0,0,0.1));">
+      <div style="padding: 1rem; color: var(--on-background);">
         <h4>Background Content</h4>
         <p>This content is behind the modal backdrop. Adjust blur and opacity to see the effect.</p>
         <button class="btn btn--primary">Dummy Button</button>
       </div>
       <div class="modal-backdrop" style="position: absolute;">
         <div class="modal" style="min-width: 260px;">
-          <h3 class="text-base" style="margin-top:0; color: var(--surface-fg);">Modal title</h3>
-          <p class="text-sm" style="margin:0 0 0.75rem; color: var(--surface-fg); opacity: 0.8;">Modal body preview content.</p>
+          <h3 class="text-base" style="margin-top:0; color: var(--on-card);">Modal title</h3>
+          <p class="text-sm" style="margin:0 0 0.75rem; color: var(--on-card); opacity: 0.8;">Modal body preview content.</p>
           <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
             <button class="btn" type="button">Cancel</button>
             <button class="btn btn--primary" type="button">Confirm</button>

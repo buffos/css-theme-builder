@@ -7,11 +7,13 @@ declare module '../../compiler/types' {
   interface ThemeModules {
     surface: {
       background: string;
-      foreground: string;
+      onBackground: string;
       card: string;
-      darkBackgroundSnippet?: string; // Optional custom dark background
-      darkForegroundSnippet?: string;
-      darkCardSnippet?: string;
+      onCard: string;
+      darkBackground?: string;
+      darkOnBackground?: string;
+      darkCard?: string;
+      darkOnCard?: string;
     };
   }
 }
@@ -22,23 +24,22 @@ export const surfaceCompilerEntry = {
   isEnabled: (config: ThemeConfig) => Boolean(config.surface),
   emitTokens: (config: ThemeConfig) => {
     if (!config.surface) return '';
+    const { background, onBackground, card, onCard } = config.surface;
     return [
-      ':root {',
-      `  --surface-bg: ${config.surface.background};`,
-      `  --surface-fg: ${config.surface.foreground};`,
-      `  --surface-card: ${config.surface.card};`,
-      '}',
+      `  --surface-bg: ${background ?? 'var(--color-neutral-50)'};`,
+      `  --on-background: ${onBackground ?? 'var(--color-neutral-900)'};`,
+      `  --surface-card: ${card ?? '#ffffff'};`,
+      `  --on-card: ${onCard ?? 'var(--color-neutral-900)'};`,
     ].join('\n');
   },
   emitDarkTokens: (config: ThemeConfig) => {
     if (!config.surface) return '';
-    const { darkBackgroundSnippet, darkForegroundSnippet, darkCardSnippet } = config.surface;
+    const { darkBackground, darkOnBackground, darkCard, darkOnCard } = config.surface;
     return [
-      ':root {',
-      `  --surface-bg: ${darkBackgroundSnippet ?? 'var(--color-neutral-900)'};`,
-      `  --surface-fg: ${darkForegroundSnippet ?? 'var(--color-neutral-50)'};`,
-      `  --surface-card: ${darkCardSnippet ?? 'color-mix(in srgb, var(--color-neutral-900) 90%, white)'};`,
-      '}',
+      `  --surface-bg: ${darkBackground ?? 'var(--color-neutral-900)'};`,
+      `  --on-background: ${darkOnBackground ?? 'var(--color-neutral-50)'};`,
+      `  --surface-card: ${darkCard ?? 'color-mix(in srgb, var(--color-neutral-900) 90%, white)'};`,
+      `  --on-card: ${darkOnCard ?? 'var(--color-neutral-50)'};`,
     ].join('\n');
   },
 };
@@ -49,40 +50,48 @@ export const surfaceControlModule: ControlModule = {
   mount: (container, api) => {
     container.innerHTML = `
       <div class="control-grid">
-        <div class="control-section-header">Light Mode</div>
+        <div class="control-section-header" style="grid-column: 1 / -1; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Light Mode</div>
         <div class="control-group">
           <label for="surface-bg">Background</label>
-          <input id="surface-bg" name="background" type="color" />
+          <input id="surface-bg" name="background" type="text" placeholder="Default: Neutral 50" />
         </div>
         <div class="control-group">
-          <label for="surface-fg">Foreground (Text)</label>
-          <input id="surface-fg" name="foreground" type="color" />
+          <label for="surface-on-bg">On Background</label>
+          <input id="surface-on-bg" name="onBackground" type="text" placeholder="Default: Neutral 900" />
         </div>
         <div class="control-group">
           <label for="surface-card">Card / Layer</label>
-          <input id="surface-card" name="card" type="color" />
+          <input id="surface-card" name="card" type="text" placeholder="Default: #ffffff" />
+        </div>
+        <div class="control-group">
+          <label for="surface-on-card">On Card</label>
+          <input id="surface-on-card" name="onCard" type="text" placeholder="Default: Neutral 900" />
         </div>
 
-        <div class="control-section-header" style="margin-top: 16px;">Dark Mode</div>
+        <div class="control-section-header" style="grid-column: 1 / -1; margin-top: 16px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6;">Dark Mode Overrides</div>
         <div class="control-group">
           <label for="dark-surface-bg">Background</label>
-          <input id="dark-surface-bg" name="darkBackgroundSnippet" type="color" />
+          <input id="dark-surface-bg" name="darkBackground" type="text" placeholder="Default: Neutral 900" />
         </div>
         <div class="control-group">
-          <label for="dark-surface-fg">Foreground (Text)</label>
-          <input id="dark-surface-fg" name="darkForegroundSnippet" type="color" />
+          <label for="dark-surface-on-bg">On Background</label>
+          <input id="dark-surface-on-bg" name="darkOnBackground" type="text" placeholder="Default: Neutral 50" />
         </div>
         <div class="control-group">
           <label for="dark-surface-card">Card / Layer</label>
-          <input id="dark-surface-card" name="darkCardSnippet" type="color" />
+          <input id="dark-surface-card" name="darkCard" type="text" placeholder="Default: Neutral 900 (tinted)" />
+        </div>
+         <div class="control-group">
+          <label for="dark-surface-on-card">On Card</label>
+          <input id="dark-surface-on-card" name="darkOnCard" type="text" placeholder="Default: Neutral 50" />
         </div>
       </div>
       <p class="controls-placeholder">
-        Define the core foundation of your light and dark themes.
+        Define semantic layers and their text colors. Use <code>var(--color-neutral-*)</code> to link to the global palette.
       </p>
     `;
 
-    const inputs = container.querySelectorAll<HTMLInputElement>('input[type="color"]');
+    const inputs = container.querySelectorAll<HTMLInputElement>('input[type="text"]');
 
     const sync = () => {
       const cfg = api.getConfig();
@@ -91,7 +100,7 @@ export const surfaceControlModule: ControlModule = {
       inputs.forEach((input) => {
         const key = input.name as keyof Required<NonNullable<ThemeConfig['surface']>>;
         const val = cfg.surface?.[key];
-        if (val) input.value = val;
+        input.value = val ?? '';
       });
     };
 
@@ -122,27 +131,27 @@ export const surfaceControlModule: ControlModule = {
 };
 
 export const surfacePreviewModule = {
-  id: 'surfaces-gallery',
+  id: 'surface',
   title: 'Surfaces Gallery',
-  render: () => {
+  render: (_config: ThemeConfig) => {
     return `
-      <div style="background: var(--surface-bg); color: var(--surface-fg); padding: 24px; border-radius: 8px; border: 1px solid var(--color-neutral-900); display: flex; flex-direction: column; gap: 16px;">
+      <div style="background: var(--surface-bg); color: var(--on-background); padding: 24px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); display: flex; flex-direction: column; gap: 16px;">
         <div>
           <h4 style="margin: 0 0 4px 0;">Background Layer</h4>
-          <p style="margin: 0; font-size: 13px; opacity: 0.8;">This is the base surface of your application.</p>
+          <p style="margin: 0; font-size: 13px; opacity: 0.8;">Text on background uses <code>--on-background</code>.</p>
         </div>
         
-        <div style="background: var(--surface-card); padding: 16px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); box-shadow: var(--shadow-md);">
+        <div style="background: var(--surface-card); color: var(--on-card); padding: 16px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); box-shadow: var(--shadow-md);">
           <h4 style="margin: 0 0 4px 0;">Card / Container Layer</h4>
-          <p style="margin: 0; font-size: 13px; opacity: 0.8;">Cards and containers sit on top of the background.</p>
+          <p style="margin: 0; font-size: 13px; opacity: 0.8;">Text on cards uses <code>--on-card</code>.</p>
           <button class="btn btn--primary" style="margin-top: 12px;">Component on Card</button>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div style="background: var(--surface-card); padding: 12px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); text-align: center;">
+          <div style="background: var(--surface-card); color: var(--on-card); padding: 12px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); text-align: center;">
             <span style="font-weight: 600;">Grid Item 1</span>
           </div>
-          <div style="background: var(--surface-card); padding: 12px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); text-align: center;">
+          <div style="background: var(--surface-card); color: var(--on-card); padding: 12px; border-radius: 8px; border: 1px solid rgba(128,128,128,0.1); text-align: center;">
             <span style="font-weight: 600;">Grid Item 2</span>
           </div>
         </div>
@@ -153,11 +162,10 @@ export const surfacePreviewModule = {
 
 export const surfaceDefaults = {
   surface: {
-    background: '#fafafa',
-    foreground: '#0b1021',
+    background: 'var(--color-neutral-50)',
+    onBackground: 'var(--color-neutral-900)',
     card: '#ffffff',
-    darkBackgroundSnippet: '#0b1021',
-    darkForegroundSnippet: '#e7ecff',
-    darkCardSnippet: '#0f1729',
+    onCard: 'var(--color-neutral-900)',
+    // Dark mode overrides remain optional and use snippets
   },
 };

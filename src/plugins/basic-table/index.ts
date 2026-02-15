@@ -54,7 +54,7 @@ export const tableCompilerEntry = {
 }
 .table th {
   font-weight: 700;
-  color: var(--surface-fg);
+  color: inherit;
 }
 ${stripedStyles}
 ${hoverStyles}
@@ -168,7 +168,7 @@ export const tableControlModule: ControlModule = {
 export const tablePreviewModule = {
   id: 'table',
   title: 'Data Table',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <table class="table">
       <thead>
         <tr>

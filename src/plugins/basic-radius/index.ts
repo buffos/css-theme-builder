@@ -17,7 +17,7 @@ export const radiusCompilerEntry = {
     const lines = Object.keys(config.radius)
       .sort((a, b) => a.localeCompare(b))
       .map((key) => `  --radius-${key}: ${config.radius[key]};`);
-    return [':root {', ...lines, '}'].join('\n');
+    return lines.join('\n');
   },
   emitUtilities: (config: ThemeConfig) => {
     if (!config.radius) return '';
@@ -120,9 +120,9 @@ export const radiusControlModule: ControlModule = {
 };
 
 export const radiusPreviewModule = {
-  id: 'radius-gallery',
+  id: 'radius',
   title: 'Radii Gallery',
-  render: () => {
+  render: (_config: ThemeConfig) => {
     return `
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 16px;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">

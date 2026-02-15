@@ -17,7 +17,7 @@ export const shadowCompilerEntry = {
     const lines = Object.keys(config.shadow)
       .sort((a, b) => a.localeCompare(b))
       .map((key) => `  --shadow-${key}: ${config.shadow[key]};`);
-    return [':root {', ...lines, '}'].join('\n');
+    return lines.join('\n');
   },
   emitUtilities: (config: ThemeConfig) => {
     if (!config.shadow) return '';
@@ -136,9 +136,9 @@ export const shadowControlModule: ControlModule = {
 };
 
 export const shadowPreviewModule = {
-  id: 'shadow-gallery',
+  id: 'shadow',
   title: 'Shadows Gallery',
-  render: () => {
+  render: (_config: ThemeConfig) => {
     return `
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 16px; padding: 16px 0;">
         <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">

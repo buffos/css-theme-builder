@@ -160,7 +160,7 @@ export const alertControlModule: ControlModule = {
 export const alertPreviewModule = {
   id: 'alert',
   title: 'Alerts Gallery',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <div style="display: flex; flex-direction: column; gap: 1rem;">
       <div class="alert alert--info">
         <span style="font-weight: bold;">Info:</span> Something happened; here is an alert preview.

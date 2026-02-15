@@ -44,7 +44,7 @@ export const spacingCompilerEntry = {
     const lines = Object.keys(tokens)
       .sort((a, b) => Number(a) - Number(b))
       .map((key) => `  --space-${key}: ${tokens[key]};`);
-    return [':root {', ...lines, '}'].join('\n');
+    return lines.join('\n');
   },
   emitUtilities: (config: ThemeConfig) =>
     config.spacing ? spacingUtilities(config.spacing.tokens).join('\n') : '',

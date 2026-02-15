@@ -26,7 +26,7 @@ export const inputsCompilerEntry = {
   border-radius: var(--radius-${radiusKey}, var(--radius-1, 8px));
   border: 1px solid var(--color-neutral-900);
   background: var(--surface-card);
-  color: var(--surface-fg);
+  color: var(--on-card);
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 .input:focus, .input.focus {
@@ -109,7 +109,7 @@ export const inputsControlModule: ControlModule = {
 export const inputsPreviewModule = {
   id: 'inputs',
   title: 'Inputs',
-  render: () => `
+  render: (_config: ThemeConfig) => `
     <div style="display:grid; gap:1.25rem; max-width:400px;">
       <div style="display:grid; grid-template-columns: 80px 1fr; gap:1rem; align-items:center;">
         <span style="font-size:12px; opacity:0.6;">Normal</span>

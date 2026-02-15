@@ -21,11 +21,11 @@ export const compile = (config: ThemeConfig): CompiledFiles => {
 
     // Light/Default tokens
     const tokensOut = entry.emitTokens?.(config);
-    if (tokensOut) lightChunks.push(tokensOut);
+    if (tokensOut) lightChunks.push(tokensOut.trim());
 
     // Dark overrides
     const darkOut = entry.emitDarkTokens?.(config);
-    if (darkOut) darkChunks.push(darkOut);
+    if (darkOut) darkChunks.push(darkOut.trim());
 
     const utilitiesOut = entry.emitUtilities?.(config);
     if (utilitiesOut) utilityChunks.push(utilitiesOut);
@@ -33,23 +33,25 @@ export const compile = (config: ThemeConfig): CompiledFiles => {
     if (componentsOut) componentChunks.push(componentsOut);
   });
 
+  const wrapInRoot = (content: string) => content ? `:root {\n${content}\n}` : '';
+  const wrapInDark = (content: string) => content ? `[data-theme='dark'] {\n${content}\n}` : '';
+  const wrapInDarkMedia = (content: string) => content ? `@media (prefers-color-scheme: dark) {\n  :root {\n${content.split('\n').map(l => `    ${l}`).join('\n')}\n  }\n}` : '';
+
   let tokens = '';
+  const lightContent = lightChunks.filter(Boolean).join('\n');
+  const darkContent = darkChunks.filter(Boolean).join('\n');
 
   if (config.mode === 'dark') {
-    const light = lightChunks.filter(Boolean).join('\n');
-    const dark = darkChunks.filter(Boolean).join('\n');
-    tokens = dark ? `${light}\n\n${dark}` : light;
+    // In dark mode, we emit light tokens first (as fallback), then dark tokens as overrides on :root
+    tokens = [wrapInRoot(lightContent), wrapInRoot(darkContent)].filter(Boolean).join('\n\n');
   } else if (config.mode === 'light') {
-    tokens = lightChunks.filter(Boolean).join('\n');
+    tokens = wrapInRoot(lightContent);
   } else {
-    // light-dark or system
-    const light = lightChunks.filter(Boolean).join('\n');
-    const dark = darkChunks.filter(Boolean).join('\n');
-
-    tokens = light;
-    if (dark) {
-      tokens += `\n\n@media (prefers-color-scheme: dark) {\n${dark}\n}`;
-      tokens += `\n\n[data-theme='dark'] {\n${dark}\n}`;
+    // light-dark
+    tokens = wrapInRoot(lightContent);
+    if (darkContent) {
+      tokens += `\n\n${wrapInDarkMedia(darkContent)}`;
+      tokens += `\n\n${wrapInDark(darkContent)}`;
     }
   }
 

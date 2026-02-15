@@ -1,8 +1,10 @@
 import { compile } from '../compiler/compile';
+import type { ThemeConfig } from '../compiler/types';
 
-import { previewModules } from './preview-registry';
 import type { PreviewModule } from './preview-registry';
+import { previewModules } from './preview-registry';
 import { getConfig, subscribe } from './state';
+
 
 type PreviewHandles = {
   mount: (container: HTMLElement) => void;
@@ -18,36 +20,42 @@ const createIframe = (): HTMLIFrameElement => {
   iframe.style.height = '420px';
   iframe.style.border = '1px solid #1f2c4f';
   iframe.style.borderRadius = '10px';
-  iframe.style.background = '#0f1729';
+  iframe.style.background = 'var(--surface-bg, #ffffff)';
   return iframe;
 };
 
-const writePreviewDocument = (
+    const writePreviewDocument = (
   iframe: HTMLIFrameElement,
   css: string,
-  mode: string,
+  config: ThemeConfig,
   modules = previewModules satisfies PreviewModule[]
 ): void => {
-  const themeAttr = mode === 'dark' ? 'data-theme="dark"' : '';
+  const themeAttr = config.mode === 'dark' ? 'data-theme="dark"' : '';
   iframe.srcdoc = `
     <!doctype html>
     <html ${themeAttr}>
       <head>
         <style>
-          :root { font-family: var(--font-family, Inter, "Segoe UI", system-ui, -apple-system, sans-serif); }
+          :root { 
+            font-family: var(--font-family, Inter, "Segoe UI", system-ui, -apple-system, sans-serif); 
+            background: var(--surface-bg, #ffffff);
+            color: var(--on-background, #0f172a);
+          }
           body {
             margin: 0;
-            background: #0f1729;
-            color: #e7ecff;
+            background: var(--surface-bg, #ffffff);
+            color: var(--on-background, #0f172a);
             padding: 16px;
             display: grid;
             gap: 16px;
+            min-height: 100vh;
+            box-sizing: border-box;
           }
           .preview-accordion {
-            border: 1px solid #2c3a63;
+            border: 1px solid color-mix(in srgb, var(--on-background) 15%, transparent);
             border-radius: 8px;
             overflow: hidden;
-            background: #0c1324;
+            background: color-mix(in srgb, var(--on-background) 2%, transparent);
           }
           .preview-accordion > summary {
             cursor: pointer;
@@ -70,7 +78,7 @@ const writePreviewDocument = (
             (mod: PreviewModule, index: number) => `
               <details class="preview-accordion"${index === 0 ? ' open' : ''}>
                 <summary>${mod.title}</summary>
-                <div class="preview-pane">${mod.render()}</div>
+                <div class="preview-pane">${mod.render(config)}</div>
               </details>
             `
           )
@@ -109,7 +117,7 @@ export const createPreview = (): PreviewHandles => {
       activeIds.size === 0
         ? previewModules
         : previewModules.filter((mod: PreviewModule) => activeIds.has(String(mod.id)));
-    writePreviewDocument(iframe, css, config.mode, filteredModules);
+    writePreviewDocument(iframe, css, config, filteredModules);
   };
 
   const setViewport = (size: ViewportSize) => {
