@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. We will log
 - **Dedicated Accent Palettes**: Introduced independent Secondary and Tertiary color systems, decoupling them from the Primary scale.
 - **Enhanced Palette Generation**: Refactored Analogous, Complementary, and Triadic modes to intelligently distribute colors across the new accent scales.
 - **Responsive Layout Tokens**: Introduced a new `basic-layout` plugin to manage global responsive breakpoints, container widths, and gutter sizes.
+- **Motion & Animation System**: Implemented a dedicated `basic-motion` plugin with global duration and easing tokens, integrated across all components for smooth, consistent transitions.
 
 ### Changed
 
