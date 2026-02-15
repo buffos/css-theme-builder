@@ -254,3 +254,13 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented automated modular scale calculation with predefined ratios (Golden Ratio, Perfect Fourth, etc.).
   - Added logic to auto-calculate `sm`, `lg`, and `xl` sizes based on the `base` size and selected ratio.
   - New test suite for modular scale math accuracy.
+
+## [0.16.0] - 2026-02-07
+
+### Added
+
+- Spacing Scale Generator:
+  - Added "Scale Mode" (Manual vs. Generated) and "Base Unit (px)" controls to the Spacing panel.
+  - Implemented automated scale generation (0, 0.5, 1, 2, 4, 8, etc.) based on the base unit.
+  - Updated utility emission to handle decimal steps (e.g., `.p-0_5`).
+  - New test suite for spacing scale logic.
