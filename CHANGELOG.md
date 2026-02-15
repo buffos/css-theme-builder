@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. We will log every step as we build the UI Theme Generator in small, focused increments.
 
+## [0.34.0] - 2026-02-15
+
+### Added
+
+- **Auto-Generated Style Guide**: A new developer-focused preview module that provides a technical specification of the entire design system.
+  - Detailed Typography spec with CSS variable names and sizes.
+  - Full Color System visualization including Primary, Neutral, and Semantic scales.
+  - Technical foundations overview for Spacing, Radii, and Shadows.
+- **Improved Preview Registry**: Standardized the registration of preview modules to allow for tiered documentation (Overview vs. Technical Spec).
+
 ## [0.33.0] - 2026-02-15
 
 ### Added

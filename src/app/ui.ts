@@ -7,6 +7,7 @@ import { modalControlModule } from '../plugins/basic-modal';
 import { radiusControlModule } from '../plugins/basic-radius';
 import { shadowControlModule } from '../plugins/basic-shadow';
 import { spacingControlModule } from '../plugins/basic-spacing';
+import { styleguideControlModule } from '../plugins/basic-styleguide';
 import { surfaceControlModule } from '../plugins/basic-surface';
 import { tableControlModule } from '../plugins/basic-table';
 import { themeNameControlModule } from '../plugins/basic-theme-name';
@@ -17,6 +18,7 @@ import type { ControlsRegistry } from './registry';
 // here we will place all controls we will build
 export const controlsRegistry: ControlsRegistry = {
   name: themeNameControlModule,
+  styleguide: styleguideControlModule,
   colors: colorsControlModule,
   typography: typographyControlModule,
   surface: surfaceControlModule,

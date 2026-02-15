@@ -139,15 +139,25 @@ export const cardControlModule: ControlModule = {
     const sync = () => {
       const cfg = api.getConfig();
       refreshOptions();
-      const bCfg = cfg.card;
-      const ov = bCfg?.overrides;
+      const ov = cfg.card?.overrides;
 
-      if (inputs.bg) {
-        inputs.bg.value = ov?.bg ?? '#ffffff';
-        if (inputs.bgReset) inputs.bgReset.style.display = ov?.bg ? 'inline' : 'none';
-      }
-      if (inputs.radius) inputs.radius.value = ov?.radiusToken ?? '2';
-      
+      const setVal = (el: HTMLInputElement | HTMLSelectElement | null, val: string) => {
+        if (el) el.value = val;
+      };
+
+      const setToggle = (btn: HTMLButtonElement | null, active: boolean) => {
+        if (btn) btn.style.display = active ? 'inline' : 'none';
+      };
+
+      setVal(inputs.bg, ov?.bg ?? '#ffffff');
+      setToggle(inputs.bgReset, !!ov?.bg);
+
+      setVal(inputs.borderColor, ov?.borderColor ?? '#0f172a');
+      setToggle(inputs.borderColorReset, !!ov?.borderColor);
+
+      setVal(inputs.radius, ov?.radiusToken ?? '2');
+      setVal(inputs.shadow, ov?.shadowKey ?? '1');
+
       if (inputs.padding) {
         const val = Number.parseInt(ov?.padding ?? '24', 10);
         inputs.padding.value = String(val);
@@ -159,13 +169,6 @@ export const cardControlModule: ControlModule = {
         inputs.border.value = String(val);
         if (values.border) values.border.textContent = `${val}px`;
       }
-
-      if (inputs.borderColor) {
-        inputs.borderColor.value = ov?.borderColor ?? '#0f172a';
-        if (inputs.borderColorReset) inputs.borderColorReset.style.display = ov?.borderColor ? 'inline' : 'none';
-      }
-
-      if (inputs.shadow) inputs.shadow.value = ov?.shadowKey ?? '1';
     };
 
     const onInputChange = (e: Event) => {

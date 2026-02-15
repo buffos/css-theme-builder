@@ -8,6 +8,7 @@ import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
 import { spacingPreviewModule } from '../plugins/basic-spacing';
+import { styleguidePreviewModule } from '../plugins/basic-styleguide';
 import { surfacePreviewModule } from '../plugins/basic-surface';
 import { tablePreviewModule } from '../plugins/basic-table';
 import { typographyPreviewModule } from '../plugins/basic-typography';
@@ -21,6 +22,7 @@ export type PreviewModule = {
 };
 
 export const previewModules = [
+  styleguidePreviewModule,
   dashboardPreviewModule,
   colorsPreviewModule,
   buttonsPreviewModule,
