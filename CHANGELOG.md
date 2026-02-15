@@ -360,3 +360,13 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented dynamic corner radius selection linked to global theme tokens.
   - Enhanced compiler to emit status variants: `.alert--success`, `.alert--warning`, `.alert--danger`, and `.alert--info`.
   - Added multi-variant preview gallery using `color-mix` for sophisticated status backgrounds.
+
+## [0.27.0] - 2026-02-15
+
+### Added
+
+- Advanced Modal Controls:
+  - Added sliders for Backdrop Blur and Backdrop Opacity.
+  - Added layout controls for Modal Padding, Border Weight, and Max Width.
+  - Implemented dynamic corner radius selection for modals.
+  - Enhanced preview with a simulated backdrop and background content for better visualization.
