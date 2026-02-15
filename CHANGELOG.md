@@ -332,3 +332,12 @@ All notable changes to this project will be documented in this file. We will log
   - Replaced placeholder sidebar controls with functional sliders for `sm`, `md`, and `lg` radii.
   - Added "Radii Gallery" preview module to visualize corner rounding levels.
   - Updated default radius keys from numeric to descriptive tokens.
+
+## [0.24.0] - 2026-02-15
+
+### Added
+
+- Shadow Plugin UI:
+  - Replaced placeholder controls with a multi-slider shadow editor (X, Y, Blur, Spread, Opacity).
+  - Added "Shadows Gallery" preview module to visualize elevation levels.
+  - Refactored shadow keys to semantic `sm`, `md`, and `lg` tokens.

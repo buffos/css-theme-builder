@@ -11,6 +11,7 @@ import { cardPreviewModule } from '../plugins/basic-card';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
+import { shadowPreviewModule } from '../plugins/basic-shadow';
 import { tablePreviewModule } from '../plugins/basic-table';
 
 export const previewModules = [
@@ -18,6 +19,7 @@ export const previewModules = [
   inputsPreviewModule,
   cardPreviewModule,
   radiusPreviewModule,
+  shadowPreviewModule,
   alertPreviewModule,
   tablePreviewModule,
   modalPreviewModule,
