@@ -323,3 +323,12 @@ All notable changes to this project will be documented in this file. We will log
   - Added `localStorage` persistence to auto-save and restore theme configurations.
   - Added Undo/Redo buttons to the app header with keyboard shortcuts (Ctrl+Z, Ctrl+Y).
   - Consolidated state management logic and fixed multiple lint warnings.
+
+## [0.23.0] - 2026-02-14
+
+### Added
+
+- Radius Plugin UI:
+  - Replaced placeholder sidebar controls with functional sliders for `sm`, `md`, and `lg` radii.
+  - Added "Radii Gallery" preview module to visualize corner rounding levels.
+  - Updated default radius keys from numeric to descriptive tokens.
