@@ -350,3 +350,13 @@ All notable changes to this project will be documented in this file. We will log
   - Replaced placeholder controls with color pickers for Light and Dark modes.
   - Added controls for `Background`, `Foreground`, and `Card` surfaces for both themes.
   - Added "Surfaces Gallery" preview module to demonstrate layout depth and contrast.
+
+## [0.26.0] - 2026-02-15
+
+### Added
+
+- Advanced Alert Controls:
+  - Added sliders for `Padding` and `Border Weight` customization.
+  - Implemented dynamic corner radius selection linked to global theme tokens.
+  - Enhanced compiler to emit status variants: `.alert--success`, `.alert--warning`, `.alert--danger`, and `.alert--info`.
+  - Added multi-variant preview gallery using `color-mix` for sophisticated status backgrounds.
