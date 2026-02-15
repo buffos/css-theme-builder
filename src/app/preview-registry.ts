@@ -4,6 +4,7 @@ import { alertPreviewModule } from '../plugins/basic-alert';
 import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
 import { colorsPreviewModule } from '../plugins/basic-colors';
+import { elevationPreviewModule } from '../plugins/basic-elevation';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { layoutPreviewModule } from '../plugins/basic-layout';
 import { modalPreviewModule } from '../plugins/basic-modal';
@@ -39,6 +40,7 @@ export const previewModules = [
   radiusPreviewModule,
   spacingPreviewModule,
   shadowPreviewModule,
+  elevationPreviewModule,
   alertPreviewModule,
   tablePreviewModule,
   typographyPreviewModule,

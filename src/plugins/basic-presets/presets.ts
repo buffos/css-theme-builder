@@ -21,6 +21,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
     motion: {
       durations: { fast: 150, base: 300, slow: 500 },
       easing: { in: 'ease-in', out: 'ease-out', inOut: 'ease-in-out' }
+    },
+    elevation: {
+      hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
+      fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
     }
   },
   midnight: {
@@ -46,6 +50,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
         out: 'cubic-bezier(0, 0, 0.2, 1)',
         inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
       }
+    },
+    elevation: {
+      hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
+      fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
     }
   },
   cyberpunk: {
@@ -71,6 +79,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
         out: 'steps(4, start)',
         inOut: 'cubic-bezier(1, 0, 0, 1)',
       }
+    },
+    elevation: {
+      hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
+      fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
     }
   },
   corporate: {
@@ -89,6 +101,10 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
       paletteMode: 'analogous',
     },
     radius: { sm: '2px', md: '4px', lg: '8px' },
+    elevation: {
+      hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
+      fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    }
   },
   minimalist: {
     name: 'Minimalist',
@@ -106,5 +122,9 @@ export const THEME_PRESETS: Record<string, PartialThemeConfig> = {
       paletteMode: 'manual',
     },
     radius: { sm: '8px', md: '16px', lg: '32px' },
+    elevation: {
+      hide: -1, auto: 0, base: 0, raised: 10, dropdown: 1000, sticky: 1100,
+      fixed: 1200, modal: 1300, popover: 1400, tooltip: 1500, toast: 1600, max: 2147483647
+    }
   }
 };

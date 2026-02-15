@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file. We will log
 - **Theme Presets (Personas)**: Introduced a library of "One-Click Personas" (Midnight Pro, Cyberpunk, Corporate Clean, Minimalist) for rapid theme experimentation.
 - **Dev Handoff: Copy to Clipboard**: Added one-click copy functionality to the Style Guide, allowing users to instantly copy design tokens as CSS variables.
 - **Accessibility Master Audit**: Implemented a dedicated audit preview module that scans for WCAG contrast violations across all semantic color pairs and provides one-click "Nudge" fixes.
+- **Z-Index & Elevation Foundation**: Introduced a global stacking token system (`--z-index-*`) with a dedicated preview spec and interactive controls. All theme presets have been updated with standard elevation foundations.
 
 ### Changed
 

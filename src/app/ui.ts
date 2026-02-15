@@ -3,6 +3,7 @@ import { alertControlModule } from '../plugins/basic-alert';
 import { buttonsControlModule } from '../plugins/basic-buttons';
 import { cardControlModule } from '../plugins/basic-card';
 import { colorsControlModule } from '../plugins/basic-colors';
+import { elevationControlModule } from '../plugins/basic-elevation';
 import { inputsControlModule } from '../plugins/basic-inputs';
 import { layoutControlModule } from '../plugins/basic-layout';
 import { modalControlModule } from '../plugins/basic-modal';
@@ -34,6 +35,7 @@ export const controlsRegistry: ControlsRegistry = {
   spacing: spacingControlModule,
   radius: radiusControlModule,
   shadow: shadowControlModule,
+  elevation: elevationControlModule,
   buttons: buttonsControlModule,
   inputs: inputsControlModule,
   card: cardControlModule,
