@@ -38,6 +38,12 @@ export const cardCompilerEntry = {
   background: var(--card-bg);
   border: var(--card-border);
   box-shadow: var(--card-shadow);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.card--interactive:hover, .card--interactive.hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2, 0 4px 6px rgba(0,0,0,0.1));
 }
 `;
   },
@@ -122,9 +128,15 @@ export const cardPreviewModule = {
   id: 'card',
   title: 'Card',
   render: () => `
-    <div class="card">
-      <h3 class="text-base" style="margin-top:0;">Card title</h3>
-      <p class="text-sm" style="margin:0;">Body copy for card preview.</p>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:1.5rem;">
+      <div class="card">
+        <h3 class="text-base" style="margin-top:0;">Static Card</h3>
+        <p class="text-sm" style="margin:0; opacity:0.8;">This card is static and doesn't react to hover.</p>
+      </div>
+      <div class="card card--interactive">
+        <h3 class="text-base" style="margin-top:0;">Interactive Card</h3>
+        <p class="text-sm" style="margin:0; opacity:0.8;">Hover over me to see the elevation effect!</p>
+      </div>
     </div>
   `,
 };

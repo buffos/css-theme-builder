@@ -29,7 +29,7 @@ export const inputsCompilerEntry = {
   color: var(--surface-fg, #e7ecff);
   transition: border-color 120ms ease, box-shadow 120ms ease;
 }
-.input:focus {
+.input:focus, .input.focus {
   outline: none;
   border-color: var(--color-primary-500, #5b8def);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500, #5b8def) 30%, transparent);
@@ -110,15 +110,19 @@ export const inputsPreviewModule = {
   id: 'inputs',
   title: 'Inputs',
   render: () => `
-    <div style="display:grid; gap:0.75rem; max-width:360px;">
-      <label class="text-sm">
-        Label
-        <input class="input" placeholder="Type something" />
-      </label>
-      <label class="text-sm">
-        Error
-        <input class="input input--error" placeholder="Invalid value" />
-      </label>
+    <div style="display:grid; gap:1.25rem; max-width:400px;">
+      <div style="display:grid; grid-template-columns: 80px 1fr; gap:1rem; align-items:center;">
+        <span style="font-size:12px; opacity:0.6;">Normal</span>
+        <input class="input" placeholder="Standard input" />
+      </div>
+      <div style="display:grid; grid-template-columns: 80px 1fr; gap:1rem; align-items:center;">
+        <span style="font-size:12px; opacity:0.6;">Focus</span>
+        <input class="input focus" placeholder="Focused state" value="Focused content" />
+      </div>
+      <div style="display:grid; grid-template-columns: 80px 1fr; gap:1rem; align-items:center;">
+        <span style="font-size:12px; opacity:0.6;">Error</span>
+        <input class="input input--error" placeholder="Error state" value="Invalid input" />
+      </div>
     </div>
   `,
 };

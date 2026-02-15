@@ -274,3 +274,13 @@ All notable changes to this project will be documented in this file. We will log
   - Added "Overrides" section to the Buttons panel (Background, Text, Radius, Border).
   - Added "Overrides" section to the Card panel (Background, Radius, Padding, Border, Shadow).
   - Implemented unit tests for component-level override propagation.
+
+## [0.18.0] - 2026-02-09
+
+### Added
+
+- Interactive Component States:
+  - Added `.hover`, `.active`, and `.focus` classes to `Buttons` and `Inputs` for static visualization.
+  - Expanded `Buttons` preview to show a full grid of states for both default and primary variations.
+  - Expanded `Inputs` preview to show Vertical alignment of Normal, Focus, and Error states.
+  - Added `.card--interactive` class with hover elevation and updated `Card` preview to show interactive variations.

@@ -55,12 +55,16 @@ export const buttonsCompilerEntry = {
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 160ms ease, opacity 120ms ease;
 }
-.btn:hover:not(:disabled) {
+.btn:hover:not(:disabled), .btn.hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: var(--shadow-1, 0 1px 3px rgba(0,0,0,0.15));
 }
-.btn:active:not(:disabled) {
+.btn:active:not(:disabled), .btn.active:not(:disabled) {
   transform: translateY(0);
+}
+.btn:focus-visible, .btn.focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn-bg) 40%, white);
 }
 .btn:disabled {
   opacity: 0.6;
@@ -202,10 +206,23 @@ export const buttonsPreviewModule = {
   id: 'buttons',
   title: 'Buttons',
   render: () => `
-    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-      <button class="btn" type="button">Default</button>
-      <button class="btn btn--primary" type="button">Primary</button>
-      <button class="btn" type="button" disabled>Disabled</button>
+    <div style="display:grid; gap:1.5rem;">
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+        <span style="width:70px; font-size:12px; opacity:0.6;">Default</span>
+        <button class="btn" type="button">Normal</button>
+        <button class="btn hover" type="button">Hover</button>
+        <button class="btn active" type="button">Active</button>
+        <button class="btn focus" type="button">Focus</button>
+        <button class="btn" type="button" disabled>Disabled</button>
+      </div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+        <span style="width:70px; font-size:12px; opacity:0.6;">Primary</span>
+        <button class="btn btn--primary" type="button">Normal</button>
+        <button class="btn btn--primary hover" type="button">Hover</button>
+        <button class="btn btn--primary active" type="button">Active</button>
+        <button class="btn btn--primary focus" type="button">Focus</button>
+        <button class="btn btn--primary" type="button" disabled>Disabled</button>
+      </div>
     </div>
   `,
 };
