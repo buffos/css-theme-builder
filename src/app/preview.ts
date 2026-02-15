@@ -73,16 +73,15 @@ const createIframe = (): HTMLIFrameElement => {
         <style>${css}</style>
       </head>
       <body>
-        ${modules
-          .map(
-            (mod: PreviewModule, index: number) => `
+        ${modules.length === 1 
+          ? `<div class="preview-pane">${modules[0].render(config)}</div>` 
+          : modules.map((mod: PreviewModule, index: number) => `
               <details class="preview-accordion"${index === 0 ? ' open' : ''}>
                 <summary>${mod.title}</summary>
                 <div class="preview-pane">${mod.render(config)}</div>
               </details>
-            `
-          )
-          .join('\n')}
+            `).join('\n')
+        }
       </body>
     </html>
   `;

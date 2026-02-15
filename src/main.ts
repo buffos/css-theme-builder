@@ -80,7 +80,12 @@ if (!controlsHost) {
 const preview = createPreview();
 preview.mount(previewHost);
 
-const controlApi = { getConfig, updateConfig, subscribe };
+const controlApi = { 
+  getConfig, 
+  updateConfig, 
+  subscribe,
+  setActivePreview: (ids: string[]) => preview.setActive(ids),
+};
 const controlCleanups: (() => void)[] = [];
 const openIds = new Set<string>();
 const accordions: { details: HTMLDetailsElement; id: string }[] = [];

@@ -12,6 +12,7 @@ export type ControlApi = {
   getConfig: () => ThemeConfig;
   updateConfig: (mutator: (current: ThemeConfig) => ThemeConfig) => void;
   subscribe: (listener: (config: ThemeConfig) => void) => () => void;
+  setActivePreview: (ids: string[]) => void;
 };
 
 export type ControlsRegistry = Record<string, ControlModule>;

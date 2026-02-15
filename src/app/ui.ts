@@ -6,6 +6,7 @@ import { inputsControlModule } from '../plugins/basic-inputs';
 import { layoutControlModule } from '../plugins/basic-layout';
 import { modalControlModule } from '../plugins/basic-modal';
 import { motionControlModule } from '../plugins/basic-motion';
+import { presetsControlModule } from '../plugins/basic-presets';
 import { radiusControlModule } from '../plugins/basic-radius';
 import { sandboxControlModule } from '../plugins/basic-sandbox';
 import { shadowControlModule } from '../plugins/basic-shadow';
@@ -21,6 +22,7 @@ import type { ControlsRegistry } from './registry';
 // here we will place all controls we will build
 export const controlsRegistry: ControlsRegistry = {
   name: themeNameControlModule,
+  presets: presetsControlModule,
   sandbox: sandboxControlModule,
   layout: layoutControlModule,
   styleguide: styleguideControlModule,
