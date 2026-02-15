@@ -1,3 +1,4 @@
+import { accessibilityControlModule } from '../plugins/basic-accessibility';
 import { alertControlModule } from '../plugins/basic-alert';
 import { buttonsControlModule } from '../plugins/basic-buttons';
 import { cardControlModule } from '../plugins/basic-card';
@@ -21,11 +22,12 @@ import type { ControlsRegistry } from './registry';
 
 // here we will place all controls we will build
 export const controlsRegistry: ControlsRegistry = {
+  sandbox: sandboxControlModule,
+  accessibility: accessibilityControlModule,
+  styleguide: styleguideControlModule,
   name: themeNameControlModule,
   presets: presetsControlModule,
-  sandbox: sandboxControlModule,
   layout: layoutControlModule,
-  styleguide: styleguideControlModule,
   colors: colorsControlModule,
   typography: typographyControlModule,
   surface: surfaceControlModule,

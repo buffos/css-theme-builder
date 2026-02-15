@@ -127,6 +127,19 @@ body {
   margin-top: 10px;
 }
 
+.control-accordion.audit-accordion {
+  border-color: #1e3a2f;
+  background: #0a1f16;
+}
+
+.control-accordion.audit-accordion > summary {
+  color: #a7f3d0;
+}
+
+.control-accordion.audit-accordion > summary::before {
+  border-color: #34d399;
+}
+
 .control-accordion > summary {
   position: relative;
   list-style: none;

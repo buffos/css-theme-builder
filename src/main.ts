@@ -4,6 +4,7 @@ import { createPreview } from './app/preview';
 import { getConfig, subscribe, updateConfig, undo, redo, subscribeHistory } from './app/state';
 import { controlsRegistry } from './app/ui';
 import type { ThemeMode } from './compiler/types';
+import { nudgeContrast, generateScale } from './utils/colors';
 
 const root = document.querySelector<HTMLDivElement>('#app');
 
@@ -86,6 +87,32 @@ const controlApi = {
   subscribe,
   setActivePreview: (ids: string[]) => preview.setActive(ids),
 };
+
+declare global {
+  var auditFix: (key: string, baseBg: string, targetFg: string) => void;
+}
+
+// Global Accessibility Fixer for Preview Modules
+globalThis.auditFix = (key: string, baseBg: string, targetFg: string) => {
+  const fixed = nudgeContrast(baseBg, targetFg);
+  updateConfig(cfg => {
+    const next = { ...cfg };
+    if (!next.colors) return next;
+    
+    // If the key is a semantic scale, regenerate it
+    if (key === 'primary') next.colors.primary = generateScale(fixed);
+    else if (key === 'secondary') next.colors.secondary = generateScale(fixed);
+    else if (key === 'tertiary') next.colors.tertiary = generateScale(fixed);
+    else if (key === 'danger') next.colors.danger = generateScale(fixed);
+    else if (key === 'success') next.colors.success = generateScale(fixed);
+    else if (key === 'warning') next.colors.warning = generateScale(fixed);
+    else if (key === 'neutral-900') next.colors.neutral = { ...next.colors.neutral, 900: fixed };
+    else if (key === 'on-primary') next.colors.primary = generateScale(fixed); // Nudge background to fix on-color
+    
+    return next;
+  });
+};
+
 const controlCleanups: (() => void)[] = [];
 const openIds = new Set<string>();
 const accordions: { details: HTMLDetailsElement; id: string }[] = [];
@@ -93,7 +120,9 @@ const accordions: { details: HTMLDetailsElement; id: string }[] = [];
 // Build accordion per control module (single-open behavior)
 Object.values(controlsRegistry).forEach((module, index) => {
   const details = document.createElement('details');
-  details.className = 'control-accordion';
+  const isAudit = ['sandbox', 'accessibility', 'styleguide'].includes(module.id);
+  details.className = isAudit ? 'control-accordion audit-accordion' : 'control-accordion';
+  
   if (index === 0) details.open = true;
   const summary = document.createElement('summary');
   summary.textContent = module.title;

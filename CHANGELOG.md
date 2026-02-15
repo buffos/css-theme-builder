@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file. We will log
 - **Custom HTML Sandbox**: Added a new sandbox plugin allowing users to test their current theme against custom markup with real-time feedback.
 - **Theme Presets (Personas)**: Introduced a library of "One-Click Personas" (Midnight Pro, Cyberpunk, Corporate Clean, Minimalist) for rapid theme experimentation.
 - **Dev Handoff: Copy to Clipboard**: Added one-click copy functionality to the Style Guide, allowing users to instantly copy design tokens as CSS variables.
+- **Accessibility Master Audit**: Implemented a dedicated audit preview module that scans for WCAG contrast violations across all semantic color pairs and provides one-click "Nudge" fixes.
 
 ### Changed
 

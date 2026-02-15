@@ -1,4 +1,5 @@
 import type { ThemeConfig } from '../compiler/types';
+import { accessibilityPreviewModule } from '../plugins/basic-accessibility';
 import { alertPreviewModule } from '../plugins/basic-alert';
 import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
@@ -27,6 +28,7 @@ export type PreviewModule = {
 export const previewModules = [
   sandboxPreviewModule,
   styleguidePreviewModule,
+  accessibilityPreviewModule,
   layoutPreviewModule,
   dashboardPreviewModule,
   colorsPreviewModule,
