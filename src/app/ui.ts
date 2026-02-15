@@ -5,7 +5,9 @@ import { colorsControlModule } from '../plugins/basic-colors';
 import { inputsControlModule } from '../plugins/basic-inputs';
 import { layoutControlModule } from '../plugins/basic-layout';
 import { modalControlModule } from '../plugins/basic-modal';
+import { motionControlModule } from '../plugins/basic-motion';
 import { radiusControlModule } from '../plugins/basic-radius';
+import { sandboxControlModule } from '../plugins/basic-sandbox';
 import { shadowControlModule } from '../plugins/basic-shadow';
 import { spacingControlModule } from '../plugins/basic-spacing';
 import { styleguideControlModule } from '../plugins/basic-styleguide';
@@ -19,6 +21,7 @@ import type { ControlsRegistry } from './registry';
 // here we will place all controls we will build
 export const controlsRegistry: ControlsRegistry = {
   name: themeNameControlModule,
+  sandbox: sandboxControlModule,
   layout: layoutControlModule,
   styleguide: styleguideControlModule,
   colors: colorsControlModule,
@@ -33,4 +36,5 @@ export const controlsRegistry: ControlsRegistry = {
   alert: alertControlModule,
   table: tableControlModule,
   modal: modalControlModule,
+  motion: motionControlModule,
 } satisfies ControlsRegistry;

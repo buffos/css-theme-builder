@@ -6,7 +6,9 @@ import { colorsPreviewModule } from '../plugins/basic-colors';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
 import { layoutPreviewModule } from '../plugins/basic-layout';
 import { modalPreviewModule } from '../plugins/basic-modal';
+import { motionPreviewModule } from '../plugins/basic-motion';
 import { radiusPreviewModule } from '../plugins/basic-radius';
+import { sandboxPreviewModule } from '../plugins/basic-sandbox';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
 import { spacingPreviewModule } from '../plugins/basic-spacing';
 import { styleguidePreviewModule } from '../plugins/basic-styleguide';
@@ -23,6 +25,7 @@ export type PreviewModule = {
 };
 
 export const previewModules = [
+  sandboxPreviewModule,
   styleguidePreviewModule,
   layoutPreviewModule,
   dashboardPreviewModule,
@@ -38,4 +41,5 @@ export const previewModules = [
   tablePreviewModule,
   typographyPreviewModule,
   modalPreviewModule,
+  motionPreviewModule,
 ] satisfies PreviewModule[];

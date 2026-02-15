@@ -1,4 +1,4 @@
-import { buildThemeConfig, type ThemeConfig } from '../compiler/types';
+import { buildThemeConfig, type ThemeConfig, type PartialThemeConfig } from '../compiler/types';
 import { alertDefaults } from '../plugins/basic-alert';
 import { buttonsDefaults } from '../plugins/basic-buttons';
 import { cardDefaults } from '../plugins/basic-card';
@@ -6,7 +6,9 @@ import { colorsDefaults } from '../plugins/basic-colors';
 import { inputsDefaults } from '../plugins/basic-inputs';
 import { layoutDefaults } from '../plugins/basic-layout';
 import { modalDefaults } from '../plugins/basic-modal';
+import { motionDefaults } from '../plugins/basic-motion';
 import { radiusDefaults } from '../plugins/basic-radius';
+import { sandboxDefaults } from '../plugins/basic-sandbox';
 import { shadowDefaults } from '../plugins/basic-shadow';
 import { spacingDefaults } from '../plugins/basic-spacing';
 import { surfaceDefaults } from '../plugins/basic-surface';
@@ -17,12 +19,13 @@ export type ThemeMode = ThemeConfig['mode'];
 
 type StateListener = (config: ThemeConfig) => void;
 
-const defaultFragments = [
+const defaultFragments: PartialThemeConfig[] = [
   colorsDefaults,
   surfaceDefaults,
   typographyDefaults,
   spacingDefaults,
   radiusDefaults,
+  sandboxDefaults,
   shadowDefaults,
   alertDefaults,
   buttonsDefaults,
@@ -30,6 +33,7 @@ const defaultFragments = [
   inputsDefaults,
   modalDefaults,
   layoutDefaults,
+  motionDefaults,
   tableDefaults,
 ];
 
@@ -115,7 +119,8 @@ export const getInitialConfig = (): ThemeConfig => initialConfig;
 try {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
-    config = JSON.parse(saved) as ThemeConfig;
+    const savedConfig = JSON.parse(saved) as PartialThemeConfig;
+    config = buildThemeConfig(savedConfig, defaultFragments);
   }
 } catch (err) {
   console.error('Failed to load from localStorage:', err);

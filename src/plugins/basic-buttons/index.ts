@@ -55,7 +55,9 @@ export const buttonsCompilerEntry = {
   background: var(--btn-bg);
   color: var(--btn-fg);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 160ms ease, opacity 120ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), 
+              box-shadow var(--duration-fast) var(--ease-out), 
+              opacity var(--duration-fast) var(--ease-out);
 }
 .btn:hover:not(:disabled), .btn.hover:not(:disabled) {
   transform: translateY(-1px);

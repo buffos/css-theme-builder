@@ -51,6 +51,12 @@ export const modalCompilerEntry = {
   border-radius: ${radius};
   box-shadow: var(--shadow-lg, 0 10px 30px rgba(0,0,0,0.25));
   padding: ${padding};
+  transition: transform var(--duration-base) var(--ease-in-out), 
+              opacity var(--duration-base) var(--ease-in-out);
+}
+.modal-backdrop {
+  transition: opacity var(--duration-base) var(--ease-in-out), 
+              backdrop-filter var(--duration-base) var(--ease-in-out);
 }
 `;
   },

@@ -58,6 +58,7 @@ export const alertCompilerEntry = {
   gap: 0.75rem;
   font-size: 14px;
   line-height: 1.5;
+  transition: all var(--duration-base) var(--ease-in-out);
 }
 ${variantStyles}
 `;

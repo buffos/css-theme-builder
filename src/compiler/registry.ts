@@ -5,6 +5,7 @@ import { colorsCompilerEntry } from '../plugins/basic-colors/index';
 import { inputsCompilerEntry } from '../plugins/basic-inputs';
 import { layoutCompilerEntry } from '../plugins/basic-layout';
 import { modalCompilerEntry } from '../plugins/basic-modal';
+import { motionCompilerEntry } from '../plugins/basic-motion';
 import { radiusCompilerEntry } from '../plugins/basic-radius';
 import { shadowCompilerEntry } from '../plugins/basic-shadow';
 import { spacingCompilerEntry } from '../plugins/basic-spacing';
@@ -38,4 +39,5 @@ export const compilerRegistry: EmitterEntry[] = [
   alertCompilerEntry,
   tableCompilerEntry,
   modalCompilerEntry,
+  motionCompilerEntry,
 ];

@@ -181,6 +181,40 @@ export const styleguidePreviewModule: PreviewModule = {
           </div>
         </section>
 
+        <!-- MOTION SPEC -->
+        <section>
+          <h4 style="margin: 0 0 1.5rem 0; font-size: 13px; font-weight: 800; border-bottom: 2px solid var(--color-primary-500); padding-bottom: 0.5rem; display: inline-block;">MOTION SPEC</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div style="padding: 1.25rem; background: var(--surface-card); border-radius: 10px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Duration Tokens</h5>
+              <div style="display: grid; gap: 0.75rem;">
+                ${['fast', 'base', 'slow'].map(d => `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 11px; font-weight: 800;">${d.toUpperCase()}</span>
+                      <code style="font-size: 9px; opacity: 0.5;">--duration-${d}</code>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.motion?.durations[d as keyof typeof config.motion.durations]}ms</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div style="padding: 1.25rem; background: var(--surface-card); border-radius: 10px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Easing Curves</h5>
+              <div style="display: grid; gap: 0.75rem;">
+                ${['in', 'out', 'inOut'].map(e => `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 11px; font-weight: 800;">${e.toUpperCase()}</span>
+                      <code style="font-size: 9px; opacity: 0.5;">--ease-${e.replace(/[A-Z]/, m => '-' + m.toLowerCase())}</code>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
     `;
   }
