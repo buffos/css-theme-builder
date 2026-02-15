@@ -244,3 +244,13 @@ All notable changes to this project will be documented in this file. We will log
   - Implemented unit tests for the central compiler to verify light/dark/auto mode CSS emission.
   - Added specialized test suites for `Colors`, `Surface`, and `Typography` plugins to ensure correct token and utility generation.
   - Wired `npm test` script for CI/CD readiness.
+
+## [0.15.0] - 2026-02-06
+
+### Added
+
+- Typography Scale Presets:
+  - Added "Scale Mode" toggle (Manual vs. Modular) to the Typography panel.
+  - Implemented automated modular scale calculation with predefined ratios (Golden Ratio, Perfect Fourth, etc.).
+  - Added logic to auto-calculate `sm`, `lg`, and `xl` sizes based on the `base` size and selected ratio.
+  - New test suite for modular scale math accuracy.
