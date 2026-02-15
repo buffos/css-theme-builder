@@ -370,3 +370,14 @@ All notable changes to this project will be documented in this file. We will log
   - Added layout controls for Modal Padding, Border Weight, and Max Width.
   - Implemented dynamic corner radius selection for modals.
   - Enhanced preview with a simulated backdrop and background content for better visualization.
+
+## [0.28.0] - 2026-02-15
+
+### Added
+
+- Advanced Table Controls:
+  - Added sliders for Horizontal and Vertical cell padding.
+  - Added control for cell border weight.
+  - Implemented Row Striping toggle with automatic theme-aware contrast.
+  - Implemented Hover Effect toggle for table rows.
+  - Enhanced preview module with realistic data to showcase density and striping.
