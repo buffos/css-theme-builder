@@ -6,7 +6,8 @@ import {
   getWCAGLevel, 
   hexToHsl, 
   hslToHex, 
-  nudgeContrast 
+  nudgeContrast,
+  generateScale
 } from '../../utils/colors';
 
 type PaletteMode = 'manual' | 'analogous' | 'complementary' | 'triadic';
@@ -18,7 +19,6 @@ const pickOnColor = (bg: string, n50?: string, n900?: string): string => {
   return r900 >= r50 ? (n900 ?? getOnColor(bg)) : (n50 ?? getOnColor(bg));
 };
 
-
 declare module '../../compiler/types' {
   type Tuning = {
     tintStrength: number;
@@ -29,12 +29,14 @@ declare module '../../compiler/types' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ThemeModules {
     colors: {
-      primary: { 500: string; 600: string };
-      neutral: { 50: string; 900: string };
+      primary: Record<number, string>;
+      secondary?: Record<number, string>;
+      tertiary?: Record<number, string>;
+      neutral: Record<number, string>;
       tuning?: Tuning;
-      danger?: { 500: string };
-      success?: { 500: string };
-      warning?: { 500: string };
+      danger?: Record<number, string>;
+      success?: Record<number, string>;
+      warning?: Record<number, string>;
       paletteMode?: 'manual' | 'analogous' | 'complementary' | 'triadic';
     };
   }
@@ -48,93 +50,70 @@ export const colorsCompilerEntry = {
   emitTokens: (config: ThemeConfig) => {
     const colors = config.colors;
     if (!colors) return '';
-    const getColor = (val: unknown) => (typeof val === 'string' ? val : undefined);
 
-    const primary500 = getColor(colors.primary?.[500]);
-    const primary600 = getColor(colors.primary?.[600]);
-    const neutral50 = getColor(colors.neutral?.[50]);
-    const neutral900 = getColor(colors.neutral?.[900]);
-    const danger500 = getColor(colors.danger?.[500]);
-    const success500 = getColor(colors.success?.[500]);
-    const warning500 = getColor(colors.warning?.[500]);
+    const emitScale = (name: string, scale?: Record<number, string>) => {
+      if (!scale) return '';
+      return Object.entries(scale)
+        .map(([step, val]) => `--color-${name}-${step}: ${val};`)
+        .join('\n  ');
+    };
 
-    const primaryOn = pickOnColor(primary500 ?? '#5b8def', neutral50, neutral900);
+    const primary500 = colors.primary?.[500];
+    const neutral50 = colors.neutral?.[50];
+    const neutral900 = colors.neutral?.[900];
+    const danger500 = colors.danger?.[500];
+    const success500 = colors.success?.[500];
+    const warning500 = colors.warning?.[500];
+
+    const primaryOn = pickOnColor(primary500, neutral50, neutral900);
     const dangerOn = pickOnColor(danger500 ?? '#f05656', neutral50, neutral900);
     const successOn = pickOnColor(success500 ?? '#3ba55a', neutral50, neutral900);
     const warningOn = pickOnColor(warning500 ?? '#f29e38', neutral50, neutral900);
 
     return `
-  --color-primary-500: ${primary500 ?? ''};
-  --color-primary-600: ${primary600 ?? ''};
-  --color-neutral-50: ${neutral50 ?? ''};
-  --color-neutral-900: ${neutral900 ?? ''};
+  ${emitScale('primary', colors.primary)}
+  ${emitScale('secondary', colors.secondary)}
+  ${emitScale('tertiary', colors.tertiary)}
+  ${emitScale('neutral', colors.neutral)}
+  ${emitScale('danger', colors.danger)}
+  ${emitScale('success', colors.success)}
+  ${emitScale('warning', colors.warning)}
   
   --on-primary: ${primaryOn};
   --on-danger: ${dangerOn};
   --on-success: ${successOn};
   --on-warning: ${warningOn};
-  
-  --color-danger-500: ${danger500 ?? ''};
-  --color-success-500: ${success500 ?? ''};
-  --color-warning-500: ${warning500 ?? ''};
 `;
   },
   emitDarkTokens: (config: ThemeConfig) => {
-    const colors = config.colors;
-    if (!colors) return '';
-    const getColor = (val: unknown) => (typeof val === 'string' ? val : undefined);
-
-    const primary500 = getColor(colors.primary?.[500]);
-    const primary600 = getColor(colors.primary?.[600]);
-    const neutral50 = getColor(colors.neutral?.[50]);
-    const neutral900 = getColor(colors.neutral?.[900]);
-    const danger500 = getColor(colors.danger?.[500]);
-    const success500 = getColor(colors.success?.[500]);
-    const warning500 = getColor(colors.warning?.[500]);
-
-    const primaryOn = pickOnColor(primary500 ?? '#5b8def', neutral50, neutral900);
-    const dangerOn = pickOnColor(danger500 ?? '#f05656', neutral50, neutral900);
-    const successOn = pickOnColor(success500 ?? '#3ba55a', neutral50, neutral900);
-    const warningOn = pickOnColor(warning500 ?? '#f29e38', neutral50, neutral900);
-
-    return `
-  --color-primary-500: ${primary500 ?? ''};
-  --color-primary-600: ${primary600 ?? ''};
-  --color-neutral-50: ${neutral50 ?? ''};
-  --color-neutral-900: ${neutral900 ?? ''};
-  
-  --on-primary: ${primaryOn};
-  --on-danger: ${dangerOn};
-  --on-success: ${successOn};
-  --on-warning: ${warningOn};
-  
-  --color-danger-500: ${danger500 ?? ''};
-  --color-success-500: ${success500 ?? ''};
-  --color-warning-500: ${warning500 ?? ''};
-`;
+    // For now, we reuse the same tokens for dark mode, but we could add overrides here later
+    return colorsCompilerEntry.emitTokens(config);
   },
   emitUtilities: () =>
     [
-      `.bg-primary { background: var(--color-primary-500); }`,
+      `.bg-primary { background: var(--color-primary-500); color: var(--on-primary); }`,
       `.bg-surface { background: var(--surface-bg); color: var(--surface-fg); }`,
       `.text-fg { color: var(--surface-fg); }`,
       `.border-subtle { border: 1px solid var(--color-neutral-900); }`,
+      `.bg-secondary { background: var(--color-secondary-500, var(--color-primary-600)); }`,
     ].join('\n'),
 };
 
 export const colorsDefaults = {
   colors: {
-    primary: { 500: '#5b8def', 600: '#3f6ad8' },
-    neutral: { 50: '#f7f9fc', 900: '#0f172a' },
+    primary: generateScale('#5b8def'),
+    secondary: generateScale('#3f6ad8'),
+    tertiary: generateScale('#8d5bef'),
+    neutral: generateScale('#f7f9fc'), // This will be adjusted by tuning
     tuning: {
       tintStrength: 60,
       darkDepth: 25,
       lightDepth: 92,
       hueOffset: 0,
     },
-    danger: { 500: '#f05656' },
-    success: { 500: '#3ba55a' },
-    warning: { 500: '#f29e38' },
+    danger: generateScale('#f05656'),
+    success: generateScale('#3ba55a'),
+    warning: generateScale('#f29e38'),
     paletteMode: 'analogous' as const,
   },
 };
@@ -187,8 +166,12 @@ export const colorsControlModule: ControlModule = {
           <input id="primary-500" name="primary-500" type="color" />
         </div>
         <div class="control-group">
-          <label for="primary-600">Primary 600 <span id="primary-600-badge"></span></label>
-          <input id="primary-600" name="primary-600" type="color" />
+          <label for="secondary-500">Secondary 500 <span id="secondary-500-badge"></span></label>
+          <input id="secondary-500" name="secondary-500" type="color" />
+        </div>
+        <div class="control-group">
+          <label for="tertiary-500">Tertiary 500 <span id="tertiary-500-badge"></span></label>
+          <input id="tertiary-500" name="tertiary-500" type="color" />
         </div>
         <div class="control-group">
           <label for="neutral-50">Neutral 50 <span id="neutral-50-badge"></span></label>
@@ -217,12 +200,13 @@ export const colorsControlModule: ControlModule = {
       mode: container.querySelector<HTMLSelectElement>('#color-mode'),
       base: container.querySelector<HTMLInputElement>('#base-color'),
       p500: container.querySelector<HTMLInputElement>('#primary-500'),
-      p600: container.querySelector<HTMLInputElement>('#primary-600'),
+      s500: container.querySelector<HTMLInputElement>('#secondary-500'),
+      t500: container.querySelector<HTMLInputElement>('#tertiary-500'),
       n50: container.querySelector<HTMLInputElement>('#neutral-50'),
       n900: container.querySelector<HTMLInputElement>('#neutral-900'),
       d500: container.querySelector<HTMLInputElement>('#danger-500'),
-      s500: container.querySelector<HTMLInputElement>('#success-500'),
-      w500: container.querySelector<HTMLInputElement>('#warning-500'),
+      success500: container.querySelector<HTMLInputElement>('#success-500'),
+      warning500: container.querySelector<HTMLInputElement>('#warning-500'),
       tint: container.querySelector<HTMLInputElement>('#tuning-tint'),
       dark: container.querySelector<HTMLInputElement>('#tuning-dark'),
       light: container.querySelector<HTMLInputElement>('#tuning-light'),
@@ -233,12 +217,13 @@ export const colorsControlModule: ControlModule = {
     const badges = {
       base: container.querySelector<HTMLElement>('#base-color-badge'),
       p500: container.querySelector<HTMLElement>('#primary-500-badge'),
-      p600: container.querySelector<HTMLElement>('#primary-600-badge'),
+      s500: container.querySelector<HTMLElement>('#secondary-500-badge'),
+      t500: container.querySelector<HTMLElement>('#tertiary-500-badge'),
       n50: container.querySelector<HTMLElement>('#neutral-50-badge'),
       n900: container.querySelector<HTMLElement>('#neutral-900-badge'),
       d500: container.querySelector<HTMLElement>('#danger-500-badge'),
-      s500: container.querySelector<HTMLElement>('#success-500-badge'),
-      w500: container.querySelector<HTMLElement>('#warning-500-badge'),
+      success500: container.querySelector<HTMLElement>('#success-500-badge'),
+      warning500: container.querySelector<HTMLElement>('#warning-500-badge'),
       valTint: container.querySelector<HTMLElement>('#val-tint'),
       valDark: container.querySelector<HTMLElement>('#val-dark'),
       valLight: container.querySelector<HTMLElement>('#val-light'),
@@ -259,13 +244,14 @@ export const colorsControlModule: ControlModule = {
       const fixed = nudgeContrast(color, onColor);
       api.updateConfig((cfg) => {
         const next = { ...cfg };
-        if (key === 'primary-500') next.colors = { ...next.colors, primary: { ...next.colors?.primary, 500: fixed } };
-        if (key === 'primary-600') next.colors = { ...next.colors, primary: { ...next.colors?.primary, 600: fixed } };
+        if (key === 'primary-500') next.colors = { ...next.colors, primary: generateScale(fixed) };
+        if (key === 'secondary-500') next.colors = { ...next.colors, secondary: generateScale(fixed) };
+        if (key === 'tertiary-500') next.colors = { ...next.colors, tertiary: generateScale(fixed) };
         if (key === 'neutral-50') next.colors = { ...next.colors, neutral: { ...next.colors?.neutral, 50: fixed } };
         if (key === 'neutral-900') next.colors = { ...next.colors, neutral: { ...next.colors?.neutral, 900: fixed } };
-        if (key === 'danger-500') next.colors = { ...next.colors, danger: { 500: fixed } };
-        if (key === 'success-500') next.colors = { ...next.colors, success: { 500: fixed } };
-        if (key === 'warning-500') next.colors = { ...next.colors, warning: { 500: fixed } };
+        if (key === 'danger-500') next.colors = { ...next.colors, danger: generateScale(fixed) };
+        if (key === 'success-500') next.colors = { ...next.colors, success: generateScale(fixed) };
+        if (key === 'warning-500') next.colors = { ...next.colors, warning: generateScale(fixed) };
         return next;
       });
     };
@@ -347,32 +333,35 @@ export const colorsControlModule: ControlModule = {
         case 'analogous':
           return {
             p500: base,
-            p600: shiftHue(base, 20, -0.03),
+            s500: shiftHue(base, 20, -0.03),
+            t500: shiftHue(base, -20, -0.03),
             n50: clampNeutral(shiftHue(base, -30, 0.25, -0.25), 'light', tuning),
             n900: clampNeutral(shiftHue(base, 40, -0.3, -0.2), 'dark', tuning),
             d500: danger,
-            s500: success,
-            w500: warning,
+            success500: success,
+            warning500: warning,
           };
         case 'complementary':
           return {
             p500: base,
-            p600: shiftHue(base, 180, -0.02),
+            s500: shiftHue(base, 180, -0.02),
+            t500: shiftHue(base, 150, -0.02), // Slightly offset triadic complementary
             n50: clampNeutral(shiftHue(base, 0, 0.3, -0.3), 'light', tuning),
             n900: clampNeutral(shiftHue(base, 180, -0.25, -0.2), 'dark', tuning),
             d500: danger,
-            s500: success,
-            w500: warning,
+            success500: success,
+            warning500: warning,
           };
         case 'triadic':
           return {
             p500: base,
-            p600: shiftHue(base, 120, -0.02),
+            s500: shiftHue(base, 120, -0.02),
+            t500: shiftHue(base, 240, -0.02),
             n50: clampNeutral(shiftHue(base, -120, 0.25, -0.25), 'light', tuning),
             n900: clampNeutral(shiftHue(base, 120, -0.25, -0.2), 'dark', tuning),
             d500: danger,
-            s500: success,
-            w500: warning,
+            success500: success,
+            warning500: warning,
           };
         default: return null;
       }
@@ -402,30 +391,32 @@ export const colorsControlModule: ControlModule = {
       const syncBadges = () => {
         updateBadge(badges.base, c.primary?.[500] ?? '', 'base');
         updateBadge(badges.p500, c.primary?.[500] ?? '', 'primary-500');
-        updateBadge(badges.p600, c.primary?.[600] ?? '', 'primary-600');
+        updateBadge(badges.s500, c.secondary?.[500] ?? '', 'secondary-500');
+        updateBadge(badges.t500, c.tertiary?.[500] ?? '', 'tertiary-500');
         updateBadge(badges.n50, c.neutral?.[50] ?? '', 'neutral-50');
         updateBadge(badges.n900, c.neutral?.[900] ?? '', 'neutral-900');
         updateBadge(badges.d500, c.danger?.[500] ?? '', 'danger-500');
-        updateBadge(badges.s500, c.success?.[500] ?? '', 'success-500');
-        updateBadge(badges.w500, c.warning?.[500] ?? '', 'warning-500');
+        updateBadge(badges.success500, c.success?.[500] ?? '', 'success-500');
+        updateBadge(badges.warning500, c.warning?.[500] ?? '', 'warning-500');
       };
 
       if (inputs.mode) inputs.mode.value = mode;
       if (inputs.base && c.primary?.[500]) inputs.base.value = c.primary[500];
       
       setVal(inputs.p500, c.primary?.[500]);
-      setVal(inputs.p600, c.primary?.[600]);
+      setVal(inputs.s500, c.secondary?.[500]);
+      setVal(inputs.t500, c.tertiary?.[500]);
       setVal(inputs.n50, c.neutral?.[50]);
       setVal(inputs.n900, c.neutral?.[900]);
       setVal(inputs.d500, c.danger?.[500]);
-      setVal(inputs.s500, c.success?.[500]);
-      setVal(inputs.w500, c.warning?.[500]);
+      setVal(inputs.success500, c.success?.[500]);
+      setVal(inputs.warning500, c.warning?.[500]);
       
       if (c.tuning) syncTuningUI(c.tuning);
       syncBadges();
 
       const isManual = mode === 'manual';
-      [inputs.p500, inputs.p600, inputs.n50, inputs.n900, inputs.d500, inputs.s500, inputs.w500].forEach(i => {
+      [inputs.p500, inputs.s500, inputs.t500, inputs.n50, inputs.n900, inputs.d500, inputs.success500, inputs.warning500].forEach(i => {
         if (i) i.disabled = !isManual;
       });
       if (inputs.base) inputs.base.disabled = false;
@@ -447,18 +438,20 @@ export const colorsControlModule: ControlModule = {
       const baseColor = inputs.base?.value ?? '#5b8def';
 
       const updatePaletteConfig = () => {
-        const palette = generatePalette(baseColor, tuning);
-        if (!palette) return;
+        const p = generatePalette(baseColor, tuning);
+        if (!p) return;
         api.updateConfig(cfg => ({
           ...cfg,
           colors: {
             ...cfg.colors,
-            primary: { 500: palette.p500, 600: palette.p600 },
-            neutral: { 50: palette.n50, 900: palette.n900 },
+            primary: generateScale(p.p500),
+            secondary: generateScale(p.s500),
+            tertiary: generateScale(p.t500),
+            neutral: { ...generateScale(p.n50), 900: p.n900 },
             tuning,
-            danger: { 500: palette.d500 },
-            success: { 500: palette.s500 },
-            warning: { 500: palette.w500 },
+            danger: generateScale(p.d500),
+            success: generateScale(p.success500),
+            warning: generateScale(p.warning500),
             paletteMode: mode,
           }
         }));
@@ -495,12 +488,14 @@ export const colorsControlModule: ControlModule = {
           ...cfg,
           colors: {
             ...cfg.colors,
-            primary: { 500: inputs.p500?.value ?? '', 600: inputs.p600?.value ?? '' },
-            neutral: { 50: inputs.n50?.value ?? '', 900: inputs.n900?.value ?? '' },
+            primary: generateScale(inputs.p500?.value ?? ''),
+            secondary: generateScale(inputs.s500?.value ?? ''),
+            tertiary: generateScale(inputs.t500?.value ?? ''),
+            neutral: { ...cfg.colors?.neutral, 50: inputs.n50?.value ?? '', 900: inputs.n900?.value ?? '' },
             tuning,
-            danger: { 500: inputs.d500?.value ?? '' },
-            success: { 500: inputs.s500?.value ?? '' },
-            warning: { 500: inputs.w500?.value ?? '' },
+            danger: generateScale(inputs.d500?.value ?? ''),
+            success: generateScale(inputs.success500?.value ?? ''),
+            warning: generateScale(inputs.warning500?.value ?? ''),
             paletteMode: mode,
           }
         }));
@@ -528,6 +523,7 @@ export const colorsPreviewModule = {
   id: 'colors',
   title: 'Color Usage Matrix',
   render: (config: ThemeConfig) => {
+    const s = (hue: string) => `background: var(--color-${hue}-500); color: var(--on-${hue}, white);`;
     return `
     <style>
       .usage-matrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
@@ -540,19 +536,27 @@ export const colorsPreviewModule = {
       .swatch-hex { font-family: monospace; font-size: 10px; opacity: 0.8; }
     </style>
     <div class="usage-matrix">
-      <div class="usage-swatch" style="background: var(--color-primary-500); color: var(--on-primary);">
+      <div class="usage-swatch" style="${s('primary')}">
         <div class="swatch-label">Primary</div>
         <span>Text Example</span>
       </div>
-      <div class="usage-swatch" style="background: var(--color-danger-500); color: var(--on-danger);">
+      <div class="usage-swatch" style="background: var(--color-secondary-500); color: var(--on-background);">
+        <div class="swatch-label">Secondary</div>
+        <span>Accent</span>
+      </div>
+      <div class="usage-swatch" style="background: var(--color-tertiary-500); color: var(--on-background);">
+        <div class="swatch-label">Tertiary</div>
+        <span>Support</span>
+      </div>
+      <div class="usage-swatch" style="${s('danger')}">
         <div class="swatch-label">Danger</div>
         <span>Destructive</span>
       </div>
-      <div class="usage-swatch" style="background: var(--color-success-500); color: var(--on-success);">
+      <div class="usage-swatch" style="${s('success')}">
         <div class="swatch-label">Success</div>
         <span>Validation</span>
       </div>
-      <div class="usage-swatch" style="background: var(--color-warning-500); color: var(--on-warning);">
+      <div class="usage-swatch" style="${s('warning')}">
         <div class="swatch-label">Warning</div>
         <span>Attention</span>
       </div>
@@ -574,8 +578,8 @@ export const colorsPreviewModule = {
       
       <div class="usage-swatch" style="background: var(--color-neutral-900); color: var(--on-background); display: flex; align-items: center; justify-content: center; font-size: 24px;">
         <span style="color: var(--color-primary-500); margin: 0 1px;">●</span>
-        <span style="color: var(--color-success-500); margin: 0 1px;">●</span>
-        <span style="color: var(--color-warning-500); margin: 0 1px;">●</span>
+        <span style="color: var(--color-secondary-500); margin: 0 1px;">●</span>
+        <span style="color: var(--color-tertiary-500); margin: 0 1px;">●</span>
         <span style="color: var(--color-danger-500); margin: 0 1px;">●</span>
       </div>
     </div>

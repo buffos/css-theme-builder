@@ -67,6 +67,8 @@ export const styleguidePreviewModule: PreviewModule = {
         <section>
           <h4 style="margin: 0 0 1.5rem 0; font-size: 13px; font-weight: 800; border-bottom: 2px solid var(--color-primary-500); padding-bottom: 0.5rem; display: inline-block;">COLOR SYSTEMS</h4>
           ${colorSwatches('Primary Palette', 'color-primary')}
+          ${colorSwatches('Secondary Palette', 'color-secondary')}
+          ${colorSwatches('Tertiary Palette', 'color-tertiary')}
           ${colorSwatches('Neutral Palette', 'color-neutral')}
           
           <div style="margin-top: 2rem;">
@@ -85,6 +87,49 @@ export const styleguidePreviewModule: PreviewModule = {
                 </div>
               `).join('')}
             </div>
+          </div>
+        </section>
+
+        <!-- LAYOUT & RESPONSIVE -->
+        <section>
+          <h4 style="margin: 0 0 1.5rem 0; font-size: 13px; font-weight: 800; border-bottom: 2px solid var(--color-primary-500); padding-bottom: 0.5rem; display: inline-block;">LAYOUT & RESPONSIVE</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+            
+            <!-- Breakpoints -->
+            <div style="padding: 1.25rem; background: var(--surface-card); border-radius: 10px; border: 1px solid rgba(128,128,128,0.1);">
+              <h5 style="margin: 0 0 1rem 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Breakpoints</h5>
+              <div style="display: grid; gap: 0.75rem;">
+                ${['sm', 'md', 'lg', 'xl'].map(bp => `
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 11px; font-weight: 800;">${bp.toUpperCase()}</span>
+                      <code style="font-size: 9px; opacity: 0.5;">--breakpoint-${bp}</code>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.breakpoints[bp as keyof typeof config.layout.breakpoints]}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Global Layout -->
+            <div style="padding: 1.25rem; background: var(--surface-card); border-radius: 10px; border: 1px solid rgba(128,128,128,0.1); display: flex; flex-direction: column; gap: 1rem;">
+              <h5 style="margin: 0 0 0 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6;">Global Layout</h5>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 11px; font-weight: 800;">Container Max</span>
+                  <code style="font-size: 9px; opacity: 0.5;">--container-width</code>
+                </div>
+                <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.container}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 11px; font-weight: 800;">Grid Gutter</span>
+                  <code style="font-size: 9px; opacity: 0.5;">--layout-gutter</code>
+                </div>
+                <span style="font-size: 11px; font-weight: 700; color: var(--color-primary-500);">${config.layout?.gutter}</span>
+              </div>
+            </div>
+
           </div>
         </section>
 

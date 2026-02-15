@@ -111,3 +111,55 @@ export const nudgeContrast = (hex: string, onColor: string, targetRatio = 4.5): 
 
   return hex;
 };
+
+/**
+ * Generates a full 50-950 color scale (11 steps) from a base hex color.
+ * Interpolates lightness and saturation to create a visually balanced ramp.
+ */
+export const generateScale = (baseHex: string): Record<number, string> => {
+  const { h, s, l: baseL } = hexToHsl(baseHex);
+
+  // Targets for lightness at each step
+  const targets: Record<number, number> = {
+    50: 0.98,
+    100: 0.95,
+    200: 0.88,
+    300: 0.78,
+    400: 0.65,
+    500: baseL, // Base point
+    600: baseL * 0.85,
+    700: baseL * 0.7,
+    800: baseL * 0.5,
+    900: baseL * 0.3,
+    950: 0.1,
+  };
+
+  const scale: Record<number, string> = {};
+  const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
+  steps.forEach((step) => {
+    let l = targets[step];
+    
+    // For steps 50-400, we might need to adjust lightness if the base (500) is very light
+    if (step < 500 && l <= baseL) {
+      // Linearly interpolate between baseL (500) and white (1.0)
+      const t = (500 - step) / 500;
+      l = baseL + (1 - baseL) * t * 0.9;
+    }
+
+    // For steps 600-950, ensure we are darker than base
+    if (step > 500 && l >= baseL) {
+      const t = (step - 500) / 450;
+      l = baseL - baseL * t * 0.9;
+    }
+
+    // Adjust saturation slightly: increase in mid-range, decrease in extremes
+    let s2 = s;
+    if (step < 300) s2 = s * 0.6; // Desaturate highlights
+    if (step > 800) s2 = s * 0.8; // Desaturate deep shadows
+
+    scale[step] = hslToHex(h, s2, l);
+  });
+
+  return scale;
+};

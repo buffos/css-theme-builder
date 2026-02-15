@@ -4,6 +4,7 @@ import { buttonsDefaults } from '../plugins/basic-buttons';
 import { cardDefaults } from '../plugins/basic-card';
 import { colorsDefaults } from '../plugins/basic-colors';
 import { inputsDefaults } from '../plugins/basic-inputs';
+import { layoutDefaults } from '../plugins/basic-layout';
 import { modalDefaults } from '../plugins/basic-modal';
 import { radiusDefaults } from '../plugins/basic-radius';
 import { shadowDefaults } from '../plugins/basic-shadow';
@@ -28,6 +29,7 @@ const defaultFragments = [
   cardDefaults,
   inputsDefaults,
   modalDefaults,
+  layoutDefaults,
   tableDefaults,
 ];
 

@@ -3,6 +3,7 @@ import { buttonsControlModule } from '../plugins/basic-buttons';
 import { cardControlModule } from '../plugins/basic-card';
 import { colorsControlModule } from '../plugins/basic-colors';
 import { inputsControlModule } from '../plugins/basic-inputs';
+import { layoutControlModule } from '../plugins/basic-layout';
 import { modalControlModule } from '../plugins/basic-modal';
 import { radiusControlModule } from '../plugins/basic-radius';
 import { shadowControlModule } from '../plugins/basic-shadow';
@@ -18,6 +19,7 @@ import type { ControlsRegistry } from './registry';
 // here we will place all controls we will build
 export const controlsRegistry: ControlsRegistry = {
   name: themeNameControlModule,
+  layout: layoutControlModule,
   styleguide: styleguideControlModule,
   colors: colorsControlModule,
   typography: typographyControlModule,

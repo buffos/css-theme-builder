@@ -4,6 +4,7 @@ import { buttonsPreviewModule } from '../plugins/basic-buttons';
 import { cardPreviewModule } from '../plugins/basic-card';
 import { colorsPreviewModule } from '../plugins/basic-colors';
 import { inputsPreviewModule } from '../plugins/basic-inputs';
+import { layoutPreviewModule } from '../plugins/basic-layout';
 import { modalPreviewModule } from '../plugins/basic-modal';
 import { radiusPreviewModule } from '../plugins/basic-radius';
 import { shadowPreviewModule } from '../plugins/basic-shadow';
@@ -23,6 +24,7 @@ export type PreviewModule = {
 
 export const previewModules = [
   styleguidePreviewModule,
+  layoutPreviewModule,
   dashboardPreviewModule,
   colorsPreviewModule,
   buttonsPreviewModule,

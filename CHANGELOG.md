@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. We will log every step as we build the UI Theme Generator in small, focused increments.
 
+## [0.35.0] - 2026-02-15
+
+### Added
+
+- **Color Scale Overhaul**: Implemented full 50-950 ramps (11 steps) for all palettes using a new `generateScale` utility.
+- **Dedicated Accent Palettes**: Introduced independent Secondary and Tertiary color systems, decoupling them from the Primary scale.
+- **Enhanced Palette Generation**: Refactored Analogous, Complementary, and Triadic modes to intelligently distribute colors across the new accent scales.
+- **Responsive Layout Tokens**: Introduced a new `basic-layout` plugin to manage global responsive breakpoints, container widths, and gutter sizes.
+
+### Changed
+
+- **Style Guide Expansion**: Updated the technical specification to visualize the complete 50-950 color ramps and include layout/responsive token specs.
+- **Improved Semantic Hues**: Redesigned status color logic to maintain accessibility while inheriting thematic saturation.
+
 ## [0.34.0] - 2026-02-15
 
 ### Added
